@@ -106,6 +106,8 @@ def test_han_specification_factories_are_public() -> None:
     ):
         assert callable(getattr(ewm, name))
 
+    assert callable(ewm.compile_world)
+
 
 def test_cli_lists_and_describes_scenarios(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["list"]) == 0
