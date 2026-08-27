@@ -1,22 +1,23 @@
-# Economic World Model
+<div align="center">
+  <h1>Economic World Model</h1>
+  <p><strong>Behavior changes data. Data changes the models that shape behavior.</strong></p>
+  <p>
+    <a href="https://www.python.org/"><img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-3776AB.svg"></a>
+    <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green.svg"></a>
+    <a href="#project-status"><img alt="Status: research alpha" src="https://img.shields.io/badge/status-research%20alpha-orange.svg"></a>
+  </p>
+</div>
 
-**Executable economic systems in which behavior changes data—and data changes the models that shape behavior.**
+**Economic World Model** is an open-source research implementation of executable economies whose
+behavior, generated data, and learned models evolve together. It combines a typed agent economy
+with numerical methods for Economic World Models (EWMs) and Data-Driven Generative Equilibria
+(DDGEs). The repository is distributed as a Python package so researchers can inspect, test, and
+extend every mechanism.
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Status: research alpha](https://img.shields.io/badge/status-research%20alpha-orange.svg)](#project-status)
+The project brings together two complementary papers:
 
-`economic-world-model` is an open-source Python package for building transparent Economic World
-Models (EWMs) and solving Data-Driven Generative Equilibria (DDGEs). It combines an executable,
-typed agent economy with numerical tools for the feedback loop between economic behavior,
-endogenously generated data, and learned models.
-
-The project operationalizes two complementary research programs:
-
-- Cong's equilibrium formulation, particularly the behavior–data–learning closure represented by
-  DDGE.
-- Han et al.'s systems blueprint for agents, environments, institutions, co-evolution, and
-  evaluation in an EWM.
+- Lin William Cong, [*Economic World Models and Data-Driven Generative Equilibria*](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940), which formalizes the equilibrium closure among behavior, endogenous data, and learning.
+- Han et al., [*From Economic Agents to Agentic Economies: A Systems Blueprint for Economic World Models*](https://arxiv.org/abs/2608.06020), which specifies the systems architecture for agents, environments, institutions, co-evolution, and evaluation.
 
 The first release is a **synthetic research laboratory**, not an empirically calibrated economy, a
 policy oracle, a trading or lending system, or a claim to a real-world economic digital twin.
@@ -72,7 +73,7 @@ These operations are intentionally separate contracts:
 | `rollout` | Policies and learned parameters, except declared within-world adaptation | What trajectory does this economy generate? |
 | `solve_equilibrium` | Learned parameters and intervention | Which behavior and allocation satisfy the economic conditions? |
 | `retrain` | One generated dataset and learning rule | What is the next learned parameter? |
-| `solve_ddge` | Nothing inside the declared behavior–data–learning loop | Which learned states are self-consistent? |
+| `solve_ddge` | Nothing inside the declared behavior, data, and learning loop | Which learned states are self-consistent? |
 
 A long or converged rollout is not automatically an equilibrium. A well-fitted learner is not
 automatically a DDGE. A small DDGE residual is not automatically a small welfare error.
@@ -216,14 +217,14 @@ and banks supply liquidity subject to inventory and exposure limits. A uniform-p
 validates orders, clears compatible demand and supply, and settles cash against foreign currency.
 
 The scientific focus is feasibility, accounting conservation, clearing residuals, endogenous belief
-adaptation, and prespecified comparative statics—not empirical exchange-rate forecasting.
+adaptation, and prespecified comparative statics. It is not an empirical exchange-rate forecaster.
 
 ### 3. AI-mediated credit
 
 Borrowers differ in latent repayment quality and observable features. A generative-AI intervention
 can polish text features without changing repayment quality; borrowers adopt when the decision
-benefit covers their cost. The lender retrains on endogenous—and sometimes selectively observed—
-repayment outcomes.
+benefit covers their cost. The lender retrains on endogenous repayment outcomes that are selectively
+observed in some regimes.
 
 The laboratory will compare a no-AI baseline, frozen-model counterfactual, selective-observation
 DDGE, full-information DDGE, and omniscient quality oracle. It studies sign reversals, feedback
