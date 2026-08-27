@@ -186,6 +186,7 @@ def test_world_align_records_evidence_and_correction_versions() -> None:
         "before_version": 0,
         "correction_count": 1,
         "evidence_reference": "fixtures/official-price-2026-08-27.json",
+        "max_correction_magnitude": 0.1,
         "max_discrepancy": pytest.approx(0.2),
         "within_tolerance": False,
     }

@@ -13,7 +13,14 @@ from .definition import (
     SpaceDefinition,
     WorldComponent,
 )
-from .evaluation import EvaluationReport, evaluate_event_log
+from .evaluation import (
+    EvaluationLayerReport,
+    EvaluationReport,
+    LayeredEvaluationReport,
+    MeasurementStatus,
+    MetricMeasurement,
+    evaluate_event_log,
+)
 from .events import EVENT_SCHEMA_VERSION, Event, EventLog
 from .mechanisms import FunctionalMechanism
 from .protocols import (
@@ -100,6 +107,7 @@ __all__ = [
     "EnvironmentSpecification",
     "EquilibriumProblem",
     "EquilibriumResult",
+    "EvaluationLayerReport",
     "EvaluationReport",
     "EvaluationSpecification",
     "Event",
@@ -117,8 +125,11 @@ __all__ = [
     "InstitutionalEvolution",
     "InterventionSemantics",
     "KernelDefinition",
+    "LayeredEvaluationReport",
+    "MeasurementStatus",
     "Mechanism",
     "MechanismSpecification",
+    "MetricMeasurement",
     "ProposalRule",
     "RealWorldAlignment",
     "RunMetadata",

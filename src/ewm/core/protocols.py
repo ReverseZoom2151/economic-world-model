@@ -151,6 +151,9 @@ class AlignmentReportRecord(Protocol):
     @property
     def max_discrepancy(self) -> float: ...
 
+    @property
+    def max_correction_magnitude(self) -> float: ...
+
 
 class RealWorldAlignment(Protocol):
     """External-evidence correction boundary independent of provider adapters."""

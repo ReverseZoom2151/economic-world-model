@@ -5,9 +5,71 @@ from __future__ import annotations
 from collections import Counter
 from collections.abc import Mapping
 from dataclasses import dataclass
+from enum import StrEnum
+from math import isfinite
 
 from .events import Event
 from .records import freeze_value
+
+
+class MeasurementStatus(StrEnum):
+    """Whether an evaluation metric has evidence or remains explicitly unmeasured."""
+
+    MEASURED = "measured"
+    NOT_MEASURED = "not_measured"
+
+
+@dataclass(frozen=True, slots=True)
+class MetricMeasurement:
+    """One scalar metric with units, sample size, and evidence provenance."""
+
+    status: MeasurementStatus
+    value: float | None
+    unit: str
+    sample_size: int
+    provenance: str | None
+
+    def __post_init__(self) -> None:
+        if not self.unit:
+            raise ValueError("measurement unit must not be empty")
+        if self.status is MeasurementStatus.MEASURED:
+            if self.value is None or not isfinite(self.value):
+                raise ValueError("measured metric requires a finite value")
+            if self.sample_size < 1:
+                raise ValueError("measured metric requires a positive sample size")
+            if not self.provenance:
+                raise ValueError("measured metric requires provenance")
+        elif self.value is not None or self.sample_size != 0 or self.provenance is not None:
+            raise ValueError("not-measured metric cannot contain fabricated evidence")
+
+
+@dataclass(frozen=True, slots=True)
+class EvaluationLayerReport:
+    """Named metrics for one of Han's five evaluation layers."""
+
+    metrics: Mapping[str, MetricMeasurement]
+
+    def __post_init__(self) -> None:
+        if not self.metrics or any(not name for name in self.metrics):
+            raise ValueError("evaluation layer metrics must not be empty")
+        object.__setattr__(self, "metrics", freeze_value(self.metrics))
+
+
+@dataclass(frozen=True, slots=True)
+class LayeredEvaluationReport:
+    """Read-only agent, environment, co-evolution, alignment, and efficiency report."""
+
+    schema_version: str
+    state_version: int
+    event_count: int
+    layers: Mapping[str, EvaluationLayerReport]
+
+    def __post_init__(self) -> None:
+        if self.schema_version != "ewm.layered-evaluation.v1":
+            raise ValueError("unsupported layered evaluation schema")
+        if self.state_version < 0 or self.event_count < 0:
+            raise ValueError("evaluation versions and counts must be non-negative")
+        object.__setattr__(self, "layers", freeze_value(self.layers))
 
 
 @dataclass(frozen=True, slots=True)

@@ -101,6 +101,38 @@ print(run.run_hash, run.run_dir)
 
 The corresponding executable programs are in [`examples/`](../examples).
 
+## Five-layer evaluation
+
+`evaluate_layered` builds Han et al.'s agent, environment, co-evolution, alignment, and efficiency
+sections from an immutable event snapshot plus explicitly supplied measurements. Event-derived
+metrics include feasible-action rate, constraint-violation rate, adaptation stability, component
+drift, state discrepancy, and correction magnitude. Role consistency, accounting checks,
+adaptation gain, runtime, memory, and scaling measurements can be attached with provenance.
+
+```python
+from ewm.experiments import MetricEvidence, evaluate_layered
+
+report = evaluate_layered(
+    world.events.snapshot(),
+    state_version=world.state_version,
+    evidence={
+        "efficiency": {
+            "runtime_seconds": MetricEvidence(
+                value=0.42,
+                unit="seconds",
+                provenance="benchmarks/run.json",
+                sample_size=3,
+            )
+        }
+    },
+)
+```
+
+The evaluator never fills an absent measurement with zero. Every missing item has status
+`not_measured`, value `None`, sample size zero, and no provenance. It also rejects unknown metrics,
+wrong units, and ambiguous attempts to override an event-derived value. Evaluation reads its
+inputs without changing the world, agents, mechanism, alignment components, or event snapshot.
+
 ## Artifact contract
 
 Each run is written to `<output>/<run_hash>/` with schema `ewm.run.v1`:

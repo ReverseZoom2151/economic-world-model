@@ -217,6 +217,10 @@ class AlignmentReport:
     def max_discrepancy(self) -> float:
         return max(self.discrepancies.values(), default=0.0)
 
+    @property
+    def max_correction_magnitude(self) -> float:
+        return max((abs(item.delta) for item in self.corrections), default=0.0)
+
 
 @dataclass(frozen=True, slots=True)
 class AlignmentRestoreReport:

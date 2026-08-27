@@ -325,6 +325,7 @@ class World:
                 "before_version": report.before_version,
                 "correction_count": report.correction_count,
                 "evidence_reference": report.evidence_reference,
+                "max_correction_magnitude": report.max_correction_magnitude,
                 "max_discrepancy": report.max_discrepancy,
                 "within_tolerance": report.within_tolerance,
             },

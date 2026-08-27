@@ -452,11 +452,10 @@ source = "han-et-al-2026"
 section = "Section 4.2.5"
 pages = "17-19"
 summary = "Evaluation declares trajectory-level metrics and structured reports."
-status = "partial"
+status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/specs.py", "src/ewm/api.py"]
-evidence = ["tests/unit/test_specs.py"]
-limitation = "The five-layer metric declaration is implemented; the read-only structured runtime report is deferred to the evaluation task."
+implementation = ["src/ewm/core/specs.py", "src/ewm/core/evaluation.py", "src/ewm/experiments/evaluation.py", "src/ewm/api.py"]
+evidence = ["tests/unit/test_specs.py", "tests/integration/test_layered_evaluation.py"]
 
 [[item]]
 id = "han-runtime-reset"
@@ -522,9 +521,9 @@ pages = "12, 19"
 summary = "world.evaluate reads trajectory logs and returns component-level diagnostics without mutation."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/evaluation.py", "src/ewm/core/world.py"]
-evidence = ["tests/integration/test_han_runtime_protocol.py"]
-limitation = "A read-only protocol report exists; Han's five-layer component report is deferred to the layered evaluation task."
+implementation = ["src/ewm/core/evaluation.py", "src/ewm/core/world.py", "src/ewm/experiments/evaluation.py"]
+evidence = ["tests/integration/test_han_runtime_protocol.py", "tests/integration/test_layered_evaluation.py"]
+limitation = "The five-layer report is available through the experiment evaluator over a world event snapshot; world.evaluate retains its compact backward-compatible protocol report."
 
 [[item]]
 id = "han-runtime-log"
@@ -613,9 +612,11 @@ source = "han-et-al-2026"
 section = "Table 3, Agents"
 pages = "18"
 summary = "Evaluate action validity, role consistency, belief calibration, and behavioral diversity."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "Metrics are not yet emitted as one agent-layer report."
+implementation = ["src/ewm/core/evaluation.py", "src/ewm/experiments/evaluation.py"]
+evidence = ["tests/integration/test_layered_evaluation.py"]
+limitation = "Action validity is derived from events and the other declared agent metrics accept provenance-bearing evidence; the current laboratories do not measure belief calibration or behavioral diversity."
 
 [[item]]
 id = "han-eval-environment"
@@ -625,9 +626,9 @@ pages = "18"
 summary = "Evaluate constraint violations, clearing error, accounting consistency, and settlement."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/mechanism.py", "src/ewm/core/world.py"]
-evidence = ["tests/properties/test_fx_accounting.py", "tests/scenarios/test_fx.py"]
-limitation = "Invariants are tested but not yet consolidated into a layered runtime report."
+implementation = ["src/ewm/scenarios/fx/mechanism.py", "src/ewm/core/world.py", "src/ewm/experiments/evaluation.py"]
+evidence = ["tests/properties/test_fx_accounting.py", "tests/scenarios/test_fx.py", "tests/integration/test_layered_evaluation.py"]
+limitation = "Constraint rate is event-derived and clearing, accounting, and settlement evidence can be consolidated; generic mechanism-specific invariant adapters remain scenario supplied."
 
 [[item]]
 id = "han-eval-coevolution"
@@ -635,9 +636,11 @@ source = "han-et-al-2026"
 section = "Table 3, Co-evolution"
 pages = "18"
 summary = "Evaluate adaptation gain, stability, drift, policy change, and mechanism recalibration."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "No generic co-evolution report exists."
+implementation = ["src/ewm/core/coevolution.py", "src/ewm/experiments/evaluation.py"]
+evidence = ["tests/unit/test_coevolution.py", "tests/integration/test_layered_evaluation.py"]
+limitation = "Stability, component drift, and update counts are event-derived; adaptation gain and policy change remain explicit external measurements."
 
 [[item]]
 id = "han-eval-alignment"
@@ -647,8 +650,8 @@ pages = "18"
 summary = "Evaluate state and trend errors plus correction magnitudes against observed evidence."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/alignment.py"]
-evidence = ["tests/unit/test_alignment.py", "examples/offline_alignment.py"]
+implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/experiments/evaluation.py"]
+evidence = ["tests/unit/test_alignment.py", "tests/integration/test_layered_evaluation.py", "examples/offline_alignment.py"]
 limitation = "Target error and correction magnitude are emitted for offline observations; trend error and repeated external validation remain unmeasured."
 
 [[item]]
@@ -659,6 +662,6 @@ pages = "18"
 summary = "Evaluate runtime, memory, parallel efficiency, and scaling with agents, markets, and horizons."
 status = "partial"
 claim = "conformance"
-implementation = ["scripts/benchmark_experiments.py"]
-evidence = ["tests/integration/test_benchmark_harness.py"]
-limitation = "Local benchmarks exist but are not yet attached to world-level layered reports."
+implementation = ["scripts/benchmark_experiments.py", "src/ewm/experiments/evaluation.py"]
+evidence = ["tests/integration/test_benchmark_harness.py", "tests/integration/test_layered_evaluation.py"]
+limitation = "Runtime, memory, and scaling evidence can be attached to the layered report; benchmark collection remains a separate explicit local operation."
