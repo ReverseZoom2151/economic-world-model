@@ -35,7 +35,10 @@ long tuple as a comma-separated display, the exact blocks are grouped here:
 |---|---|
 | $\mathcal{S}$, $\mathcal{A}$, $\mathcal{Y}$ | State, action, and outcome spaces |
 | $\mathcal{I}$ | Interventions, policies, technologies, or institutional regimes |
-| $N$, $\{\mathcal{I}_t^n,\Pi^n,\mu_t^n\}_{n=1}^{N}$ | Agents, their information, admissible policies, and beliefs |
+| $N$ | Number of agents |
+| $\mathcal{I}_t^n$ | Information available to agent $n$ at time $t$ |
+| $\Pi^n$ | Admissible policies for agent $n$ |
+| $\mu_t^n$ | Agent $n$'s belief representation at time $t$ |
 | $\mathcal{C}$ | Hard and soft economic coherence conditions |
 | $T_{\theta}$, $O_{\theta}$ | Learned transition and observation kernels |
 | $\Psi$ | Intervention semantics: which parts of the world a regime changes |
