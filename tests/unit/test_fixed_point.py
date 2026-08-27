@@ -41,6 +41,21 @@ def test_damped_update_and_eigenvalue_are_explicit() -> None:
     assert abs(damped_eigenvalue(-1.6, 0.5)) < 1.0
 
 
+def test_stability_estimation_can_be_skipped_for_expensive_maps() -> None:
+    def update(theta: np.ndarray) -> np.ndarray:
+        return 0.5 * theta + 1.0
+
+    result = iterate_fixed_point(
+        update,
+        np.array([0.0]),
+        FixedPointConfig(tolerance=1e-10, estimate_stability=False),
+    )
+
+    assert result.converged
+    assert result.stable is None
+    assert result.spectral_radius is None
+
+
 def test_multistart_surfaces_three_tanh_fixed_points_and_basins() -> None:
     def update(theta: np.ndarray) -> np.ndarray:
         return np.tanh(1.8 * theta)

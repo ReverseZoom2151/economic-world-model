@@ -26,6 +26,7 @@ class FixedPointConfig:
     damping: float = 1.0
     deduplication_tolerance: float = 1e-6
     jacobian_step: float = 1e-6
+    estimate_stability: bool = True
 
     def __post_init__(self) -> None:
         if self.tolerance <= 0.0:
@@ -76,15 +77,21 @@ def iterate_fixed_point(
             break
         theta = damped_update(theta, raw, settings.damping)
 
-    jacobian = finite_difference_jacobian(update, theta, settings.jacobian_step)
-    radius = spectral_radius(jacobian)
+    if settings.estimate_stability:
+        jacobian = finite_difference_jacobian(update, theta, settings.jacobian_step)
+        computed_radius = spectral_radius(jacobian)
+        radius: float | None = computed_radius
+        stable: bool | None = computed_radius < 1.0
+    else:
+        radius = None
+        stable = None
     return FixedPoint(
         theta=theta,
         initial_theta=initial,
         residual_norm=history[-1],
         iterations=iteration,
         converged=converged,
-        stable=radius < 1.0,
+        stable=stable,
         spectral_radius=radius,
         residual_history=tuple(history),
     )
@@ -134,4 +141,3 @@ def solve_multistart(
         selected_index=selected,
         diagnostics=diagnostics,
     )
-
