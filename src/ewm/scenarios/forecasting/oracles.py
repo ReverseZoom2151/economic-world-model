@@ -7,11 +7,8 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.optimize import brentq
 
-from ewm.equilibrium import FixedPointConfig, solve_ddge
-
 from .model import (
     ForecastingConfig,
-    ForecastingProblem,
     population_update,
     simulate_series,
 )
@@ -19,9 +16,8 @@ from .model import (
 
 @dataclass(frozen=True, slots=True)
 class ForecastingOracleReport:
-    """Agreement report from iteration, bracketing, derivatives, and simulation."""
+    """Independent bracketing, derivative, stability, and simulation checks."""
 
-    iteration_roots: tuple[float, ...]
     bracketing_roots: tuple[float, ...]
     analytical_derivative_zero: float
     numerical_derivative_zero: float
@@ -93,15 +89,6 @@ def oracle_report(
     if grid_size < 3:
         raise ValueError("grid_size must be at least three")
 
-    problem = ForecastingProblem(config)
-    iterative = solve_ddge(
-        problem,
-        (np.array([lower]), np.array([0.0]), np.array([upper])),
-        FixedPointConfig(tolerance=1e-10, max_iterations=1_000),
-    )
-    iteration_roots = tuple(
-        sorted(float(point.theta[0]) for point in iterative.fixed_points)
-    )
     bracketing_roots = _bracketing_roots(config, search_bounds, grid_size)
     derivatives = tuple(_derivative(root, config) for root in bracketing_roots)
     step = 1e-5
@@ -110,7 +97,6 @@ def oracle_report(
     ) / (2.0 * step)
 
     return ForecastingOracleReport(
-        iteration_roots=iteration_roots,
         bracketing_roots=bracketing_roots,
         analytical_derivative_zero=config.feedback,
         numerical_derivative_zero=derivative_zero,

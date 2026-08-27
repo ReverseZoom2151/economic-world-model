@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from time import perf_counter
 
-from ewm import __version__
+from ewm._version import __version__
 from ewm.core import ExperimentResult
 
 from .artifacts import ARTIFACT_SCHEMA, write_artifacts

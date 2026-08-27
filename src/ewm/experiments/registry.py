@@ -1,4 +1,4 @@
-"""Explicit experiment registry and scenario-owned numerical execution."""
+"""Explicit experiment registry and experiment-owned numerical execution."""
 
 from __future__ import annotations
 
@@ -10,15 +10,16 @@ import numpy as np
 from numpy.typing import NDArray
 
 from ewm.core import ExperimentResult
+from ewm.equilibrium import FixedPointConfig, solve_ddge
 from ewm.scenarios.credit import (
     CreditRegime,
     paper_like_config,
-    run_credit_regimes,
 )
 from ewm.scenarios.credit import (
     research_config as credit_research_config,
 )
 from ewm.scenarios.forecasting import (
+    ForecastingProblem,
     oracle_report,
 )
 from ewm.scenarios.forecasting import (
@@ -36,6 +37,8 @@ from ewm.scenarios.fx import (
 from ewm.scenarios.fx import (
     smoke_config as fx_smoke_config,
 )
+
+from .credit import run_credit_regimes
 
 SCENARIO_DESCRIPTIONS: Mapping[str, str] = {
     "credit": (
@@ -85,14 +88,22 @@ def _forecasting(preset: str, seed: int) -> ExperimentPayload:
         raise ValueError("preset must be 'smoke' or 'research'")
     config = replace(config, seed=seed)
     report = oracle_report(config)
+    iterative = solve_ddge(
+        ForecastingProblem(config),
+        (np.array([-1.5]), np.array([0.0]), np.array([1.5])),
+        FixedPointConfig(tolerance=1e-10, max_iterations=1_000),
+    )
+    iteration_roots = tuple(
+        sorted(float(point.theta[0]) for point in iterative.fixed_points)
+    )
     root_gap = (
         max(
             abs(iterative - bracketed)
             for iterative, bracketed in zip(
-                report.iteration_roots, report.bracketing_roots, strict=True
+                iteration_roots, report.bracketing_roots, strict=True
             )
         )
-        if report.iteration_roots
+        if iteration_roots
         else 0.0
     )
     metrics = {
@@ -101,7 +112,7 @@ def _forecasting(preset: str, seed: int) -> ExperimentPayload:
             report.numerical_derivative_zero - report.analytical_derivative_zero
         ),
         "max_root_gap": root_gap,
-        "root_count": len(report.iteration_roots),
+        "root_count": len(iteration_roots),
         "stable_root_count": sum(report.stable),
     }
     records = tuple(

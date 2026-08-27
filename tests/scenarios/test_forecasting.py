@@ -94,14 +94,19 @@ def test_finite_sample_retraining_ejects_exact_zero() -> None:
 
 
 def test_oracle_independently_confirms_roots_and_stability() -> None:
+    config = _config(feedback=1.8)
     report = oracle_report(
-        _config(feedback=1.8),
+        config,
         search_bounds=(-1.5, 1.5),
         grid_size=41,
     )
+    iterative = _solve(config)
+    iteration_roots = tuple(
+        sorted(float(point.theta[0]) for point in iterative.fixed_points)
+    )
 
-    assert len(report.iteration_roots) == len(report.bracketing_roots) == 3
-    assert np.allclose(report.iteration_roots, report.bracketing_roots, atol=2e-6)
+    assert len(iteration_roots) == len(report.bracketing_roots) == 3
+    assert np.allclose(iteration_roots, report.bracketing_roots, atol=2e-6)
     assert report.numerical_derivative_zero == pytest.approx(
         report.analytical_derivative_zero, abs=1e-6
     )

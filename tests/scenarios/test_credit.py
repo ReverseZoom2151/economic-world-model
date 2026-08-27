@@ -5,17 +5,16 @@ from dataclasses import replace
 import numpy as np
 import pytest
 
+from ewm.experiments import credit_oracle_report, run_credit_regimes
 from ewm.scenarios.credit import (
     CreditDDGEProblem,
     CreditRegime,
     adoption_mask,
     assemble_features,
-    credit_oracle_report,
     fit_initial_model,
     generate_population,
     omniscient_approvals,
     paper_like_config,
-    run_credit_regimes,
     sensitivity_report,
 )
 

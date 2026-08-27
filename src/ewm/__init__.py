@@ -1,9 +1,6 @@
 """Economic World Model research package."""
 
-from importlib.metadata import version
-
-__version__ = version("economic-world-model")
-
+from ._version import __version__
 from .api import (
     ExperimentRun,
     ScenarioHandle,
