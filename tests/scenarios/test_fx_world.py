@@ -9,7 +9,6 @@ import pytest
 import ewm
 from ewm.core import Action, verify_event_chain
 from ewm.scenarios.fx import (
-    FXSimulationResult,
     FXState,
     FXStateCodec,
     FXWorldBlueprint,
@@ -75,34 +74,41 @@ def test_seeded_fx_outputs_are_characterized_before_runtime_migration() -> None:
     adaptive = run_fx_simulation(config, seed=42)
     fixed = run_fx_simulation(replace(config, adaptive_beliefs=False), seed=42)
 
-    assert adaptive == FXSimulationResult(
-        prices=(
-            1.0,
-            1.002,
-            1.004004,
-            1.001995992,
-            1.003999983984,
-            1.0019919840160318,
-        ),
-        volumes=(6.0, 5.0, 6.0, 5.0, 6.0),
-        rejected_orders=(0, 0, 0, 0, 0),
-        max_cash_residual=1.4551915228366852e-11,
-        max_foreign_residual=1.4551915228366852e-11,
+    assert adaptive.prices == (
+        1.0,
+        1.002,
+        1.004004,
+        1.001995992,
+        1.003999983984,
+        1.0019919840160318,
     )
-    assert fixed == FXSimulationResult(
-        prices=(
-            1.0,
-            1.002,
-            0.999996,
-            1.001995992,
-            0.9999920000159999,
-            1.0019919840160318,
-        ),
-        volumes=(6.0, 6.0, 7.0, 5.0, 7.0),
-        rejected_orders=(0, 0, 0, 0, 0),
-        max_cash_residual=1.4551915228366852e-11,
-        max_foreign_residual=0.0,
+    assert fixed.prices == (
+        1.0,
+        1.002,
+        0.999996,
+        1.001995992,
+        0.9999920000159999,
+        1.0019919840160318,
     )
+    assert adaptive.rejected_orders == fixed.rejected_orders == (0, 0, 0, 0, 0)
+
+    # Cross-interpreter accumulation changes matched fractional fills by roughly 1e-15;
+    # this tolerance is numerical portability, not a relaxation of the model contract.
+    assert adaptive.volumes == pytest.approx(
+        (6.0, 5.0, 6.0, 5.0, 6.0),
+        rel=0.0,
+        abs=2e-15,
+    )
+    assert fixed.volumes == pytest.approx(
+        (6.0, 6.0, 7.0, 5.0, 7.0),
+        rel=0.0,
+        abs=2e-15,
+    )
+    # Conservation residuals accumulate in interpreter-dependent summation order.
+    assert adaptive.max_cash_residual < 1e-10
+    assert adaptive.max_foreign_residual < 1e-10
+    assert fixed.max_cash_residual < 1e-10
+    assert fixed.max_foreign_residual < 1e-10
 
 
 def test_fx_blueprint_compiles_bank_batch_and_adaptive_belief_state() -> None:
