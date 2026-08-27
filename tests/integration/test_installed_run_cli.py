@@ -37,7 +37,6 @@ def test_built_wheel_installs_verify_and_replay_commands(tmp_path: Path) -> None
             "-m",
             "build",
             "--wheel",
-            "--no-isolation",
             "--outdir",
             str(distribution),
         ],
