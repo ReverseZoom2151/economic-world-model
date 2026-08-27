@@ -24,6 +24,7 @@ from .records import (
     RunMetadata,
     Transition,
 )
+from .world import World
 
 __all__ = [
     "Action",
@@ -47,6 +48,7 @@ __all__ = [
     "Mechanism",
     "RunMetadata",
     "Transition",
+    "World",
     "make_rng",
     "spawn_rngs",
 ]

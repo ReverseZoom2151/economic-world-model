@@ -61,3 +61,6 @@ jobs:
 
       - name: Run credit example
         run: python examples/credit.py
+
+      - name: Run public-interface extension example
+        run: python examples/extensions/cobweb.py
