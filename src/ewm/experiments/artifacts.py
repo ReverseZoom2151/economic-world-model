@@ -41,6 +41,8 @@ def write_artifacts(
     traces: Mapping[str, NDArray[Any]],
     events: Sequence[Mapping[str, Any]],
     package_version: str,
+    runtime_environment: Mapping[str, str],
+    source_fingerprint: str,
 ) -> Path:
     """Write the complete deterministic artifact contract and return its directory."""
 
@@ -58,9 +60,11 @@ def write_artifacts(
         "experiment": experiment,
         "package_version": package_version,
         "preset": preset,
+        "runtime_environment": runtime_environment,
         "run_hash": run_hash,
         "scenario": scenario,
         "seed": seed,
+        "source_fingerprint": source_fingerprint,
     }
     metrics = scalar_metrics(result.metrics)
     (run_dir / "manifest.json").write_text(_json_text(manifest), encoding="utf-8")
