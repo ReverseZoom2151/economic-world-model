@@ -1,7 +1,7 @@
 # Paper traceability
 
-**Document version:** 1.2
-**Last reviewed:** 2026-08-27
+**Document version:** 1.3
+**Last reviewed:** 2026-08-28
 
 This repository is an adaptation of two specific source versions, not a claim of author-endorsed
 replication. The machine-readable registries in [`references/`](../references) make that distinction
@@ -53,6 +53,28 @@ has executable evidence. `partial` identifies both the available substrate and t
 cannot supply. `not-applicable` covers survey or nesting statements that create no package
 obligation.
 
+## Current executable evidence and boundaries
+
+Cong's hard equality, hard inequality, and soft coherence classes now execute as separate scalar
+checks with declared units, scales, and tolerances. Finite categorical and callable stochastic
+kernels validate support and normalization and record RNG provenance. Atomic interventions record
+their component target, canonical before and after hashes, and a machine-readable replacement diff.
+These implementations cover the registered source definitions. They do not establish Cong's
+universal approximation theorem for arbitrary learned kernel classes.
+
+The theorem-certificate layer has a deliberately restricted scope. It can constructively verify a
+declared affine self-map on a nonempty compact polyhedron, check a fixed-point residual, and keep
+Euclidean contraction separate from eigenvalue stability. Cong's general Assumption 3.2 and the
+general Kakutani existence argument still require model-specific mathematical proofs and remain
+blocked or partial in the registry.
+
+The Cong Laboratory III population target now has a package-import-free numerical oracle based on
+a separately implemented stationary-kernel OLS calculation. This closes the earlier independence
+gap for the registered population roots. The finite-sample path remains paper-inspired because its
+damping coefficient is package-authored. A separate production oracle cross-checks the bounded
+package-authored Appendix D instance, but that result is neither a paper target nor a proof of the
+general existence proposition.
+
 ## Current hard boundary: Cong Laboratory I
 
 The paper says replication code accompanies its credit laboratory, but the locked PDF contains no
@@ -64,6 +86,12 @@ The package therefore calls its credit model a qualitative reconstruction. It ca
 invariants, and prespecified qualitative sign patterns, but it cannot truthfully claim to reproduce the
 paper's exact figure. This status can change if the author artifact becomes available and its source
 identity is locked.
+
+The repository also ships a prospectively locked local protocol for this reconstruction. Its current
+quick execution completes all four fixed-seed replications but breaches the prespecified solver
+residual tolerance in every replication. The report therefore returns `fail`, labels the evidence
+`diagnostic_only`, and authorizes no scientific claim. Recording that failed result strengthens the
+audit trail; it does not change Laboratory I's `blocked-external` replication status.
 
 `src/ewm/scenarios/credit/provenance.py` records every fixed design fact, Figure 2 magnitude,
 qualitative ordering, and missing primitive used in this determination. The comparison report exposes
@@ -78,7 +106,20 @@ Han's L1-L6 ladder is a systems taxonomy. A class named `Alignment` does not cre
 twin, and a fake language-model backend does not establish behavioral fidelity. The implementation
 contains reusable L3-L6 substrates and assesses runtime evidence separately from interface
 availability, DDGE consistency, and empirical validity. The cumulative evaluator currently awards
-L2.
+L2. That award is now backed by a hashed, versioned validation protocol over the compiled FX
+runtime, with adaptive and fixed-belief arms, paired seeds, longitudinal observations, canonical
+event chains, and separate evidence for every L1/L2 requirement. Its declared classification is
+synthetic systems conformance. It explicitly excludes empirical validation and a prospective
+behavioral study.
+
+## Package engineering is not paper correspondence
+
+Artifact v2 verification and deterministic replay protect the identity, integrity, and
+reproducibility of run evidence. They are package engineering, not paper correspondence, because
+neither locked source specifies this checksum format, command-line interface, or replay bundle
+contract. The traceability registry maps the compiled FX execution and canonical event logging to
+Han's runtime interfaces, but it does not turn the repository's sealing and replay design into a new
+paper-derived claim.
 
 ## Automated integrity checks
 

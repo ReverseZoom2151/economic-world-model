@@ -17,11 +17,11 @@ source = "cong-2026"
 section = "Definition 2.1"
 pages = "10-11"
 summary = "Economic coherence conditions include hard equalities, inequalities, and soft diagnostics."
-status = "partial"
+status = "implemented"
 claim = "source-definition"
-implementation = ["src/ewm/core/constraints.py", "src/ewm/core/definition.py"]
-evidence = ["tests/unit/test_constraints.py", "tests/unit/test_definition.py"]
-limitation = "All three classes are declared, but the runtime does not yet bind every declaration to an enforcement or diagnostic function."
+implementation = ["src/ewm/core/coherence.py", "src/ewm/core/constraints.py", "src/ewm/core/definition.py"]
+evidence = ["tests/unit/test_coherence.py", "tests/unit/test_constraints.py", "tests/unit/test_definition.py"]
+limitation = "The core evaluates declared scalar conditions with explicit units, scales, and tolerances; model authors remain responsible for supplying the history-specific measurement functions."
 
 [[item]]
 id = "cong-eq-2.1-2.2"
@@ -29,11 +29,11 @@ source = "cong-2026"
 section = "Equations 2.1 and 2.2"
 pages = "15"
 summary = "Learned transition and observation kernels generate next states and outcomes."
-status = "partial"
+status = "implemented"
 claim = "source-definition"
-implementation = ["src/ewm/core/protocols.py", "src/ewm/core/world.py"]
-evidence = ["tests/unit/test_world.py"]
-limitation = "The runtime supports deterministic or user-randomized mechanisms, not explicit stochastic-kernel records."
+implementation = ["src/ewm/core/kernels.py", "src/ewm/core/protocols.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_kernels.py", "tests/unit/test_world.py"]
+limitation = "The explicit kernel records cover validated finite categorical support and caller-defined probability rows; the universal approximation claim in Theorem A.2 remains outside this implementation scope."
 
 [[item]]
 id = "cong-def-2.4"
@@ -41,11 +41,11 @@ source = "cong-2026"
 section = "Definition 2.4"
 pages = "16"
 summary = "Interventions modify declared feasible sets, coherence, information, kernels, objectives, or constraints."
-status = "partial"
+status = "implemented"
 claim = "source-definition"
-implementation = ["src/ewm/core/definition.py", "src/ewm/core/records.py", "src/ewm/api.py"]
-evidence = ["tests/integration/test_comparisons.py", "tests/unit/test_definition.py"]
-limitation = "Typed component-level semantics are declared, but runtime application remains scenario-specific."
+implementation = ["src/ewm/core/definition.py", "src/ewm/core/interventions.py", "src/ewm/core/records.py", "src/ewm/api.py"]
+evidence = ["tests/integration/test_comparisons.py", "tests/unit/test_definition.py", "tests/unit/test_interventions.py"]
+limitation = "The core operation is an atomic compare-and-set replacement on canonical component mappings; scenario authors bind those targets to their simulator configuration."
 
 [[item]]
 id = "cong-def-2.6"
@@ -77,7 +77,9 @@ pages = "26"
 summary = "Compactness, convexity, upper hemicontinuity, and continuity support DDGE existence."
 status = "blocked-external"
 claim = "source-definition"
-limitation = "Compactness, convexity, continuity, and upper-hemicontinuity proofs are model-author obligations that cannot be inferred from arbitrary numerical callables. The package verifies finite declared candidates but requires external mathematical certificates for the general correspondence."
+implementation = ["src/ewm/equilibrium/certificates.py"]
+evidence = ["tests/unit/test_theorem_certificates.py"]
+limitation = "Compactness, convexity, continuity, and upper-hemicontinuity proofs are model-author obligations that cannot be inferred from arbitrary numerical callables. A restricted affine-map certificate checks a declared compact polyhedron, but the general correspondence still requires an external mathematical certificate."
 
 [[item]]
 id = "cong-prop-3.3"
@@ -87,9 +89,9 @@ pages = "26-27, 49"
 summary = "Kakutani gives existence; a contraction selector gives uniqueness and global outer convergence."
 status = "partial"
 claim = "theorem-diagnostic"
-implementation = ["src/ewm/equilibrium/fixed_point.py", "src/ewm/equilibrium/diagnostics.py"]
-evidence = ["tests/unit/test_fixed_point.py", "tests/unit/test_diagnostics.py"]
-limitation = "Contraction iteration is implemented; no generic Kakutani correspondence solver is claimed."
+implementation = ["src/ewm/equilibrium/certificates.py", "src/ewm/equilibrium/fixed_point.py", "src/ewm/equilibrium/diagnostics.py"]
+evidence = ["tests/unit/test_theorem_certificates.py", "tests/unit/test_fixed_point.py", "tests/unit/test_diagnostics.py"]
+limitation = "Contraction iteration and constructive existence and uniqueness certificates for affine maps on declared compact polyhedra are implemented; no generic Kakutani correspondence solver is claimed."
 
 [[item]]
 id = "cong-theorem-3.4"
@@ -239,9 +241,9 @@ pages = "62-64, 70"
 summary = "A heterogeneous credit market closes GenAI adoption, selective outcomes, and lender retraining."
 status = "blocked-external"
 claim = "qualitative-reconstruction"
-implementation = ["src/ewm/scenarios/credit/provenance.py", "src/ewm/scenarios/credit/model.py", "src/ewm/experiments/credit.py"]
-evidence = ["tests/scenarios/test_credit_paper_targets.py", "tests/scenarios/test_credit.py"]
-limitation = "The PDF omits necessary simulation and learner parameters and contains no URL for the stated accompanying code, so exact numerical replication is not currently identifiable."
+implementation = ["src/ewm/scenarios/credit/provenance.py", "src/ewm/scenarios/credit/model.py", "src/ewm/experiments/credit.py", "src/ewm/experiments/protocols.py", "src/ewm/experiments/protocol_runner.py", "src/ewm/protocols/credit-mechanism-v1.toml"]
+evidence = ["tests/scenarios/test_credit_paper_targets.py", "tests/scenarios/test_credit.py", "tests/integration/test_locked_protocol_smoke.py"]
+limitation = "The PDF omits necessary simulation and learner parameters and contains no URL for the stated accompanying code, so exact numerical replication is not currently identifiable. The prospectively locked local quick protocol fails its solver-residual tolerance in all four fixed-seed replications, remains diagnostic-only, and authorizes no claim."
 
 [[item]]
 id = "cong-lab-ii"
@@ -260,11 +262,10 @@ source = "cong-2026"
 section = "Appendix C.4, Laboratory III"
 pages = "65-66, 72"
 summary = "For c = 1.8 and sigma = 0.5, the population update matches the source targets {-0.795, 0, +0.795}."
-status = "partial"
+status = "implemented"
 claim = "exact-replication"
 implementation = ["src/ewm/scenarios/forecasting/model.py", "src/ewm/scenarios/forecasting/oracles.py", "src/ewm/scenarios/forecasting/verification.py"]
-evidence = ["tests/scenarios/test_forecasting.py", "tests/scenarios/test_forecasting_replication.py"]
-limitation = "The current analytical and bracketing checks are internal and share package model primitives; a code-independent external numerical oracle has not been executed."
+evidence = ["tests/oracles/forecasting_oracle.py", "tests/integration/test_independent_numerical_oracles.py", "tests/scenarios/test_forecasting.py", "tests/scenarios/test_forecasting_replication.py"]
 
 [[item]]
 id = "cong-lab-iii-finite-sample"
@@ -287,8 +288,8 @@ summary = "Standard assumptions give competitive prices and allocations for each
 status = "partial"
 claim = "paper-inspired"
 implementation = ["src/ewm/scenarios/production/model.py", "src/ewm/experiments/production.py"]
-evidence = ["tests/scenarios/test_production.py", "examples/production.py"]
-limitation = "The package instantiates Equations D.1-D.7 with disclosed CRRA, continuation-value, finite-distribution, and decreasing-returns Cobb-Douglas choices that Cong does not specify. Numerical existence for this bounded instance is not a proof of Proposition D.1 in general."
+evidence = ["tests/oracles/production_oracle.py", "tests/integration/test_independent_numerical_oracles.py", "tests/scenarios/test_production.py", "examples/production.py"]
+limitation = "The package instantiates Equations D.1-D.7 with disclosed CRRA, continuation-value, finite-distribution, and decreasing-returns Cobb-Douglas choices that Cong does not specify. A package-independent objective oracle cross-checks this package-authored bounded instance, but neither numerical result is a paper target or a proof of Proposition D.1 in general."
 
 [[item]]
 id = "cong-theorem-e.1"
@@ -397,8 +398,8 @@ pages = "11-12"
 summary = "The runtime publishes observations, enforces constraints, schedules, clears, settles, and logs."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/world.py", "src/ewm/core/constraints.py", "src/ewm/core/events.py"]
-evidence = ["tests/unit/test_world.py", "tests/properties/test_fx_accounting.py"]
+implementation = ["src/ewm/core/world.py", "src/ewm/core/constraints.py", "src/ewm/core/events.py", "src/ewm/scenarios/fx/runtime.py"]
+evidence = ["tests/unit/test_world.py", "tests/properties/test_fx_accounting.py", "tests/scenarios/test_fx_world.py"]
 
 [[item]]
 id = "han-component-coevolution"
@@ -486,8 +487,8 @@ pages = "12-13"
 summary = "world.reset initializes state and views."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/world.py"]
-evidence = ["tests/unit/test_world.py"]
+implementation = ["src/ewm/core/world.py", "src/ewm/scenarios/fx/runtime.py"]
+evidence = ["tests/unit/test_world.py", "tests/scenarios/test_fx_world.py"]
 
 [[item]]
 id = "han-runtime-run-agents"
@@ -497,8 +498,8 @@ pages = "12-14"
 summary = "world.run_agents maps role-specific observations to typed actions."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/world.py", "src/ewm/core/protocols.py"]
-evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py"]
+implementation = ["src/ewm/core/world.py", "src/ewm/core/protocols.py", "src/ewm/scenarios/fx/runtime.py"]
+evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py", "tests/scenarios/test_fx_world.py"]
 limitation = "parallel=True is accepted and logged, but version 0.1 executes serially for deterministic identity and RNG ownership."
 
 [[item]]
@@ -509,8 +510,8 @@ pages = "12, 15"
 summary = "world.step checks feasibility, schedules, clears, settles, updates state, and logs."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/world.py", "src/ewm/core/protocols.py"]
-evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py"]
+implementation = ["src/ewm/core/world.py", "src/ewm/core/protocols.py", "src/ewm/scenarios/fx/runtime.py"]
+evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py", "tests/scenarios/test_fx_world.py"]
 
 [[item]]
 id = "han-runtime-coevolve"
@@ -554,8 +555,8 @@ pages = "12"
 summary = "world.log records events from every runtime call."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/events.py", "src/ewm/core/world.py"]
-evidence = ["tests/unit/test_world.py", "tests/unit/test_alignment.py", "tests/unit/test_institutions.py", "tests/integration/test_han_runtime_protocol.py"]
+implementation = ["src/ewm/core/events.py", "src/ewm/core/world.py", "src/ewm/scenarios/fx/runtime.py"]
+evidence = ["tests/unit/test_world.py", "tests/unit/test_alignment.py", "tests/unit/test_institutions.py", "tests/integration/test_han_runtime_protocol.py", "tests/scenarios/test_fx_world.py"]
 
 [[item]]
 id = "han-level-l1"
@@ -565,8 +566,8 @@ pages = "7"
 summary = "Fixed rule-based agents interact in a fixed institutional world."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx", "src/ewm/capabilities/levels.py"]
-evidence = ["tests/scenarios/test_fx.py", "tests/properties/test_fx_accounting.py", "tests/unit/test_capability_levels.py"]
+implementation = ["src/ewm/scenarios/fx", "src/ewm/scenarios/fx/validation.py", "src/ewm/scenarios/fx/han-l1-l2-validation-v1.toml", "src/ewm/capabilities/levels.py"]
+evidence = ["tests/scenarios/test_fx.py", "tests/properties/test_fx_accounting.py", "tests/unit/test_capability_levels.py", "tests/conformance/test_han_l1_l2_validation.py"]
 
 [[item]]
 id = "han-level-l2"
@@ -576,8 +577,9 @@ pages = "7"
 summary = "Symbolic or rule-based agent policies adapt over time while the cognitive substrate and institutions remain fixed."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/agents.py", "src/ewm/capabilities/levels.py"]
-evidence = ["tests/scenarios/test_fx.py", "tests/unit/test_capability_levels.py"]
+implementation = ["src/ewm/scenarios/fx/agents.py", "src/ewm/scenarios/fx/validation.py", "src/ewm/scenarios/fx/han-l1-l2-validation-v1.toml", "src/ewm/capabilities/levels.py"]
+evidence = ["tests/scenarios/test_fx.py", "tests/unit/test_capability_levels.py", "tests/conformance/test_han_l1_l2_validation.py"]
+limitation = "The awarded level is synthetic systems conformance from a fixed two-arm, two-seed compiled FX validation; it is not empirical validation or a prospective behavioral study."
 
 [[item]]
 id = "han-level-l3"
