@@ -2,91 +2,56 @@
 
 from __future__ import annotations
 
-import numpy as np
+from dataclasses import dataclass
 
-from .agents import (
-    HouseholdBelief,
-    bank_orders,
-    firm_order,
-    household_order,
-    update_belief,
-)
-from .mechanism import clear_market
-from .model import FXAccount, FXSimulationResult, FXState
+from ewm.core import Event
+
+from .model import FXSimulationResult, FXState
 from .presets import FXSimulationConfig
+from .runtime import fx_world_blueprint
 
 
-def _initial_state(config: FXSimulationConfig) -> FXState:
-    accounts = {
-        **{
-            f"household-{index}": FXAccount(cash=100.0, foreign=100.0)
-            for index in range(config.households)
-        },
-        "firm": FXAccount(cash=10_000.0, foreign=0.0),
-        "bank": FXAccount(cash=100_000.0, foreign=100_000.0),
-    }
-    return FXState(0, config.initial_spot, accounts, (config.initial_spot,))
+@dataclass(frozen=True, slots=True)
+class FXWorldRun:
+    """Public FX result paired with its canonical compiled-world provenance."""
+
+    result: FXSimulationResult
+    events: tuple[Event, ...]
 
 
-def run_fx_simulation(config: FXSimulationConfig, *, seed: int) -> FXSimulationResult:
-    """Run symbolic policies, batch clearing, settlement, and belief adaptation."""
+def run_fx_world(config: FXSimulationConfig, *, seed: int) -> FXWorldRun:
+    """Run the FX scenario through its strict compiled-world lifecycle."""
 
-    rng = np.random.default_rng(seed)
-    state = _initial_state(config)
-    beliefs = {
-        f"household-{index}": HouseholdBelief()
-        for index in range(config.households)
-    }
+    world = fx_world_blueprint(config).compile()
+    state = world.reset(seed=seed)
     volumes: list[float] = []
     rejected: list[int] = []
     cash_residuals: list[float] = []
     foreign_residuals: list[float] = []
 
     for _ in range(config.periods):
-        household_orders = tuple(
-            household_order(
-                agent_id,
-                state,
-                belief,
-                fundamental=config.fundamental,
-                trend_weight=config.trend_weight,
-                quantity=config.household_quantity,
-                rng=rng,
-            )
-            for agent_id, belief in sorted(beliefs.items())
-        )
-        orders = (
-            *household_orders,
-            firm_order("firm", state, config.firm_demand),
-            *bank_orders(
-                "bank",
-                state,
-                depth=config.bank_depth,
-                spread=config.bank_spread,
-            ),
-        )
-        previous_spot = state.spot
-        result = clear_market(state, orders)
-        state = result.state
-        realized_return = (state.spot / previous_spot) - 1.0
-        if config.adaptive_beliefs:
-            beliefs = {
-                agent_id: update_belief(
-                    belief,
-                    realized_return,
-                    memory=config.belief_memory,
-                )
-                for agent_id, belief in beliefs.items()
-            }
-        volumes.append(result.volume)
-        rejected.append(len(result.rejections))
-        cash_residuals.append(abs(result.cash_residual))
-        foreign_residuals.append(abs(result.foreign_residual))
+        transition = world.step(world.run_agents(state))
+        state = transition.state
+        volumes.append(float(transition.outcomes["volume"]))
+        rejected.append(int(transition.outcomes["rejected_count"]))
+        cash_residuals.append(abs(float(transition.outcomes["cash_residual"])))
+        foreign_residuals.append(abs(float(transition.outcomes["foreign_residual"])))
 
-    return FXSimulationResult(
-        prices=state.price_history,
-        volumes=tuple(volumes),
-        rejected_orders=tuple(rejected),
-        max_cash_residual=max(cash_residuals, default=0.0),
-        max_foreign_residual=max(foreign_residuals, default=0.0),
+    if not isinstance(state, FXState):
+        raise TypeError("compiled FX world returned a non-FX state")
+    return FXWorldRun(
+        result=FXSimulationResult(
+            prices=state.price_history,
+            volumes=tuple(volumes),
+            rejected_orders=tuple(rejected),
+            max_cash_residual=max(cash_residuals, default=0.0),
+            max_foreign_residual=max(foreign_residuals, default=0.0),
+        ),
+        events=world.events.snapshot(),
     )
+
+
+def run_fx_simulation(config: FXSimulationConfig, *, seed: int) -> FXSimulationResult:
+    """Return the established compact result from the compiled FX world."""
+
+    return run_fx_world(config, seed=seed).result

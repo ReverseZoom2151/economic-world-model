@@ -11,12 +11,62 @@ from ewm.core import Action, verify_event_chain
 from ewm.scenarios.fx import (
     FXSimulationResult,
     FXState,
+    FXStateCodec,
     FXWorldBlueprint,
     fx_world_blueprint,
     run_fx_simulation,
     run_fx_world,
     smoke_config,
 )
+
+
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    (
+        ({}, "accounts"),
+        (
+            {
+                "accounts": [],
+                "beliefs": {},
+                "period": 0,
+                "price_history": (1.0,),
+                "spot": 1.0,
+            },
+            "accounts",
+        ),
+        (
+            {
+                "accounts": {"bank-0": []},
+                "beliefs": {},
+                "period": 0,
+                "price_history": (1.0,),
+                "spot": 1.0,
+            },
+            "account record",
+        ),
+        (
+            {
+                "accounts": {"bank-0": {"cash": 1.0, "foreign": 1.0}},
+                "beliefs": {
+                    "household-0": {
+                        "expected_return": 0.0,
+                        "observations": "not-a-sequence",
+                    }
+                },
+                "period": 0,
+                "price_history": (1.0,),
+                "spot": 1.0,
+            },
+            "observations",
+        ),
+    ),
+)
+def test_fx_state_codec_rejects_malformed_container_shapes(
+    payload: object,
+    message: str,
+) -> None:
+    with pytest.raises(TypeError, match=message):
+        FXStateCodec().decode(payload)
 
 
 def test_seeded_fx_outputs_are_characterized_before_runtime_migration() -> None:

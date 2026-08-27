@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 import numpy as np
 
 from ewm.core import Action
 
+from .agents import update_belief
 from .model import (
     FXAccount,
     FXClearingResult,
@@ -166,6 +167,7 @@ def _settle(state: FXState, trades: tuple[FXTrade, ...], price: float | None) ->
         spot=next_spot,
         accounts=accounts,
         price_history=(*state.price_history, next_spot),
+        beliefs=state.beliefs,
     )
 
 
@@ -213,6 +215,9 @@ def clear_market(state: FXState, orders: tuple[FXOrder, ...]) -> FXClearingResul
 class FXBatchMechanism:
     """Adapter from shared EWM actions to the typed FX clearing function."""
 
+    adaptive_beliefs: bool = False
+    belief_memory: int = 4
+
     def clear(
         self,
         state: FXState,
@@ -221,30 +226,57 @@ class FXBatchMechanism:
     ) -> tuple[FXState, Mapping[str, Any]]:
         del rng
         orders = tuple(
-            _order_from_action(action)
+            order
             for action in actions
-            if action.kind == "fx_order"
+            for order in _orders_from_action(action)
         )
         result = clear_market(state, orders)
-        return result.state, {
+        next_state = result.state
+        realized_return = (next_state.spot / state.spot) - 1.0
+        if self.adaptive_beliefs:
+            next_state = replace(
+                next_state,
+                beliefs={
+                    agent_id: update_belief(
+                        belief,
+                        realized_return,
+                        memory=self.belief_memory,
+                    )
+                    for agent_id, belief in state.beliefs.items()
+                },
+            )
+        return next_state, {
             "clearing_price": result.clearing_price,
             "volume": result.volume,
             "cash_residual": result.cash_residual,
             "foreign_residual": result.foreign_residual,
             "clearing_residual": result.clearing_residual,
             "rejected_count": len(result.rejections),
+            "submitted_order_count": len(orders),
+            "accepted_order_count": len(result.accepted_orders),
         }
 
 
-def _order_from_action(action: Action) -> FXOrder:
-    side_value = action.values["side"]
+def _order_from_values(agent_id: str, values: Mapping[str, Any]) -> FXOrder:
+    side_value = values["side"]
     if side_value not in ("buy", "sell"):
         raise ValueError("FX action side must be 'buy' or 'sell'")
     side: Side = side_value
     return FXOrder(
-        order_id=str(action.values["order_id"]),
-        agent_id=action.agent_id,
+        order_id=str(values["order_id"]),
+        agent_id=agent_id,
         side=side,
-        quantity=float(action.values["quantity"]),
-        limit_price=float(action.values["limit_price"]),
+        quantity=float(values["quantity"]),
+        limit_price=float(values["limit_price"]),
     )
+
+
+def _orders_from_action(action: Action) -> tuple[FXOrder, ...]:
+    if action.kind == "fx_order":
+        return (_order_from_values(action.agent_id, action.values),)
+    if action.kind == "fx_order_batch":
+        records = action.values["orders"]
+        if not isinstance(records, tuple):
+            raise TypeError("FX order batch must contain immutable order records")
+        return tuple(_order_from_values(action.agent_id, record) for record in records)
+    return ()

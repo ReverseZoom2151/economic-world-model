@@ -2,19 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-
 import numpy as np
 
 from .model import FXOrder, FXState, Side
-
-
-@dataclass(frozen=True, slots=True)
-class HouseholdBelief:
-    """Bounded-memory expected return used by one household."""
-
-    expected_return: float = 0.0
-    observations: tuple[float, ...] = ()
+from .model import HouseholdBelief as HouseholdBelief
 
 
 def update_belief(

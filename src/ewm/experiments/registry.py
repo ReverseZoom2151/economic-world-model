@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from ewm.core import DDGEProblem, ExperimentResult
+from ewm.core import DDGEProblem, Event, ExperimentResult
 from ewm.equilibrium import FixedPointConfig, solve_ddge
 from ewm.scenarios.credit import (
     CreditConfig,
@@ -38,6 +38,7 @@ from ewm.scenarios.fx import (
     FXSimulationConfig,
     FXSimulationResult,
     run_fx_simulation,
+    run_fx_world,
 )
 from ewm.scenarios.fx import (
     research_config as fx_research_config,
@@ -359,7 +360,8 @@ def _fx(preset: str, seed: int) -> ExperimentPayload:
         config = fx_research_config()
     else:
         raise ValueError("preset must be 'smoke' or 'research'")
-    simulation = run_fx_simulation(config, seed=seed)
+    world_run = run_fx_world(config, seed=seed)
+    simulation = world_run.result
     metrics = {
         **simulation.metrics,
         "max_cash_residual": simulation.max_cash_residual,
@@ -388,8 +390,20 @@ def _fx(preset: str, seed: int) -> ExperimentPayload:
             "volumes": np.asarray(simulation.volumes),
             "rejected_orders": np.asarray(simulation.rejected_orders),
         },
-        events=tuple({"kind": "clearing", **record} for record in records),
+        events=tuple(_event_record(event) for event in world_run.events),
     )
+
+
+def _event_record(event: Event) -> Mapping[str, Any]:
+    return {
+        "event_hash": event.event_hash,
+        "kind": event.kind,
+        "payload": event.payload,
+        "previous_hash": event.previous_hash,
+        "schema_version": event.schema_version,
+        "sequence": event.sequence,
+        "state_version": event.state_version,
+    }
 
 
 def _fx_comparative_statics(preset: str, seed: int) -> ExperimentPayload:

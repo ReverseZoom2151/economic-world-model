@@ -3,11 +3,22 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Literal
+from typing import Any, Literal
 
 Side = Literal["buy", "sell"]
+
+
+@dataclass(frozen=True, slots=True)
+class HouseholdBelief:
+    """Bounded-memory expected return carried in the FX world state."""
+
+    expected_return: float = 0.0
+    observations: tuple[float, ...] = ()
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "observations", tuple(self.observations))
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,6 +84,7 @@ class FXState:
     spot: float
     accounts: Mapping[str, FXAccount]
     price_history: tuple[float, ...]
+    beliefs: Mapping[str, HouseholdBelief] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if self.period < 0:
@@ -89,6 +101,17 @@ class FXState:
             MappingProxyType(dict(sorted(self.accounts.items()))),
         )
         object.__setattr__(self, "price_history", tuple(self.price_history))
+        object.__setattr__(
+            self,
+            "beliefs",
+            MappingProxyType(dict(sorted(self.beliefs.items()))),
+        )
+
+    def __deepcopy__(self, memo: dict[int, Any]) -> FXState:
+        """Share this recursively immutable value across transition snapshots."""
+
+        memo[id(self)] = self
+        return self
 
 
 @dataclass(frozen=True, slots=True)
