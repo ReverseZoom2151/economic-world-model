@@ -543,8 +543,8 @@ pages = "7"
 summary = "Fixed rule-based agents interact in a fixed institutional world."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx"]
-evidence = ["tests/scenarios/test_fx.py", "tests/properties/test_fx_accounting.py"]
+implementation = ["src/ewm/scenarios/fx", "src/ewm/capabilities/levels.py"]
+evidence = ["tests/scenarios/test_fx.py", "tests/properties/test_fx_accounting.py", "tests/unit/test_capability_levels.py"]
 
 [[item]]
 id = "han-level-l2"
@@ -554,8 +554,8 @@ pages = "7"
 summary = "Symbolic or rule-based agent policies adapt over time while the cognitive substrate and institutions remain fixed."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/agents.py"]
-evidence = ["tests/scenarios/test_fx.py"]
+implementation = ["src/ewm/scenarios/fx/agents.py", "src/ewm/capabilities/levels.py"]
+evidence = ["tests/scenarios/test_fx.py", "tests/unit/test_capability_levels.py"]
 
 [[item]]
 id = "han-level-l3"
@@ -565,8 +565,8 @@ pages = "7-8"
 summary = "Language-model agents use explicit beliefs, expectations, memory, tools, and language-mediated reasoning."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/cognition.py"]
-evidence = ["tests/unit/test_cognition.py", "examples/cognitive_agent.py"]
+implementation = ["src/ewm/capabilities/cognition.py", "src/ewm/capabilities/levels.py"]
+evidence = ["tests/unit/test_cognition.py", "tests/unit/test_capability_levels.py", "examples/cognitive_agent.py"]
 limitation = "The provider-neutral substrate passes deterministic protocol tests, but fake-backend conformance does not establish language-model behavioral fidelity or award L3."
 
 [[item]]
@@ -577,8 +577,8 @@ pages = "8"
 summary = "Agents persistently expand strategies, skills, tools, memories, or routines."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/evolution.py"]
-evidence = ["tests/unit/test_capability_evolution.py"]
+implementation = ["src/ewm/capabilities/evolution.py", "src/ewm/capabilities/levels.py"]
+evidence = ["tests/unit/test_capability_evolution.py", "tests/unit/test_capability_levels.py"]
 limitation = "The artifact-neutral registry enforces evaluated promotion, persistence, and rollback, but no agent has yet proposed and empirically improved a capability in a language-model experiment, so L4 is not awarded."
 
 [[item]]
@@ -589,8 +589,8 @@ pages = "8"
 summary = "Policies, rules, contracts, governance, and constraints evolve endogenously."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/institutions.py", "src/ewm/core/world.py"]
-evidence = ["tests/unit/test_institutions.py"]
+implementation = ["src/ewm/capabilities/institutions.py", "src/ewm/capabilities/levels.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_institutions.py", "tests/unit/test_capability_levels.py"]
 limitation = "The runtime enforces authority, feasibility, accounting, safety, acceptance, audit, and rollback boundaries, but deterministic conformance tests do not demonstrate endogenous institutional emergence or award L5."
 
 [[item]]
@@ -601,8 +601,8 @@ pages = "8"
 summary = "The world repeatedly compares with new observations and corrects agents, parameters, mechanisms, rules, or transitions."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/core/world.py"]
-evidence = ["tests/unit/test_alignment.py", "examples/offline_alignment.py"]
+implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/capabilities/levels.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_alignment.py", "tests/unit/test_capability_levels.py", "examples/offline_alignment.py"]
 limitation = "Timestamp, discrepancy, attribution, bounded correction, provenance, and restoration semantics are implemented offline. L6 remains withheld without a live external-data contract, repeated out-of-sample evidence, and measured drift and correction performance."
 
 [[item]]
