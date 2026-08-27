@@ -79,12 +79,12 @@ def test_failed_or_unrun_conformance_cannot_emit_supported_evidence(
     assert report["capability_assessment"]["satisfied_requirements"] == []
     assert report["han_l1_l2_validation"]["status"] == "not_run"
     assert report["han_l1_l2_validation"]["artifacts"] == []
+    assert report["han_l3_l6_readiness"]["status"] == "not_run"
+    assert report["han_l3_l6_readiness"]["artifacts"] == []
+    assert report["han_l3_l6_readiness"]["official_awards"] == 0
     assert "ddge_consistency" not in report["capability_assessment"]
     assert report["ddge_assessments"]["cong-lab-ii"]["status"] == expected_scalar
-    assert all(
-        item["status"] != "supported"
-        for item in report["ddge_assessments"].values()
-    )
+    assert all(item["status"] != "supported" for item in report["ddge_assessments"].values())
 
 
 def test_passing_conformance_supports_only_the_exercised_ddge_claim(
@@ -109,6 +109,14 @@ def test_passing_conformance_supports_only_the_exercised_ddge_claim(
     assert len(validation["artifacts"]) == 5
     assert len({item["payload_sha256"] for item in validation["artifacts"]}) == 5
     assert all(item["status"] == "pass" for item in validation["artifacts"])
+    readiness = report["han_l3_l6_readiness"]
+    assert readiness["classification"] == "evidence_readiness_only"
+    assert readiness["status"] == "pass"
+    assert len(readiness["results"]) == 16
+    assert len(readiness["artifacts"]) == 16
+    assert readiness["official_awards"] == 0
+    assert all(item["blocked"] for item in readiness["results"])
+    assert report["capability_assessment"]["achieved_level"] == "L2"
     assert report["capability_assessment"]["blocked_levels"] == {
         "L3": "missing controlled language-model behavioral evidence",
         "L4": "missing persistent capability-improvement evidence",
