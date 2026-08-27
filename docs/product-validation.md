@@ -17,8 +17,8 @@ or evidence that the synthetic economies represent an observed economy.
 
 ## Final local release audit
 
-The 27 August 2026 release audit ran against the `main` lineage through `a0410bc`. A later section
-records the pushed audit commit and GitHub Actions runs after remote verification.
+The 27 August 2026 release audit ran against the `main` lineage through `a0410bc`. Its results were
+recorded in commit `362e279`, then independently repeated by GitHub Actions as documented below.
 
 | Gate | Result |
 |---|---|
@@ -38,6 +38,20 @@ The conformance report's source fingerprint was
 `44c14067a914f445bacac7be299b0ba68e86a8c24d0a12fa5e57eff3f61f185e`.
 The clean-install import resolved to the temporary environment's `site-packages/ewm`, which rules out
 an accidental editable-source import during the wheel examples.
+
+## Remote release evidence
+
+The pushed audit commit is
+[`362e279ee2379e0e5690d4992651125200e6f2a6`](https://github.com/ReverseZoom2151/economic-world-model/commit/362e279ee2379e0e5690d4992651125200e6f2a6).
+[CI run 33102064703](https://github.com/ReverseZoom2151/economic-world-model/actions/runs/33102064703)
+completed successfully on both supported Python versions:
+
+- [Python 3.11 job 98622163965](https://github.com/ReverseZoom2151/economic-world-model/actions/runs/33102064703/job/98622163965)
+- [Python 3.12 job 98622163753](https://github.com/ReverseZoom2151/economic-world-model/actions/runs/33102064703/job/98622163753)
+
+Each job passed repository linting, strict type checking, the branch-coverage gate, isolated package
+builds, paper-level conformance checks, the quick scientific stress protocol, and all eight public
+examples.
 
 ## Protocol
 
