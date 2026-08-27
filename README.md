@@ -47,9 +47,9 @@ economic equilibrium, retraining, and full DDGE solution.
 
 ## Project status
 
-The repository is under active development toward `0.1.0`. The numerical kernel, forecasting
-laboratory, and heterogeneous FX economy are implemented; the credit laboratory and stable
-top-level API are the next vertical slices.
+The repository is under active development toward `0.1.0`. The numerical kernel and all three
+initial laboratories are implemented. Reproducible experiment artifacts and the stable top-level API
+are the next vertical slice.
 
 | Capability | Status | What is available |
 |---|---|---|
@@ -58,7 +58,7 @@ top-level API are the next vertical slices.
 | Equilibrium and DDGE numerics | Implemented | Root solving, damping, multistart multiplicity discovery, residual/Jacobian/stability diagnostics |
 | Self-fulfilling forecasting laboratory | Implemented | Population and finite-sample maps, multiplicity, basin/stability tests, independent oracle report |
 | Multi-agent FX laboratory | Implemented | Symbolic households/firms/bank, aggregate balance reservation, uniform-price pro-rata clearing, adaptive beliefs, conservation properties |
-| AI-mediated credit laboratory | Planned for `0.1.0` | Endogenous adoption, selective labels, frozen and retrained counterfactuals |
+| AI-mediated credit laboratory | Implemented | Endogenous decision-flip adoption, common potential outcomes, selective/full-information DDGE, frozen and omniscient counterfactuals, sensitivity boundaries |
 | Experiment artifacts and stable facade | Planned for `0.1.0` | Reproducible manifests, tables, traces, documented `ewm` entry points |
 
 No dashboard, web application, database, distributed runtime, external economic dataset, or LLM
@@ -226,9 +226,11 @@ can polish text features without changing repayment quality; borrowers adopt whe
 benefit covers their cost. The lender retrains on endogenous repayment outcomes that are selectively
 observed in some regimes.
 
-The laboratory will compare a no-AI baseline, frozen-model counterfactual, selective-observation
-DDGE, full-information DDGE, and omniscient quality oracle. It studies sign reversals, feedback
-repair, misspecification, and residual diagnostics under explicit synthetic assumptions.
+The laboratory compares a no-AI baseline, frozen-model counterfactual, selective-observation DDGE,
+full-information DDGE, and omniscient quality oracle. It studies sign reversals, feedback repair,
+misspecification, and residual diagnostics under explicit synthetic assumptions. Finite binary
+selection can produce a small discontinuity cycle, which is reported as a residual floor rather than
+misrepresented as exact convergence.
 
 ## Scientific standards
 
@@ -266,7 +268,7 @@ economy remains reproducible and usable without an LLM or orchestration service.
 ```text
 src/ewm/core/          typed records, protocols, runtime, agents, constraints, mechanisms
 src/ewm/equilibrium/   equilibrium and DDGE solvers, damping, diagnostics
-src/ewm/scenarios/     forecasting and heterogeneous FX laboratories
+src/ewm/scenarios/     forecasting, heterogeneous FX, and AI-credit laboratories
 tests/unit/            deterministic unit and mathematical tests
 docs/plans/            approved design and implementation plan
 docs/architecture/     audited dependency map
