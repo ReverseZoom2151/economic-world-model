@@ -89,11 +89,10 @@ source = "cong-2026"
 section = "Theorem 3.4"
 pages = "28-29, 50-51"
 summary = "A frozen residual bounds DDGE displacement and, under sensitivity assumptions, welfare error."
-status = "partial"
+status = "implemented"
 claim = "theorem-diagnostic"
 implementation = ["src/ewm/equilibrium/diagnostics.py"]
-evidence = ["tests/unit/test_diagnostics.py"]
-limitation = "The a posteriori distance bound exists; the assumption-explicit welfare certificate is planned."
+evidence = ["tests/unit/test_cong_bounds.py", "tests/unit/test_diagnostics.py"]
 
 [[item]]
 id = "cong-eq-3.1"
@@ -101,9 +100,10 @@ source = "cong-2026"
 section = "Equation 3.1"
 pages = "29, 50-51"
 summary = "The exact center displacement uses the averaged Jacobian resolvent."
-status = "planned"
+status = "implemented"
 claim = "theorem-diagnostic"
-limitation = "Finite-difference Jacobians exist, but the exact linear/averaged-Jacobian displacement helper is not yet public."
+implementation = ["src/ewm/equilibrium/diagnostics.py"]
+evidence = ["tests/unit/test_cong_bounds.py"]
 
 [[item]]
 id = "cong-theorem-3.5"
@@ -122,9 +122,10 @@ source = "cong-2026"
 section = "Proposition 4.1"
 pages = "40-41, 58-59"
 summary = "Transition misspecification and regime shift decompose in total variation and imply value and robust-regret bounds."
-status = "planned"
+status = "implemented"
 claim = "theorem-diagnostic"
-limitation = "The package has no assumption-explicit total-variation value or robust-regret certificate yet."
+implementation = ["src/ewm/equilibrium/diagnostics.py"]
+evidence = ["tests/unit/test_cong_bounds.py"]
 
 [[item]]
 id = "cong-theorem-a.2"
@@ -190,9 +191,10 @@ source = "cong-2026"
 section = "Proposition A.8"
 pages = "56-57"
 summary = "Equilibrium, data, and learner Lipschitz constants give a sufficient outer contraction modulus."
-status = "planned"
+status = "implemented"
 claim = "theorem-diagnostic"
-limitation = "The primitive modulus formula is not yet exposed."
+implementation = ["src/ewm/equilibrium/diagnostics.py"]
+evidence = ["tests/unit/test_cong_bounds.py"]
 
 [[item]]
 id = "cong-corollary-a.9"
@@ -200,11 +202,10 @@ source = "cong-2026"
 section = "Corollary A.9"
 pages = "57-58"
 summary = "One observed contraction step bounds remaining parameter distance and welfare error."
-status = "partial"
+status = "implemented"
 claim = "theorem-diagnostic"
 implementation = ["src/ewm/equilibrium/diagnostics.py"]
-evidence = ["tests/unit/test_diagnostics.py"]
-limitation = "Parameter distance is implemented; the welfare extension is planned."
+evidence = ["tests/unit/test_cong_bounds.py", "tests/unit/test_diagnostics.py"]
 
 [[item]]
 id = "cong-appendix-b-algorithm"

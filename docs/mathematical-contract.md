@@ -88,6 +88,64 @@ A small residual establishes local model-data consistency only. Cong's welfare b
 requires contraction and sensitivity assumptions. The package therefore never reports a residual as
 a welfare guarantee by itself.
 
+## Assumption-explicit theorem diagnostics
+
+The package exposes Cong's bounds as certificates whose inputs name every required constant. Under
+a contraction modulus $\lambda<1$, Theorem 3.4 gives
+
+$$
+\lVert\theta_i^{\star}-\bar\theta\rVert
+\leq \frac{r_i(\bar\theta)}{1-\lambda}.
+$$
+
+Given discount factor $\beta$, utility sensitivity $K_u$, transition sensitivity $K_M$, and bounded
+utility $\bar u$, the certificate also reports
+
+$$
+\lVert V_{i,\bar\theta}-V_{i,\theta_i^{\star}}\rVert_\infty
+\leq
+\left(
+\frac{K_u}{1-\beta}
++\frac{2\beta\bar u K_M}{(1-\beta)^2}
+\right)
+\frac{r_i(\bar\theta)}{1-\lambda}.
+$$
+
+For a supplied averaged Jacobian $\bar J_i(\bar\theta)$ with operator norm below one,
+`linear_center_displacement` evaluates Equation 3.1 directly:
+
+$$
+\theta_i^{\star}-\bar\theta
+=
+\left(I-\bar J_i(\bar\theta)\right)^{-1}
+\left(F_i(\bar\theta)-\bar\theta\right).
+$$
+
+The primitive contraction certificate evaluates Proposition A.8,
+
+$$
+\lambda\leq L_L\left(L_{D,S}L_S+L_{D,\theta}\right),
+$$
+
+and the a posteriori certificate extends Corollary A.9 from remaining parameter distance to the
+welfare bound. Tests compare these formulas with direct linear fixed-point solves and independently
+solved Bellman systems.
+
+For transition uncertainty of total-variation radius $\delta$, Proposition 4.1 is reported as
+
+$$
+\lVert V^\pi(T^\star)-V^\pi(T_\theta)\rVert_\infty
+\leq \frac{2\beta\bar r}{(1-\beta)^2}\delta,
+\qquad
+\operatorname{Regret}_{\mathrm{rob}}
+\leq \frac{4\beta\bar r}{(1-\beta)^2}\delta.
+$$
+
+Finally, `damping_stability_certificate` applies Appendix A.10 to every Jacobian eigenvalue. It
+reports damping as capable of restoring local convergence only when every eigenvalue has real part
+strictly below one. A real eigenvalue at or above one remains a repelling direction for every
+positive damping level.
+
 ## Executable operations
 
 ```text
