@@ -11,9 +11,9 @@ pages = "10-11"
 summary = "Economic coherence conditions include hard equalities, inequalities, and soft diagnostics."
 status = "partial"
 claim = "source-definition"
-implementation = ["src/ewm/core/constraints.py"]
-evidence = ["tests/unit/test_constraints.py"]
-limitation = "The current runtime enforces action predicates but does not yet encode all three named coherence classes."
+implementation = ["src/ewm/core/constraints.py", "src/ewm/core/definition.py"]
+evidence = ["tests/unit/test_constraints.py", "tests/unit/test_definition.py"]
+limitation = "All three classes are declared, but the runtime does not yet bind every declaration to an enforcement or diagnostic function."
 
 [[item]]
 id = "cong-eq-2.1-2.2"
@@ -35,9 +35,9 @@ pages = "16"
 summary = "Interventions modify declared feasible sets, coherence, information, kernels, objectives, or constraints."
 status = "partial"
 claim = "source-definition"
-implementation = ["src/ewm/core/records.py", "src/ewm/api.py"]
-evidence = ["tests/integration/test_comparisons.py"]
-limitation = "Scenario labels exist, but typed component-level intervention semantics are planned."
+implementation = ["src/ewm/core/definition.py", "src/ewm/core/records.py", "src/ewm/api.py"]
+evidence = ["tests/integration/test_comparisons.py", "tests/unit/test_definition.py"]
+limitation = "Typed component-level semantics are declared, but runtime application remains scenario-specific."
 
 [[item]]
 id = "cong-def-2.6"
@@ -45,11 +45,10 @@ source = "cong-2026"
 section = "Definition 2.6"
 pages = "17-18"
 summary = "An EWM declares spaces, interventions, agents, information, policies, beliefs, coherence, kernels, and intervention semantics."
-status = "partial"
+status = "implemented"
 claim = "source-definition"
-implementation = ["src/ewm/core/protocols.py", "src/ewm/core/records.py"]
-evidence = ["tests/unit/test_core_records.py", "tests/test_architecture.py"]
-limitation = "The exact tuple is documented but not yet represented as one validated immutable definition object."
+implementation = ["src/ewm/core/definition.py"]
+evidence = ["tests/unit/test_definition.py"]
 
 [[item]]
 id = "cong-def-3.1"

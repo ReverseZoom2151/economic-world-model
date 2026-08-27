@@ -2,6 +2,16 @@
 
 from .agents import FunctionalAgent
 from .constraints import ConstraintSet, FunctionalConstraint
+from .definition import (
+    AgentBlock,
+    CoherenceCondition,
+    CoherenceKind,
+    EconomicWorldModelDefinition,
+    InterventionSemantics,
+    KernelDefinition,
+    SpaceDefinition,
+    WorldComponent,
+)
 from .events import Event, EventLog
 from .mechanisms import FunctionalMechanism
 from .protocols import (
@@ -28,13 +38,17 @@ from .world import World
 
 __all__ = [
     "Action",
+    "AgentBlock",
     "AgentPolicy",
+    "CoherenceCondition",
+    "CoherenceKind",
     "Constraint",
     "ConstraintSet",
     "ConstraintViolation",
     "DDGEProblem",
     "DDGEResult",
     "EconomicWorld",
+    "EconomicWorldModelDefinition",
     "EquilibriumProblem",
     "EquilibriumResult",
     "Event",
@@ -45,10 +59,14 @@ __all__ = [
     "FunctionalConstraint",
     "FunctionalMechanism",
     "GeneratedDataset",
+    "InterventionSemantics",
+    "KernelDefinition",
     "Mechanism",
     "RunMetadata",
+    "SpaceDefinition",
     "Transition",
     "World",
+    "WorldComponent",
     "make_rng",
     "spawn_rngs",
 ]

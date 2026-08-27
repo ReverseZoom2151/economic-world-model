@@ -41,6 +41,13 @@ Version `0.1.0` realizes these ideas through typed records, agent policies, cons
 transitions, observations, and explicit scenario configurations. It does not claim that every block is
 learned or active in every laboratory.
 
+The public `EconomicWorldModelDefinition` record now encodes the complete tuple as named,
+immutable blocks. `AgentBlock` groups each agent's information, admissible policies, and beliefs.
+`CoherenceCondition` distinguishes hard equalities, inequalities, and soft diagnostics.
+`InterventionSemantics` names the parts of the world that each declared regime may change. This
+object is a validated model declaration. Runtime conformance still depends on the world and scenario
+implementations enforcing the declaration.
+
 ## Inner equilibrium and outer learning
 
 Let $\pi$ denote the profile of agent policies, $\mu$ the profile of beliefs, $\theta\in\Theta$ the
