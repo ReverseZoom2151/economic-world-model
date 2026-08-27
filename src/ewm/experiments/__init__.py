@@ -5,7 +5,9 @@ from .claims import (
     ClaimEvidence,
     ClaimKind,
     UnsupportedClaimError,
+    ValidatedClaimEvidence,
     authorize_claims,
+    authorize_validated_claims,
 )
 from .credit import (
     CreditOracleReport,
@@ -52,7 +54,9 @@ __all__ = [
     "ScenarioPlugin",
     "ScenarioRegistry",
     "UnsupportedClaimError",
+    "ValidatedClaimEvidence",
     "authorize_claims",
+    "authorize_validated_claims",
     "credit_oracle_report",
     "credit_paper_target_report",
     "evaluate_layered",

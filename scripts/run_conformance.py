@@ -16,11 +16,11 @@ from typing import Any
 
 from ewm import __version__
 from ewm.capabilities import (
-    AxisEvidence,
-    EvidenceKind,
-    assess_capability,
+    ValidatedCapabilityEvidence,
+    assess_validated_capability,
     documented_prototype_evidence,
 )
+from ewm.core.evidence import EvidenceStatus, ValidatedEvidenceArtifact
 from ewm.experiments.source_verification import (
     SourceVerification,
     verification_failed,
@@ -30,17 +30,94 @@ from ewm.experiments.source_verification import (
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_VERSION = "ewm.conformance.v1"
 PAPER_REGISTRY = ROOT / "references" / "papers.toml"
+CAPABILITY_EVIDENCE_PATHS = (
+    "tests/properties/test_fx_accounting.py",
+    "tests/scenarios/test_fx.py",
+)
 
 
-def _source_fingerprint() -> str:
+def _source_fingerprint(root: Path = ROOT) -> str:
     digest = hashlib.sha256()
-    package = ROOT / "src" / "ewm"
-    for path in sorted(package.rglob("*.py")):
-        digest.update(path.relative_to(package).as_posix().encode())
+    paths: set[Path] = set()
+    for pattern in (
+        "src/ewm/**/*.py",
+        "references/*.toml",
+        "protocols/**/*",
+        "tests/conformance/**/*.py",
+        "tests/integration/test_han_runtime_protocol.py",
+        *CAPABILITY_EVIDENCE_PATHS,
+        "scripts/run_conformance.py",
+    ):
+        paths.update(path for path in root.glob(pattern) if path.is_file())
+    for path in sorted(paths):
+        digest.update(path.relative_to(root).as_posix().encode())
         digest.update(b"\0")
         digest.update(path.read_bytes())
         digest.update(b"\0")
     return digest.hexdigest()
+
+
+def _validated_capability_evidence(
+    test_outcome: dict[str, Any],
+) -> tuple[ValidatedCapabilityEvidence, ...]:
+    if test_outcome["status"] != EvidenceStatus.PASS.value:
+        return ()
+    validated: list[ValidatedCapabilityEvidence] = []
+    for assertion in documented_prototype_evidence():
+        source_reference = assertion.provenance.split(":", maxsplit=1)[0]
+        if source_reference not in CAPABILITY_EVIDENCE_PATHS:
+            continue
+        artifact = ValidatedEvidenceArtifact.from_observation(
+            subject=f"capability:{assertion.requirement.value}",
+            status=EvidenceStatus.PASS,
+            provenance=str(test_outcome["command"]),
+            payload={
+                "asserted_evidence": assertion.provenance,
+                "test_outcome": test_outcome,
+            },
+            observations=assertion.observations,
+        )
+        validated.append(
+            ValidatedCapabilityEvidence(assertion=assertion, artifact=artifact)
+        )
+    return tuple(validated)
+
+
+def _ddge_assessments(test_outcome: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    suite_status = str(test_outcome["status"])
+    scalar_status = {
+        EvidenceStatus.PASS.value: "supported",
+        EvidenceStatus.FAIL.value: "failed",
+        EvidenceStatus.NOT_RUN.value: "not_assessed",
+    }[suite_status]
+    scalar_evidence = (
+        ["tests/conformance/test_cong_conformance.py"]
+        if suite_status == EvidenceStatus.PASS.value
+        else []
+    )
+    return {
+        "cong-lab-i": {
+            "claim": "qualitative-reconstruction",
+            "evidence": [],
+            "qualification": "not exercised by the conformance suite",
+            "scenario": "credit",
+            "status": "not_assessed",
+        },
+        "cong-lab-ii": {
+            "claim": "exact-replication",
+            "evidence": scalar_evidence,
+            "qualification": "internal scalar DDGE conformance",
+            "scenario": "scalar",
+            "status": scalar_status,
+        },
+        "cong-lab-iii-population": {
+            "claim": "exact-replication",
+            "evidence": [],
+            "qualification": "external code-independent numerical oracle pending",
+            "scenario": "forecasting",
+            "status": "not_assessed",
+        },
+    }
 
 
 def _paper_hashes() -> dict[str, str]:
@@ -50,10 +127,12 @@ def _paper_hashes() -> dict[str, str]:
 
 
 def _test_outcome(*, skip_tests: bool) -> dict[str, Any]:
-    command = [sys.executable, "-m", "pytest", "tests/conformance", "-q"]
+    test_paths = ("tests/conformance", *CAPABILITY_EVIDENCE_PATHS)
+    command = [sys.executable, "-m", "pytest", *test_paths, "-q"]
+    displayed_command = f"python -m pytest {' '.join(test_paths)} -q"
     if skip_tests:
         return {
-            "command": "python -m pytest tests/conformance -q",
+            "command": displayed_command,
             "passed": None,
             "passed_count": None,
             "failed_count": None,
@@ -70,7 +149,7 @@ def _test_outcome(*, skip_tests: bool) -> dict[str, Any]:
     passed_matches = re.findall(r"(\d+) passed", combined)
     failed_matches = re.findall(r"(\d+) failed", combined)
     return {
-        "command": "python -m pytest tests/conformance -q",
+        "command": displayed_command,
         "passed": completed.returncode == 0,
         "passed_count": int(passed_matches[-1]) if passed_matches else 0,
         "failed_count": int(failed_matches[-1]) if failed_matches else 0,
@@ -85,17 +164,10 @@ def _build_report(
 ) -> tuple[dict[str, Any], tuple[SourceVerification, ...]]:
     source_results = verify_sources(PAPER_REGISTRY, source_dir=source_dir)
 
-    assessment = assess_capability(
-        documented_prototype_evidence(),
-        ddge_evidence=(
-            AxisEvidence(
-                passed=True,
-                kind=EvidenceKind.SYNTHETIC_TEST,
-                provenance="tests/conformance/test_cong_conformance.py",
-            ),
-        ),
-    )
     test_outcome = _test_outcome(skip_tests=skip_tests)
+    assessment = assess_validated_capability(
+        _validated_capability_evidence(test_outcome)
+    )
     report = {
         "schema_version": SCHEMA_VERSION,
         "paper_sources": _paper_hashes(),
@@ -113,6 +185,7 @@ def _build_report(
             "scipy": version("scipy"),
         },
         "test_outcomes": test_outcome,
+        "ddge_assessments": _ddge_assessments(test_outcome),
         "stochastic_seed_sets": {
             "credit_smoke": [42],
             "forecasting_smoke": [42],
@@ -124,7 +197,8 @@ def _build_report(
             "satisfied_requirements": [item.value for item in assessment.satisfied_requirements],
             "missing_requirements": [item.value for item in assessment.missing_requirements],
             "warnings": list(assessment.warnings),
-            "ddge_consistency": assessment.ddge_consistency.status.value,
+            "evidence_basis": "validated_conformance_artifacts",
+            "validation_status": test_outcome["status"],
             "empirical_validity": assessment.empirical_validity.status.value,
         },
         "unresolved_external_dependencies": [

@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from enum import IntEnum, StrEnum
 from types import MappingProxyType
 
+from ewm.core.evidence import EvidenceStatus, ValidatedEvidenceArtifact
+
 
 class CapabilityLevel(IntEnum):
     """Cumulative EWM capability level, including L0 for insufficient evidence."""
@@ -66,7 +68,7 @@ class AxisStatus(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class CapabilityEvidence:
-    """One provenance-bearing observation about a level requirement."""
+    """One caller-asserted observation about a level requirement."""
 
     requirement: LevelRequirement
     passed: bool
@@ -92,6 +94,22 @@ class AxisEvidence:
     def __post_init__(self) -> None:
         if not self.provenance:
             raise ValueError("axis evidence provenance must not be empty")
+
+
+@dataclass(frozen=True, slots=True)
+class ValidatedCapabilityEvidence:
+    """A capability assertion bound to an observed validation artifact."""
+
+    assertion: CapabilityEvidence
+    artifact: ValidatedEvidenceArtifact
+
+    def __post_init__(self) -> None:
+        expected_subject = f"capability:{self.assertion.requirement.value}"
+        if self.artifact.subject != expected_subject:
+            raise ValueError(
+                f"capability artifact subject must be {expected_subject!r}; "
+                f"got {self.artifact.subject!r}"
+            )
 
 
 @dataclass(frozen=True, slots=True)
@@ -337,6 +355,33 @@ def assess_capability(
         ddge_consistency=ddge,
         empirical_validity=empirical,
     )
+
+
+def assess_validated_capability(
+    evidence: Iterable[ValidatedCapabilityEvidence | CapabilityEvidence],
+) -> CapabilityAssessment:
+    """Assess official capability only from passing validation artifacts."""
+
+    validated: list[CapabilityEvidence] = []
+    for item in evidence:
+        if not isinstance(item, ValidatedCapabilityEvidence):
+            raise TypeError(
+                "official assessment requires validated capability evidence; "
+                "caller assertions are insufficient"
+            )
+        assertion = item.assertion
+        validated.append(
+            CapabilityEvidence(
+                requirement=assertion.requirement,
+                passed=(
+                    assertion.passed and item.artifact.status is EvidenceStatus.PASS
+                ),
+                kind=assertion.kind,
+                provenance=assertion.provenance,
+                observations=min(assertion.observations, item.artifact.observations),
+            )
+        )
+    return assess_capability(validated)
 
 
 def documented_prototype_evidence() -> tuple[CapabilityEvidence, ...]:
