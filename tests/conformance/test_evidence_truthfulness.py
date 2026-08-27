@@ -57,13 +57,9 @@ def test_official_capability_assessment_rejects_caller_assertions() -> None:
         assess_validated_capability(documented_prototype_evidence())
 
 
-@pytest.mark.parametrize(
-    ("status", "expected_scalar"),
-    [("fail", "failed"), ("not_run", "not_assessed")],
-)
+@pytest.mark.parametrize("status", ["fail", "not_run"])
 def test_failed_or_unrun_conformance_cannot_emit_supported_evidence(
     status: str,
-    expected_scalar: str,
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -83,11 +79,14 @@ def test_failed_or_unrun_conformance_cannot_emit_supported_evidence(
     assert report["han_l3_l6_readiness"]["artifacts"] == []
     assert report["han_l3_l6_readiness"]["official_awards"] == 0
     assert "ddge_consistency" not in report["capability_assessment"]
-    assert report["ddge_assessments"]["cong-lab-ii"]["status"] == expected_scalar
-    assert all(item["status"] != "supported" for item in report["ddge_assessments"].values())
+    assert all(
+        item["status"] == "not_assessed"
+        for item in report["ddge_assessments"].values()
+    )
+    assert all(not item["evidence"] for item in report["ddge_assessments"].values())
 
 
-def test_passing_conformance_supports_only_the_exercised_ddge_claim(
+def test_passing_conformance_reports_each_exercised_ddge_claim_at_its_boundary(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -126,26 +125,57 @@ def test_passing_conformance_supports_only_the_exercised_ddge_claim(
     assert report["ddge_assessments"] == {
         "cong-lab-i": {
             "claim": "qualitative-reconstruction",
-            "evidence": [],
-            "qualification": "not exercised by the conformance suite",
+            "evidence": [
+                "src/ewm/protocols/credit-mechanism-v1.toml",
+                "tests/integration/test_locked_protocol_smoke.py",
+            ],
+            "qualification": (
+                "prospectively locked quick protocol failed its prespecified "
+                "solver-residual threshold; diagnostic only and claim unauthorized"
+            ),
             "scenario": "credit",
-            "status": "not_assessed",
+            "status": "diagnostic_only",
         },
         "cong-lab-ii": {
             "claim": "exact-replication",
-            "evidence": ["tests/conformance/test_cong_conformance.py"],
-            "qualification": "internal scalar DDGE conformance",
+            "evidence": [
+                "tests/conformance/test_cong_conformance.py",
+                "tests/oracles/scalar_oracle.py",
+                "tests/integration/test_independent_numerical_oracles.py",
+            ],
+            "qualification": (
+                "exact scalar Laboratory II equations and targets; package-import-free "
+                "direct-equation and bracketing oracle"
+            ),
             "scenario": "scalar",
             "status": "supported",
         },
         "cong-lab-iii-population": {
             "claim": "exact-replication",
-            "evidence": [],
-            "qualification": "external code-independent numerical oracle pending",
+            "evidence": [
+                "tests/oracles/forecasting_oracle.py",
+                "tests/integration/test_independent_numerical_oracles.py",
+            ],
+            "qualification": (
+                "population stationary-kernel OLS roots only; finite-sample damping "
+                "remains package-authored and excluded"
+            ),
             "scenario": "forecasting",
-            "status": "not_assessed",
+            "status": "supported",
         },
     }
+
+
+def test_conformance_gate_executes_every_reported_evidence_path() -> None:
+    outcome = conformance._test_outcome(skip_tests=True)
+
+    assert outcome["status"] == "not_run"
+    assert outcome["command"] == (
+        "python -m pytest tests/conformance tests/properties/test_fx_accounting.py "
+        "tests/scenarios/test_fx.py "
+        "tests/integration/test_independent_numerical_oracles.py "
+        "tests/integration/test_locked_protocol_smoke.py -q"
+    )
 
 
 def test_conformance_fingerprint_covers_code_registries_protocols_and_reporter(
