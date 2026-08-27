@@ -1,5 +1,13 @@
 """Inner-equilibrium and Data-Driven Generative Equilibrium solvers."""
 
+from .certificates import (
+    AffinePolyhedralCertificate,
+    LocalLinearCertificate,
+    ObligationStatus,
+    TheoremObligation,
+    affine_polyhedral_certificate,
+    local_linear_certificate,
+)
 from .correspondence import EquilibriumCorrespondence
 from .damping import (
     DampingStabilityCertificate,
@@ -30,14 +38,19 @@ from .fixed_point import FixedPointConfig, iterate_fixed_point, solve_multistart
 from .inner import solve_equilibrium
 
 __all__ = [
+    "AffinePolyhedralCertificate",
     "CenterDisplacementCertificate",
     "DampingStabilityCertificate",
     "EquilibriumCorrespondence",
     "FixedPointConfig",
     "FrozenCounterfactualBounds",
+    "LocalLinearCertificate",
+    "ObligationStatus",
     "OuterContractionCertificate",
     "PosterioriWelfareBounds",
+    "TheoremObligation",
     "TransitionRobustnessBounds",
+    "affine_polyhedral_certificate",
     "damped_eigenvalue",
     "damped_update",
     "damping_stability_certificate",
@@ -47,6 +60,7 @@ __all__ = [
     "frozen_counterfactual_bounds",
     "iterate_fixed_point",
     "linear_center_displacement",
+    "local_linear_certificate",
     "local_modulus",
     "outer_contraction_certificate",
     "posteriori_distance_bound",

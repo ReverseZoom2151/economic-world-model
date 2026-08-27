@@ -33,6 +33,13 @@ def _discount(value: float) -> float:
     return result
 
 
+def _total_variation(value: float, name: str) -> float:
+    result = float(value)
+    if not isfinite(result) or not 0.0 <= result <= 1.0:
+        raise ValueError(f"{name} must lie in [0, 1]")
+    return result
+
+
 def _readonly(value: NDArray[np.floating]) -> NDArray[np.float64]:
     owned = np.array(value, dtype=float, copy=True)
     owned.setflags(write=False)
@@ -301,8 +308,8 @@ def posteriori_welfare_bounds(
 def fragility_upper_bound(estimation_error: float, regime_shift: float) -> float:
     """Apply Proposition 4.1's total-variation triangle decomposition."""
 
-    estimation = _nonnegative(estimation_error, "estimation_error")
-    shift = _nonnegative(regime_shift, "regime_shift")
+    estimation = _total_variation(estimation_error, "estimation_error")
+    shift = _total_variation(regime_shift, "regime_shift")
     return estimation + shift
 
 
@@ -313,7 +320,7 @@ def transition_robustness_bounds(
 ) -> TransitionRobustnessBounds:
     """Evaluate Proposition 4.1's fixed-policy value and robust-regret bounds."""
 
-    delta = _nonnegative(total_variation_radius, "total_variation_radius")
+    delta = _total_variation(total_variation_radius, "total_variation_radius")
     beta = _discount(discount)
     reward = _nonnegative(reward_bound, "reward_bound")
     scale = beta * reward / (1.0 - beta) ** 2
