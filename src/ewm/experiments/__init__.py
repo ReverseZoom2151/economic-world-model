@@ -31,6 +31,7 @@ from .registry import (
     ScenarioRegistry,
     experiment_spec,
 )
+from .replay import RunReplayError, verify_and_replay_run
 from .runner import ExperimentRun, run_experiment
 from .statistics import (
     BinomialEstimate,
@@ -64,6 +65,7 @@ __all__ = [
     "PairedEstimate",
     "RobustPairedEstimate",
     "RolloutResult",
+    "RunReplayError",
     "ScenarioConfig",
     "ScenarioPlugin",
     "ScenarioRegistry",
@@ -83,6 +85,7 @@ __all__ = [
     "run_credit_regimes",
     "run_experiment",
     "solve_production_equilibrium",
+    "verify_and_replay_run",
     "verify_run",
     "wilson_interval",
 ]

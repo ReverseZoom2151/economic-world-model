@@ -6,9 +6,9 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, cast
 
-from .contracts import RuntimeContract
+from .contracts import RuntimeContract, runtime_contract_digest
 from .events import EVENT_SCHEMA_VERSION, Event, verify_event_chain
-from .serialization import StateCodec, action_from_data, content_digest, state_digest
+from .serialization import StateCodec, action_from_data, state_digest
 from .world import World
 
 REPLAY_SCHEMA_VERSION = "ewm.replay.v1"
@@ -84,15 +84,7 @@ def _contract_digest(world: World) -> str:
     contract = world.runtime_contract
     if contract is None:
         raise RuntimeError("export requires a compiled replayable world")
-    return content_digest(
-        {
-            "action_kinds": contract.action_kinds,
-            "agent_roles": contract.agent_roles,
-            "scheduler_policy": contract.scheduler_policy,
-            "scheduler_priority": contract.scheduler_priority,
-            "violation_policy": contract.violation_policy,
-        }
-    )
+    return runtime_contract_digest(contract)
 
 
 def _replay_components(world: World) -> tuple[RuntimeContract, StateCodec]:
@@ -109,6 +101,83 @@ def _validate_supported_events(events: tuple[Event, ...]) -> None:
         raise NotImplementedError(
             f"replay does not support runtime event kinds: {unsupported}"
         )
+    if any(event.kind == "reset" for event in events[1:]):
+        raise ValueError("replay event stream must contain exactly one leading reset")
+
+
+def _event_digest(
+    payload: Mapping[str, Any],
+    field: str,
+    *,
+    event_kind: str,
+) -> str:
+    value = payload.get(field)
+    if not isinstance(value, str) or not _valid_digest(value):
+        raise ValueError(f"{event_kind} event is missing valid {field}")
+    return value
+
+
+def replay_bundle_from_events(world: World, events: tuple[Event, ...]) -> ReplayBundle:
+    """Build a replay bundle from a fully reconstructed external event stream.
+
+    Reset establishes both initial and provisional final state identity. Each step
+    replaces the final identity. Trailing run-agents, evaluate, log, and close
+    events do not change it.
+    """
+
+    _replay_components(world)
+    owned_events = tuple(events)
+    if not owned_events or owned_events[0].kind != "reset":
+        raise ValueError("replay event stream must start with reset")
+    _validate_supported_events(owned_events)
+    event_chain_hash = verify_event_chain(owned_events)
+    reset_payload = owned_events[0].payload
+
+    seed_value = reset_payload.get("seed")
+    if isinstance(seed_value, bool) or not isinstance(seed_value, int | type(None)):
+        raise ValueError("reset event seed must be an integer or null")
+    raw_agent_ids = reset_payload.get("agent_ids")
+    if not isinstance(raw_agent_ids, tuple) or any(
+        not isinstance(agent_id, str) for agent_id in raw_agent_ids
+    ):
+        raise ValueError("reset event agent_ids must be a sequence of strings")
+    state_codec = reset_payload.get("state_codec")
+    if not isinstance(state_codec, str) or not state_codec:
+        raise ValueError("reset event is missing its state codec")
+    declared_contract_digest = _event_digest(
+        reset_payload,
+        "runtime_contract_digest",
+        event_kind="reset",
+    )
+    initial_state_digest = _event_digest(
+        reset_payload,
+        "state_digest",
+        event_kind="reset",
+    )
+    final_state_digest = initial_state_digest
+    for event in owned_events[1:]:
+        if event.kind == "step":
+            final_state_digest = _event_digest(
+                event.payload,
+                "after_state_digest",
+                event_kind="step",
+            )
+
+    bundle = ReplayBundle(
+        manifest=ReplayManifest(
+            seed=seed_value,
+            agent_ids=raw_agent_ids,
+            state_codec=state_codec,
+            runtime_contract_digest=declared_contract_digest,
+            event_count=len(owned_events),
+            event_chain_hash=event_chain_hash,
+            initial_state_digest=initial_state_digest,
+            final_state_digest=final_state_digest,
+        ),
+        events=owned_events,
+    )
+    _validate_bundle(world, bundle)
+    return bundle
 
 
 def export_replay(world: World) -> ReplayBundle:
@@ -121,22 +190,10 @@ def export_replay(world: World) -> ReplayBundle:
     if not events or events[0].kind != "reset":
         raise RuntimeError("replayable event stream must start with reset")
     _validate_supported_events(events)
-    head = verify_event_chain(events)
-    reset_payload = events[0].payload
-    initial_digest = str(reset_payload.get("state_digest", ""))
-    if not _valid_digest(initial_digest):
-        raise ValueError("reset event is missing its initial state digest")
-    manifest = ReplayManifest(
-        seed=cast(int | None, reset_payload["seed"]),
-        agent_ids=world.agent_ids,
-        state_codec=codec.codec_id,
-        runtime_contract_digest=_contract_digest(world),
-        event_count=len(events),
-        event_chain_hash=head,
-        initial_state_digest=initial_digest,
-        final_state_digest=state_digest(codec, world.current_state),
-    )
-    return ReplayBundle(manifest=manifest, events=events)
+    bundle = replay_bundle_from_events(world, events)
+    if bundle.manifest.final_state_digest != state_digest(codec, world.current_state):
+        raise RuntimeError("exported event stream does not identify the current state")
+    return bundle
 
 
 def _validate_bundle(world: World, bundle: ReplayBundle) -> None:

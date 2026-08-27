@@ -24,7 +24,12 @@ from .compiler import (
     mechanism_key,
 )
 from .constraints import ConstraintSet, FunctionalConstraint
-from .contracts import RuntimeContract, SchedulerPolicy, ViolationPolicy
+from .contracts import (
+    RuntimeContract,
+    SchedulerPolicy,
+    ViolationPolicy,
+    runtime_contract_digest,
+)
 from .definition import (
     AgentBlock,
     CoherenceCondition,
@@ -113,6 +118,7 @@ from .replay import (
     ReplayManifest,
     ReplayReport,
     export_replay,
+    replay_bundle_from_events,
     replay_world,
 )
 from .serialization import (
@@ -257,7 +263,9 @@ __all__ = [
     "export_replay",
     "make_rng",
     "mechanism_key",
+    "replay_bundle_from_events",
     "replay_world",
+    "runtime_contract_digest",
     "spawn_rngs",
     "state_digest",
     "verify_event_chain",

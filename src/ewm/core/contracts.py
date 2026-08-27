@@ -8,6 +8,7 @@ from types import MappingProxyType
 from typing import Literal
 
 from .records import Action
+from .serialization import content_digest
 
 SchedulerPolicy = Literal["deterministic", "submission_order", "role_priority"]
 ViolationPolicy = Literal["reject_and_log", "raise"]
@@ -124,3 +125,17 @@ class RuntimeContract:
                 )
             )
         return tuple(sorted(actions, key=lambda action: (action.agent_id, action.kind)))
+
+
+def runtime_contract_digest(contract: RuntimeContract) -> str:
+    """Return the canonical identity of one compiled runtime contract."""
+
+    return content_digest(
+        {
+            "action_kinds": contract.action_kinds,
+            "agent_roles": contract.agent_roles,
+            "scheduler_policy": contract.scheduler_policy,
+            "scheduler_priority": contract.scheduler_priority,
+            "violation_policy": contract.violation_policy,
+        }
+    )

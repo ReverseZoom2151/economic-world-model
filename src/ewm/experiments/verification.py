@@ -78,6 +78,8 @@ class VerificationReport:
     integrity_level: str
     payloads: Mapping[str, Mapping[str, int | str]]
     bundle_sha256: str | None
+    manifest_sha256: str
+    manifest_size: int
 
 
 def _fail(message: str) -> ArtifactVerificationError:
@@ -334,7 +336,13 @@ def _immutable_payloads(
     )
 
 
-def _verify_v1(run_dir: Path, manifest: Mapping[str, Any]) -> VerificationReport:
+def _verify_v1(
+    run_dir: Path,
+    manifest: Mapping[str, Any],
+    *,
+    manifest_sha256: str,
+    manifest_size: int,
+) -> VerificationReport:
     _require_exact_keys(manifest, _LEGACY_MANIFEST_FIELDS, location="manifest.json")
     _validate_common_manifest(manifest)
     _validate_payload_structure(run_dir, manifest)
@@ -346,10 +354,18 @@ def _verify_v1(run_dir: Path, manifest: Mapping[str, Any]) -> VerificationReport
         integrity_level="legacy-unsealed",
         payloads=MappingProxyType({}),
         bundle_sha256=None,
+        manifest_sha256=manifest_sha256,
+        manifest_size=manifest_size,
     )
 
 
-def _verify_v2(run_dir: Path, manifest: Mapping[str, Any]) -> VerificationReport:
+def _verify_v2(
+    run_dir: Path,
+    manifest: Mapping[str, Any],
+    *,
+    manifest_sha256: str,
+    manifest_size: int,
+) -> VerificationReport:
     _require_exact_keys(manifest, _V2_MANIFEST_FIELDS, location="manifest.json")
     _validate_common_manifest(manifest)
     if manifest["integrity_level"] != "checksummed":
@@ -441,6 +457,8 @@ def _verify_v2(run_dir: Path, manifest: Mapping[str, Any]) -> VerificationReport
         integrity_level="checksummed",
         payloads=_immutable_payloads(payloads),
         bundle_sha256=declared_bundle_sha,
+        manifest_sha256=manifest_sha256,
+        manifest_size=manifest_size,
     )
 
 
@@ -449,12 +467,29 @@ def verify_run(run_dir: str | Path) -> VerificationReport:
 
     path = Path(run_dir)
     _validate_directory(path)
+    try:
+        manifest_content = (path / "manifest.json").read_bytes()
+    except OSError as error:
+        raise _fail(f"could not read manifest.json: {error}") from error
     manifest = _require_mapping(
-        _load_json_file(path / "manifest.json"), location="manifest.json"
+        _load_json_bytes(manifest_content, filename="manifest.json"),
+        location="manifest.json",
     )
+    manifest_sha256 = hashlib.sha256(manifest_content).hexdigest()
+    manifest_size = len(manifest_content)
     schema = manifest.get("artifact_schema")
     if schema == ARTIFACT_SCHEMA:
-        return _verify_v2(path, manifest)
+        return _verify_v2(
+            path,
+            manifest,
+            manifest_sha256=manifest_sha256,
+            manifest_size=manifest_size,
+        )
     if schema == LEGACY_ARTIFACT_SCHEMA:
-        return _verify_v1(path, manifest)
+        return _verify_v1(
+            path,
+            manifest,
+            manifest_sha256=manifest_sha256,
+            manifest_size=manifest_size,
+        )
     raise _fail(f"manifest.json declares unsupported artifact schema {schema!r}")

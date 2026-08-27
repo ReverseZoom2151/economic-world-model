@@ -11,7 +11,7 @@ import numpy as np
 
 from .coevolution import ControlledCoevolution
 from .constraints import ConstraintSet
-from .contracts import RuntimeContract
+from .contracts import RuntimeContract, runtime_contract_digest
 from .evaluation import EvaluationReport, evaluate_event_log
 from .events import Event, EventLog, EventLogView
 from .protocols import (
@@ -187,6 +187,10 @@ class World:
                     "state_codec": self._state_codec.codec_id,
                     "state_digest": state_digest(self._state_codec, state),
                 }
+            )
+        if self._runtime_contract is not None:
+            payload["runtime_contract_digest"] = runtime_contract_digest(
+                self._runtime_contract
             )
         events = EventLog()
         events.append("reset", payload, state_version=0)
