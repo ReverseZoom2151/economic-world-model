@@ -87,3 +87,18 @@ def test_every_registered_smoke_experiment_runs(
 
     assert run.result.metrics
     assert run.run_dir.is_dir()
+
+
+def test_credit_artifacts_expose_solver_convergence(tmp_path: Path) -> None:
+    run = ewm.run_experiment(
+        "credit.regimes",
+        preset="smoke",
+        seed=42,
+        output_root=tmp_path,
+    )
+    metrics = json.loads((run.run_dir / "metrics.json").read_text())
+
+    assert isinstance(metrics["selective_ddge.converged"], bool)
+    assert isinstance(metrics["full_information_ddge.converged"], bool)
+    assert metrics["selective_ddge.iterations"] > 0
+    assert metrics["full_information_ddge.iterations"] > 0

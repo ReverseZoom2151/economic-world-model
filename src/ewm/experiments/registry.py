@@ -270,6 +270,8 @@ def _credit(preset: str, seed: int) -> ExperimentPayload:
         "residual_norm",
         "residual_floor",
         "coefficient_distance",
+        "iterations",
+        "converged",
     )
     metrics = {
         f"{regime.value}.{name}": getattr(values, name)
