@@ -31,7 +31,8 @@ EXPECTED_ITEMS = {
     "cong-appendix-b-algorithm",
     "cong-lab-i",
     "cong-lab-ii",
-    "cong-lab-iii",
+    "cong-lab-iii-population",
+    "cong-lab-iii-finite-sample",
     "cong-prop-d.1",
     "cong-theorem-e.1",
     # Han: state equations, components, public protocol, levels, and evaluation.
@@ -138,6 +139,20 @@ def test_conformance_entries_have_valid_claims_and_evidence_paths() -> None:
 
         if item["status"] in {"partial", "planned", "blocked-external"}:
             assert item["limitation"], item["id"]
+
+
+def test_forecasting_population_targets_are_separate_from_authored_damping() -> None:
+    registry = _load("conformance.toml")
+    items = {item["id"]: item for item in registry["item"]}
+
+    population = items["cong-lab-iii-population"]
+    finite_sample = items["cong-lab-iii-finite-sample"]
+
+    assert population["claim"] == "exact-replication"
+    assert "{-0.795, 0, +0.795}" in population["summary"]
+    assert "code-independent" in population["limitation"]
+    assert finite_sample["claim"] == "paper-inspired"
+    assert "package-authored damping" in finite_sample["summary"]
 
 
 def test_traceability_guide_is_linked_from_readme() -> None:
