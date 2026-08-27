@@ -47,6 +47,8 @@ dev = [
 [project.urls]
 Repository = "https://github.com/ReverseZoom2151/economic-world-model"
 Issues = "https://github.com/ReverseZoom2151/economic-world-model/issues"
+"Cong paper" = "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940"
+"Han et al. paper" = "https://arxiv.org/abs/2608.06020v1"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ewm"]
