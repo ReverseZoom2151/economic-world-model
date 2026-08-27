@@ -54,6 +54,9 @@ packages = ["src/ewm"]
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers"
 testpaths = ["tests"]
+markers = [
+  "conformance: paper-level end-to-end and claim-boundary checks",
+]
 
 [tool.ruff]
 target-version = "py311"

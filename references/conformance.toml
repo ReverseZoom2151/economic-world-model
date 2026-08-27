@@ -3,6 +3,14 @@ schema_version = 1
 # Status describes the current repository, not the ambition of the paper.
 # Claim labels separate exact replication from protocol conformance and reconstruction.
 
+[conformance_suite]
+schema = "ewm.conformance.v1"
+command = "python scripts/run_conformance.py"
+cong_evidence = "tests/conformance/test_cong_conformance.py"
+han_evidence = "tests/conformance/test_han_conformance.py"
+claim_boundary_evidence = "tests/conformance/test_claim_boundaries.py"
+reporter = "scripts/run_conformance.py"
+
 [[item]]
 id = "cong-def-2.1"
 source = "cong-2026"

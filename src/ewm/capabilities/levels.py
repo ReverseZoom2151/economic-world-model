@@ -280,7 +280,8 @@ def assess_capability(
             if _EVIDENCE_RANK[item.kind] < _EVIDENCE_RANK[gate.minimum_kind]:
                 warnings.append(
                     f"{requirement.value}: insufficient evidence class "
-                    f"{item.kind.value}; requires {gate.minimum_kind.value}"
+                    f"{item.kind.value} at {item.provenance}; "
+                    f"requires {gate.minimum_kind.value}"
                 )
                 continue
             if item.observations < gate.minimum_observations:
@@ -335,6 +336,97 @@ def assess_capability(
         warnings=tuple(warnings),
         ddge_consistency=ddge,
         empirical_validity=empirical,
+    )
+
+
+def documented_prototype_evidence() -> tuple[CapabilityEvidence, ...]:
+    """Return the repository's conservative, provenance-bearing capability evidence."""
+
+    return (
+        CapabilityEvidence(
+            LevelRequirement.AGENT_WORLD_EXECUTION,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/scenarios/test_fx.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.ENDOGENOUS_ENVIRONMENT,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/scenarios/test_fx.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.ECONOMIC_INVARIANTS,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/properties/test_fx_accounting.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.ADAPTIVE_AGENT_STATE,
+            True,
+            EvidenceKind.CONTROLLED_EXPERIMENT,
+            "tests/scenarios/test_fx.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.LONGITUDINAL_PERSISTENCE,
+            True,
+            EvidenceKind.CONTROLLED_EXPERIMENT,
+            "tests/scenarios/test_fx.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.LANGUAGE_MODEL_EXECUTION,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/unit/test_cognition.py:fake-backend",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.EXPLICIT_COGNITIVE_STATE,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/unit/test_cognition.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.MEMORY_AND_TOOLS,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/unit/test_cognition.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.GATED_CAPABILITY_PROMOTION,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/unit/test_capability_evolution.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.CAPABILITY_ROLLBACK,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/unit/test_capability_evolution.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.CONSTITUTIONAL_INSTITUTION_GATE,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/unit/test_institutions.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.ACCEPTED_INSTITUTION_CHANGE,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/unit/test_institutions.py",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.EXTERNAL_DATA_CONTRACT,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "examples/offline_alignment.py:fixture-only",
+        ),
+        CapabilityEvidence(
+            LevelRequirement.REPEATED_OUT_OF_SAMPLE_ALIGNMENT,
+            True,
+            EvidenceKind.SYNTHETIC_TEST,
+            "tests/unit/test_alignment.py:single-fixture",
+        ),
     )
 
 

@@ -62,6 +62,7 @@ from .levels import (
     EvidenceKind,
     LevelRequirement,
     assess_capability,
+    documented_prototype_evidence,
 )
 
 __all__ = [
@@ -118,4 +119,5 @@ __all__ = [
     "PromotionReport",
     "RollbackReport",
     "assess_capability",
+    "documented_prototype_evidence",
 ]

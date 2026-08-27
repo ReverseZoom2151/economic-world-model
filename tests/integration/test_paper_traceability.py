@@ -146,3 +146,18 @@ def test_traceability_guide_is_linked_from_readme() -> None:
 
     assert guide.exists()
     assert "docs/paper-traceability.md" in readme
+
+
+def test_paper_level_conformance_suite_is_registered_and_local() -> None:
+    registry = _load("conformance.toml")
+    suite = registry["conformance_suite"]
+
+    assert suite["schema"] == "ewm.conformance.v1"
+    assert suite["command"] == "python scripts/run_conformance.py"
+    for field in (
+        "cong_evidence",
+        "han_evidence",
+        "claim_boundary_evidence",
+        "reporter",
+    ):
+        assert (ROOT / suite[field]).is_file()

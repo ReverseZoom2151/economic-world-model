@@ -1,5 +1,12 @@
 """Discoverable, reproducible experiment execution."""
 
+from .claims import (
+    ClaimAuthorization,
+    ClaimEvidence,
+    ClaimKind,
+    UnsupportedClaimError,
+    authorize_claims,
+)
 from .credit import (
     CreditOracleReport,
     CreditOrderingComparison,
@@ -20,6 +27,9 @@ __all__ = [
     "EXPERIMENTS",
     "LAYER_METRICS",
     "SCENARIO_DESCRIPTIONS",
+    "ClaimAuthorization",
+    "ClaimEvidence",
+    "ClaimKind",
     "CreditOracleReport",
     "CreditOrderingComparison",
     "CreditPaperTargetReport",
@@ -27,6 +37,8 @@ __all__ = [
     "ExperimentRun",
     "MetricEvidence",
     "PairedEstimate",
+    "UnsupportedClaimError",
+    "authorize_claims",
     "credit_oracle_report",
     "credit_paper_target_report",
     "evaluate_layered",
