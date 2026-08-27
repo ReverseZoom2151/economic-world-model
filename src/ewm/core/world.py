@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Mapping
+from datetime import datetime
 from typing import Any, overload
 
 import numpy as np
@@ -13,10 +14,13 @@ from .evaluation import EvaluationReport, evaluate_event_log
 from .events import Event, EventLog
 from .protocols import (
     AgentPolicy,
+    AlignmentReportRecord,
+    ExternalEvidenceRecord,
     InstitutionalEvolution,
     InstitutionChangeProposal,
     InstitutionChangeReport,
     Mechanism,
+    RealWorldAlignment,
 )
 from .randomness import make_rng
 from .records import (
@@ -42,6 +46,7 @@ class World:
         observation: Callable[[Any, str], Any] | None = None,
         coevolution: ControlledCoevolution | None = None,
         institutional_evolution: InstitutionalEvolution | None = None,
+        alignment: RealWorldAlignment | None = None,
     ) -> None:
         ordered_agents = tuple(sorted(agents, key=lambda agent: agent.agent_id))
         identifiers = [agent.agent_id for agent in ordered_agents]
@@ -54,6 +59,7 @@ class World:
         self._observation = observation or (lambda state, _agent_id: state)
         self._coevolution = coevolution
         self._institutional_evolution = institutional_evolution
+        self._alignment = alignment
         if coevolution is not None:
             unknown_agents = set(coevolution.agent_ids).difference(identifiers)
             if unknown_agents:
@@ -103,6 +109,14 @@ class World:
         if self._institutional_evolution is None:
             raise RuntimeError("institutional evolution is not configured")
         return self._institutional_evolution.version
+
+    @property
+    def alignment_version(self) -> int:
+        """Return the external-alignment component version."""
+
+        if self._alignment is None:
+            raise RuntimeError("real-world alignment is not configured")
+        return self._alignment.version
 
     def _ensure_open(self) -> None:
         if self._closed:
@@ -290,6 +304,33 @@ class World:
             },
             state_version=self._state_version if self._state_version >= 0 else None,
         )
+
+    def align(
+        self,
+        simulated: Mapping[str, float],
+        evidence: ExternalEvidenceRecord,
+        *,
+        as_of: datetime,
+    ) -> AlignmentReportRecord:
+        """Compare runtime outputs with timestamped evidence and log corrections."""
+
+        self._ensure_open()
+        if self._alignment is None:
+            raise RuntimeError("real-world alignment is not configured")
+        report = self._alignment.align(simulated, evidence, as_of=as_of)
+        self._events.append(
+            "align",
+            {
+                "after_version": report.after_version,
+                "before_version": report.before_version,
+                "correction_count": report.correction_count,
+                "evidence_reference": report.evidence_reference,
+                "max_discrepancy": report.max_discrepancy,
+                "within_tolerance": report.within_tolerance,
+            },
+            state_version=self._state_version if self._state_version >= 0 else None,
+        )
+        return report
 
     def log(self) -> tuple[Event, ...]:
         """Return an immutable event snapshot after recording the instrumentation call."""

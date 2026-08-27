@@ -394,9 +394,11 @@ source = "han-et-al-2026"
 section = "Section 4.1, Real-time alignment"
 pages = "12"
 summary = "External evidence monitors discrepancy, attributes error, and applies versioned bounded correction."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "No external-evidence or correction protocol exists yet."
+implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_alignment.py", "examples/offline_alignment.py"]
+limitation = "The correction protocol is implemented against timestamped offline evidence; no live external-data contract or repeated holdout validation establishes real-time alignment."
 
 [[item]]
 id = "han-spec-agent"
@@ -505,9 +507,10 @@ source = "han-et-al-2026"
 section = "Figures 8 and 16"
 pages = "12, 18"
 summary = "world.align compares simulation with external evidence and applies bounded corrections."
-status = "planned"
+status = "implemented"
 claim = "conformance"
-limitation = "No reusable runtime call exists."
+implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/core/world.py", "src/ewm/core/protocols.py"]
+evidence = ["tests/unit/test_alignment.py", "tests/integration/test_alignment_example.py"]
 
 [[item]]
 id = "han-runtime-evaluate"
@@ -527,11 +530,10 @@ source = "han-et-al-2026"
 section = "Figure 8"
 pages = "12"
 summary = "world.log records events from every runtime call."
-status = "partial"
+status = "implemented"
 claim = "conformance"
 implementation = ["src/ewm/core/events.py", "src/ewm/core/world.py"]
-evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py"]
-limitation = "All currently implemented runtime calls emit schema and state versions; align remains to be added."
+evidence = ["tests/unit/test_world.py", "tests/unit/test_alignment.py", "tests/unit/test_institutions.py", "tests/integration/test_han_runtime_protocol.py"]
 
 [[item]]
 id = "han-level-l1"
@@ -597,9 +599,11 @@ source = "han-et-al-2026"
 section = "Section 3.1, L6"
 pages = "8"
 summary = "The world repeatedly compares with new observations and corrects agents, parameters, mechanisms, rules, or transitions."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "No external observation contract or repeated out-of-sample alignment evidence exists."
+implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_alignment.py", "examples/offline_alignment.py"]
+limitation = "Timestamp, discrepancy, attribution, bounded correction, provenance, and restoration semantics are implemented offline. L6 remains withheld without a live external-data contract, repeated out-of-sample evidence, and measured drift and correction performance."
 
 [[item]]
 id = "han-eval-agents"
@@ -639,9 +643,11 @@ source = "han-et-al-2026"
 section = "Table 3, Real-world alignment"
 pages = "18"
 summary = "Evaluate state and trend errors plus correction magnitudes against observed evidence."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "No external-evidence alignment run exists."
+implementation = ["src/ewm/capabilities/alignment.py"]
+evidence = ["tests/unit/test_alignment.py", "examples/offline_alignment.py"]
+limitation = "Target error and correction magnitude are emitted for offline observations; trend error and repeated external validation remain unmeasured."
 
 [[item]]
 id = "han-eval-efficiency"

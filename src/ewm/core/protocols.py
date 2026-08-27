@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from datetime import datetime
 from typing import Any, Protocol, overload
 
 import numpy as np
@@ -120,6 +121,50 @@ class InstitutionalEvolution(Protocol):
         target_version: int,
         authority: str,
     ) -> InstitutionChangeReport: ...
+
+
+class ExternalEvidenceRecord(Protocol):
+    """Minimal timestamped evidence identity consumed by alignment engines."""
+
+    @property
+    def reference(self) -> str: ...
+
+
+class AlignmentReportRecord(Protocol):
+    """Versioned external-evidence alignment result recorded by the runtime."""
+
+    @property
+    def evidence_reference(self) -> str: ...
+
+    @property
+    def before_version(self) -> int: ...
+
+    @property
+    def after_version(self) -> int: ...
+
+    @property
+    def within_tolerance(self) -> bool: ...
+
+    @property
+    def correction_count(self) -> int: ...
+
+    @property
+    def max_discrepancy(self) -> float: ...
+
+
+class RealWorldAlignment(Protocol):
+    """External-evidence correction boundary independent of provider adapters."""
+
+    @property
+    def version(self) -> int: ...
+
+    def align(
+        self,
+        simulated: Mapping[str, float],
+        evidence: ExternalEvidenceRecord,
+        *,
+        as_of: datetime,
+    ) -> AlignmentReportRecord: ...
 
 
 class EconomicWorld(Protocol):

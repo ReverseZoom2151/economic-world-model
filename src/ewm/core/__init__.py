@@ -18,15 +18,18 @@ from .events import EVENT_SCHEMA_VERSION, Event, EventLog
 from .mechanisms import FunctionalMechanism
 from .protocols import (
     AgentPolicy,
+    AlignmentReportRecord,
     Constraint,
     DDGEProblem,
     EconomicWorld,
     EquilibriumProblem,
+    ExternalEvidenceRecord,
     InstitutionalEvolution,
     InstitutionChangeProposal,
     InstitutionChangeReport,
     InstitutionManifestRecord,
     Mechanism,
+    RealWorldAlignment,
 )
 from .randomness import make_rng, spawn_rngs
 from .records import (
@@ -71,6 +74,7 @@ __all__ = [
     "AgentBlock",
     "AgentPolicy",
     "AgentSpecification",
+    "AlignmentReportRecord",
     "AlignmentSpecification",
     "CoevolutionProposal",
     "CoevolutionReport",
@@ -101,6 +105,7 @@ __all__ = [
     "Event",
     "EventLog",
     "ExperimentResult",
+    "ExternalEvidenceRecord",
     "FixedPoint",
     "FunctionalAgent",
     "FunctionalConstraint",
@@ -115,6 +120,7 @@ __all__ = [
     "Mechanism",
     "MechanismSpecification",
     "ProposalRule",
+    "RealWorldAlignment",
     "RunMetadata",
     "SchedulerSpecification",
     "SpaceDefinition",
