@@ -1,5 +1,8 @@
 # Paper traceability
 
+**Document version:** 1.1
+**Last reviewed:** 2026-08-27
+
 This repository is an adaptation of two specific source versions, not a claim of author-endorsed
 replication. The machine-readable registries in [`references/`](../references) make that distinction
 auditable.
@@ -32,9 +35,11 @@ tests, and explicit limitations.
 | `qualitative-reconstruction` | The package recreates the stated mechanism and qualitative comparisons, but the source omits inputs needed for exact results. |
 | `survey-only` | The item is a theoretical relation or literature classification, not an executable package obligation. |
 
-Statuses describe what is present on the referenced commit. `planned` is not implemented;
-`partial` identifies both evidence and the missing piece; `blocked-external` names evidence that
-cannot be recovered from the locked public source.
+Statuses describe what is present on the referenced commit. `implemented` means the declared scope
+has executable evidence. `partial` identifies both the available substrate and the missing evidence.
+`blocked-external` names a precise source, proof, data, or validation dependency that the repository
+cannot supply. `not-applicable` covers survey or nesting statements that create no package
+obligation.
 
 ## Current hard boundary: Cong Laboratory I
 
@@ -59,12 +64,13 @@ floor.
 
 Han's L1-L6 ladder is a systems taxonomy. A class named `Alignment` does not create an L6 economic
 twin, and a fake language-model backend does not establish behavioral fidelity. The implementation
-plan adds reusable L3-L6 substrates, then assesses runtime evidence separately from interface
-availability, DDGE consistency, and empirical validity.
+contains reusable L3-L6 substrates and assesses runtime evidence separately from interface
+availability, DDGE consistency, and empirical validity. The cumulative evaluator currently awards
+L2.
 
 ## Automated integrity checks
 
-Run:
+Run the registry integrity check:
 
 ```bash
 python -m pytest tests/integration/test_paper_traceability.py -q
@@ -72,3 +78,14 @@ python -m pytest tests/integration/test_paper_traceability.py -q
 
 The test rejects duplicate or missing item IDs, unknown statuses or claim types, invalid source
 hashes, and implemented/partial claims whose code or evidence paths do not exist.
+
+Run the paper-level end-to-end suite and emit its evidence report:
+
+```bash
+python scripts/run_conformance.py
+```
+
+The report contains both source hashes, the package source fingerprint, runtime versions, fixed seed
+sets, conformance test outcomes, achieved capability evidence, DDGE status, empirical-validity
+status, and unresolved external dependencies. The [replication guide](replication.md) defines the
+expected values and tolerances; [limitations](limitations.md) records the non-goals.

@@ -1,6 +1,6 @@
 # Mathematical contract
 
-**Document version:** 1.0  
+**Document version:** 1.1
 **Last reviewed:** 2026-08-27  
 **Audience:** Economic-AI researchers and contributors
 
@@ -17,9 +17,9 @@ of an actual economy unless a future calibration explicitly establishes that cla
 |---|---|
 | Cong, *Economic World Models and Data-Driven Generative Equilibria* | Formal EWM objects, fixed-environment equilibrium, behavior-data-learning closure, DDGE, multiplicity, stability, and residual diagnostics |
 | Han et al., *From Economic Agents to Agentic Economies* | Executable agents and environments, typed state transitions, co-evolution, evaluation, and the six-level capability ladder |
-| This package | Single-valued numerical protocols, solver choices, and the forecasting, FX, and credit laboratory equations |
+| This package | Single-valued numerical protocols, solver choices, the FX equations, missing credit primitives, and the functional forms used to instantiate Cong's Appendix D template |
 
-The two papers are linked in the repository [README](../README.md#references).
+The two papers are linked in the repository [README](../README.md#source-credit).
 
 ## Economic World Model objects
 
@@ -200,6 +200,68 @@ $$
 
 Damping is an algorithmic choice. It is not an existence, uniqueness, or welfare proof.
 
+## Constraint-preserving transitions
+
+Cong's Proposition A.3 starts from an unconstrained candidate next state
+$\widetilde S_{t+1}$ and a reconciliation map whose codomain is the economically feasible set
+$\Gamma(S_t,A_t,i_t)$. The realized transition is
+
+$$
+S_{t+1}
+=
+\Pi_{\Gamma(S_t,A_t,i_t)}\!\left(\widetilde S_{t+1}\right),
+\qquad
+\widetilde S_{t+1}
+\sim
+\widetilde T_{\theta}(\cdot\mid S_t,A_t,i_t).
+$$
+
+`StateReconciler` represents $\Pi_\Gamma$. When configured, `World.reset` rejects an infeasible
+initial state. Each `World.step` passes the mechanism's candidate through the reconciler and checks
+the resulting feasibility predicate before committing the new state or incrementing its version.
+Starting from a feasible state, the test runs repeated candidate transitions and verifies feasibility
+at every date, which is the induction in Proposition A.3. A faulty projection fails before state
+commit.
+
+## Han runtime and evaluation contract
+
+Han et al. organize an EWM around economic agents and an executable environment. In the package,
+the joint action profile at time $t$ is
+
+$$
+A_t=\bigl(a_t^1,\ldots,a_t^N\bigr),
+$$
+
+and the environment transition has the protocol-level form
+
+$$
+S_{t+1}=\mathcal{M}(S_t,A_t).
+$$
+
+Agent policies may use permitted observations, explicit beliefs, and private state:
+
+$$
+a_t^n=\pi^n\!\left(\mathcal{I}_t^n,\mu_t^n,s_t^n\right).
+$$
+
+The package expresses these relations through typed specifications and seven runtime calls:
+
+```text
+reset -> run_agents -> step -> coevolve -> align -> evaluate -> log
+```
+
+Each call emits a versioned event. `step` validates actions before the mechanism clears and settles.
+`coevolve` changes only declared bounded components. `align` requires timestamped evidence and uses
+atomic correction. `evaluate` reads an event snapshot without changing world state.
+
+Han's five evaluation layers are agents, environment, co-evolution, alignment, and efficiency. A
+metric has a value only when it carries event-derived or supplied provenance. An absent measurement
+has status `not_measured`, value `None`, sample size zero, and no fabricated numerical value.
+
+This contract establishes systems-protocol conformance. It does not establish L3 language-model
+behavior, L4 persistent improvement, L5 endogenous institutional outcomes, or L6 real-world twin
+validity. The [capability matrix](capability-matrix.md) records those evidence gates.
+
 ## Cong Laboratory II: scalar DDGE
 
 The scalar module implements Appendix equation (A.1) directly:
@@ -335,6 +397,87 @@ report retain these omissions and show package-versus-paper differences. A small
 discontinuity cycle can produce a recent-iterate residual floor in this implementation; that value is
 not relabeled as the paper's sampling noise floor.
 
+## Cong Appendix D: competitive production template
+
+Cong's Appendix D defines a household problem with consumption $c$, labor $\ell$, current assets
+$a$, next-period assets $a'$, idiosyncratic state $e$, and prices $(r,w)$. Equations (D.1) through
+(D.4) have the form
+
+$$
+V(a,e;Z,\mu,\kappa)
+=
+\max_{c,\ell,a'}
+\left\{
+u(c,\ell)
++\beta\,\mathbb{E}\!\left[V(a',e';Z,\mu,\kappa)\mid e\right]
+\right\},
+$$
+
+subject to
+
+$$
+c+a'=w\ell+(1+r)a,
+\qquad
+a'\geq \underline a,
+\qquad
+e'\sim P(\cdot\mid e).
+$$
+
+The representative firm solves Equation (D.5):
+
+$$
+\max_{K,L}
+\left\{
+ZF(K,L)-(r+\delta)K-wL
+\right\}.
+$$
+
+Equations (D.6) and (D.7) close capital and labor markets:
+
+$$
+K=\int a\,\mathrm{d}\mu,
+\qquad
+L=\int \ell\,\mathrm{d}\mu.
+$$
+
+The paper leaves the functional forms, parameter values, cross-sectional distribution, and
+continuation solution open. The executable package instance supplies
+
+$$
+u(c,\ell;e)
+=
+\operatorname{CRRA}(c;\sigma)
+-\frac{\chi}{e}\frac{\ell^{1+\nu}}{1+\nu},
+$$
+
+and uses the disclosed continuation approximation
+
+$$
+\omega\,\operatorname{CRRA}(a'-\underline a;\sigma),
+$$
+
+with decreasing-returns production
+
+$$
+Y=ZK^{\alpha}L^{\gamma},
+\qquad
+\alpha+\gamma<1.
+$$
+
+The solver works in transformed prices
+
+$$
+x_1=\log(r+\delta),
+\qquad
+x_2=\log w,
+$$
+
+and solves both market residuals with the shared inner-equilibrium solver. Tests compare the result
+with an independently written SciPy root system and check household budgets, borrowing feasibility,
+household and firm first-order conditions, and both clearing equations. This is a paper-inspired
+instantiation of the Appendix D template, not an exact numerical replication and not a proof of the
+general existence proposition.
+
 ## Evidence map
 
 | Claim or invariant | Implementation | Independent evidence |
@@ -344,5 +487,11 @@ not relabeled as the paper's sampling noise floor.
 | FX feasibility and conservation | `ewm.scenarios.fx` | Example and Hypothesis property tests in `tests/scenarios` and `tests/properties` |
 | FX comparative statics | `ewm.experiments.fx` | Replicated common-random-number effects and interval tests in `tests/integration/test_comparisons.py` |
 | Credit provenance, adoption, observation, and claim boundaries | `ewm.scenarios.credit`, `ewm.experiments.credit` | Source-target and economic-invariant tests in `tests/scenarios/test_credit_paper_targets.py` and `tests/scenarios/test_credit.py` |
+| Appendix D production instantiation | `ewm.scenarios.production`, `ewm.experiments.production` | Independent root solve, property tests, and public example in `tests/scenarios/test_production.py` and `tests/integration/test_production_example.py` |
+| Han seven-call runtime protocol | `ewm.core.world`, `ewm.core.specs`, `ewm.core.events` | End-to-end event-order and version checks in `tests/integration/test_han_runtime_protocol.py` and `tests/conformance/test_han_conformance.py` |
+| Five-layer evaluation | `ewm.experiments.evaluation` | Provenance, missingness, and read-only tests in `tests/integration/test_layered_evaluation.py` |
+| L3 to L6 substrate boundaries | `ewm.capabilities`, `ewm.experiments.claims` | Adversarial evidence-gate and unsupported-claim tests in `tests/unit/test_capability_levels.py` and `tests/conformance/test_claim_boundaries.py` |
+| Constraint-preserving transitions | `ewm.core.reconciliation`, `ewm.core.world` | Induction and atomic-failure checks in `tests/unit/test_reconciliation.py` |
+| Paper-level source integrity | `references/papers.toml`, `references/conformance.toml`, `scripts/run_conformance.py` | Registry and end-to-end conformance tests in `tests/integration/test_paper_traceability.py` and `tests/conformance` |
 | One-way dependencies | Package layer boundaries | AST enforcement in `tests/test_architecture.py` |
 | Reproducible public runs | `ewm.api`, `ewm.experiments`, `ewm.cli` | Integration tests for identical artifacts and public flows |

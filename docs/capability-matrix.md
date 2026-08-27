@@ -1,12 +1,12 @@
 # Capability and claim matrix
 
-**Document version:** 1.1
+**Document version:** 1.2
 **Last reviewed:** 2026-08-27  
 **Audience:** Researchers evaluating what version `0.1.0` does and does not establish
 
 ## Why this matrix exists
 
-The repository implements meaningful pieces of an Economic World Model, but three stylized
+The repository implements meaningful pieces of an Economic World Model, but synthetic
 laboratories are not a real-economy twin. This matrix maps executable evidence to Han et al.'s
 capability ladder and keeps that engineering taxonomy separate from Cong's DDGE consistency
 concept.
@@ -49,9 +49,11 @@ a small mathematical laboratory can solve a DDGE without being an L3 to L6 world
 
 | Laboratory | Temporal agent world | Endogenous learned component | DDGE solved | Independent checks |
 |---|---|---|---|---|
+| Scalar | No, closed-form representative system | Scalar linear or saturating learner | Yes | Closed forms plus independent sign bracketing |
 | Forecasting | No, scalar aggregate process | Forecasting slope | Yes, population map with multistart | Analytical derivative and Brent bracketing |
 | FX | Yes, L2 symbolic agents | Beliefs adapt within rollout, but no outer learned-system DDGE | No | Conservation property tests and replicated paired intervals |
 | Credit | No, synthetic cohort equilibrium | Ridge-logistic screening model | Yes, selective and full-information regimes | Frozen/realized sign test, omniscient oracle, and sensitivity boundary |
+| Production | No, one aggregate-state equilibrium | None in the package instance | No | Independent root system plus budget, first-order, and clearing checks |
 
 ## Public capability matrix
 
@@ -68,6 +70,9 @@ a small mathematical laboratory can solve a DDGE without being an L3 to L6 world
 | Governed institutional transition substrate | Yes | Authority, feasibility, accounting, safety, acceptance, audit, and rollback tests |
 | Offline external-alignment protocol | Yes | Timestamp, target discrepancy, bounded atomic correction, event provenance, and restoration tests |
 | Machine-checkable L1 to L6 evidence gates | Yes | Cumulative adversarial gate tests and separate DDGE and empirical-validity assessments |
+| Five-layer Han evaluation report | Yes | Agent, environment, co-evolution, alignment, and efficiency schema with provenance-bearing missingness |
+| Cong Appendix D production instance | Yes | Current-asset and labor clearing, independent price oracle, budget and first-order checks |
+| Paper-level conformance report | Yes | Source hashes, source fingerprint, runtime versions, seed sets, test outcomes, evidence gates, and unresolved dependencies |
 | Empirical calibration | No | No external economic data is bundled or consumed |
 | Policy recommendation | No | Synthetic mechanisms do not establish policy validity |
 | Live trading or lending | No | Research-only local package with no execution connector |
@@ -100,6 +105,9 @@ a small mathematical laboratory can solve a DDGE without being an L3 to L6 world
 ## Evidence locations
 
 - [Mathematical contract](mathematical-contract.md)
+- [Replication guide](replication.md)
+- [Limitations and non-goals](limitations.md)
+- [Paper traceability registry](paper-traceability.md)
 - [Experiment and artifact guide](experiments.md)
 - [Local product-validation report](product-validation.md)
 - [Approved design](plans/2026-08-27-ewm-prototype-design.md)

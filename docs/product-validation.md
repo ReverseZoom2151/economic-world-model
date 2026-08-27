@@ -1,6 +1,6 @@
 # Local product validation
 
-**Document version:** 1.0<br>
+**Document version:** 1.1<br>
 **Last reviewed:** 2026-08-27<br>
 **Environment:** Python 3.12.3 on x86-64 WSL2, 64 logical CPUs<br>
 **Scope:** Version `0.1.0` software behavior and synthetic scientific evidence
@@ -8,8 +8,8 @@
 ## Outcome
 
 The package passes the locally executable product tests: clean installation, public CLI and Python
-workflows, deterministic artifact reproduction, extension through public interfaces, prespecified
-scientific stress tests, and isolated performance measurement.
+workflows, deterministic artifact reproduction, extension through public interfaces, paper-level
+conformance, prespecified scientific stress tests, and isolated performance measurement.
 
 This does not test whether independent economic-AI researchers understand or value the package.
 That requires external participants. It also does not provide empirical validation, policy validity,
@@ -17,7 +17,7 @@ or evidence that the synthetic economies represent an observed economy.
 
 ## Protocol
 
-The local audit used six complementary tests.
+The local audit uses eight complementary tests.
 
 1. Clone the public GitHub repository into an empty temporary directory, create an isolated virtual
    environment, install the development package, run `pip check`, discover the registry, execute a
@@ -32,9 +32,14 @@ The local audit used six complementary tests.
    `scripts/scientific_stress.py`.
 6. Measure isolated public-API latency and peak resident memory with
    `scripts/benchmark_experiments.py`, then profile the slowest workload with `cProfile`.
+7. Run the Cong and Han end-to-end conformance suite, validate both locked source hashes, and require
+   unsupported exact, calibrated, policy-valid, and digital-twin claims to fail closed.
+8. Execute the production, cognitive-agent, and offline-alignment examples, then test their
+   independent numerical checks, atomicity, provenance, restoration, and evidence gates.
 
-No internal application component was mocked. Generated run bundles remained under ignored local
-directories and were not used as source code.
+No internal component in the registered laboratory runs was mocked. The cognitive and alignment
+protocol checks use declared offline fixtures and do not award L3 or L6. Generated run bundles
+remained under ignored local directories and were not used as source code.
 
 ## Clean-room and researcher workflow
 
@@ -88,6 +93,28 @@ The artifact identity now also includes a SHA-256 fingerprint of the executed `e
 and the Python, NumPy, SciPy, pandas, and scikit-learn versions. This prevents two alpha commits with
 the same package version and parameters from silently sharing a run directory.
 
+## Paper conformance and capability evidence
+
+`python scripts/run_conformance.py` runs ten end-to-end tests and emits an
+`ewm.conformance.v1` report. The report records both PDF hashes, the current source fingerprint,
+runtime versions, deterministic seed sets, test results, the achieved Han capability level, separate
+DDGE and empirical-validity assessments, and unresolved dependencies.
+
+The Cong conformance path traverses an EWM declaration, an inner equilibrium, generated data, a
+learner, an outer fixed point, a five-component consistency certificate, and theorem-derived bounds.
+The Han path traverses specification, reset, agent actions, transition, co-evolution, timestamped
+offline alignment, read-only evaluation, and the ordered event ledger.
+
+The evidence evaluator awards L2. It recognizes that L3 to L6 engineering substrates exist, but it
+withholds those levels because the repository has no controlled language-model behavioral study,
+persistent capability-improvement experiment, endogenous institutional-outcome experiment, live
+external-data contract, or repeated out-of-sample correction study.
+
+The competitive production example now follows Cong's current-asset clearing equation and solves
+both price residuals. For the package-authored finite instance, an independently written root system
+agrees with rental rate `0.147500` and wage `0.718658`; the shared solver reports clearing norm
+`3.764e-14`. Those numbers are package results, not Cong paper targets.
+
 ## Prespecified scientific stress test
 
 ### Forecasting
@@ -110,7 +137,7 @@ $2.2$ under seeds 11, 42, and 303.
 For the sensitive branch at feedback 2.2 and seed 42, the estimated derivative ranged from about
 $0.008$ at step $10^{-2}$ to $-4.31$ at step $10^{-5}$. The named 1.8 result is therefore supported;
 stability classifications in this more extreme finite-sample regime are exploratory and should not
-be treated as robust economic conclusions.
+be treated as well-supported economic conclusions.
 
 ### Foreign exchange
 
@@ -191,7 +218,7 @@ any change.
 
 | Public claim | Executable evidence | Verdict |
 |---|---|---|
-| The package executes synthetic EWM and DDGE mechanisms | Public facade, runtime, solvers, three built-in laboratories, and external cobweb extension | Supported for the declared single-valued version 0.1 scope |
+| The package executes synthetic EWM and DDGE mechanisms | Public facade, runtime, solvers, five built-in laboratories, and external cobweb extension | Supported for the declared version 0.1 scope |
 | The named forecasting configuration has three roots and two stable outer branches | Analytical derivative, Brent roots, multistart solver, three seeds | Supported at the named 1.8 configuration |
 | The FX mechanism enforces conservation | Example, property, rollout, and 81-case stress tests | Supported within floating-point tolerance for declared mechanisms |
 | FX interventions have general economic effects | Synthetic paired intervals from explicit configurations only | Not supported as a general or empirical claim |
@@ -199,8 +226,9 @@ any change.
 | DDGE universally repairs the credit intervention | Full repair relative to frozen in 10 of 10 cases; selective repair in 8 of 10; intervals include zero relative to no GenAI | Not supported as a universal claim |
 | Selective credit DDGE converges exactly | Zero strict convergences in the ten-population stress test | Not supported; residual-qualified approximation only |
 | Runs are reproducible | Byte-identical seed-42 reruns and deterministic content hashes | Supported on the tested software and platform configurations |
-| The package is empirically calibrated or policy-valid | No external data, calibration, or real decision connector | Not supported and explicitly disclaimed |
-| The package is a Han L3 to L6 world | No LLM agents, self-rewriting capabilities, endogenous institutions, or live correction loop | Not supported and explicitly disclaimed |
+| The package is a Han L3 to L6 world | L3 to L6 substrates pass protocol tests, while the cumulative evidence evaluator identifies the missing controlled and external evidence | Not supported; achieved capability remains L2 |
+| The Appendix D result exactly replicates Cong | Cong supplies the equilibrium template; the package supplies preferences, continuation closure, distribution, production parameters, and numerical values | Not supported; the result is a paper-inspired instantiation |
+| The system is empirically calibrated, policy-valid, or a digital twin | Executable claim gates reject these labels without external validation, policy evaluation, a live data contract, and repeated out-of-sample alignment | Not supported and rejected by code |
 
 Synthetic tests verify code against declared mathematical and accounting contracts. They do not by
 themselves validate the behavioral assumptions, representativeness, or real-world relevance of those
@@ -210,6 +238,10 @@ contracts.
 
 ```bash
 python examples/extensions/cobweb.py
+python examples/production.py
+python examples/cognitive_agent.py
+python examples/offline_alignment.py
+python scripts/run_conformance.py
 python scripts/scientific_stress.py --quick
 python scripts/scientific_stress.py
 python scripts/benchmark_experiments.py --smoke-repeats 10 --research-repeats 5
@@ -225,5 +257,9 @@ five times in isolated processes.
 - Economic assumptions need review by domain specialists outside the implementation process.
 - Empirical calibration and out-of-sample evaluation require an explicit external dataset and target
   estimand.
+- L3 requires controlled language-model execution and behavioral evaluation.
+- L4 and L5 require repeated capability and institutional-outcome experiments.
+- L6 requires a live external-data contract and repeated out-of-sample drift and correction
+  evaluation.
 - Policy or deployment claims require a separate causal design, governance review, and domain safety
   process.
