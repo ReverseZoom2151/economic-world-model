@@ -46,15 +46,16 @@ economic equilibrium, retraining, and full DDGE solution.
 
 ## Project status
 
-The repository is under active development toward `0.1.0`. The numerical kernel is implemented;
-the economic laboratories and stable top-level API are the next vertical slices.
+The repository is under active development toward `0.1.0`. The numerical kernel and first
+mathematical laboratory are implemented; the two agent-economy laboratories and stable top-level
+API are the next vertical slices.
 
 | Capability | Status | What is available |
 |---|---|---|
 | Typed records and protocols | Implemented | Actions, transitions, generated datasets, metadata, equilibrium and DDGE results |
 | Economic-world runtime | Implemented | Deterministic agent order, owned RNGs, constraints before mechanisms, immutable transitions, events |
 | Equilibrium and DDGE numerics | Implemented | Root solving, damping, multistart multiplicity discovery, residual/Jacobian/stability diagnostics |
-| Self-fulfilling forecasting laboratory | In development | Mathematical acceptance case for learning-generated multiplicity |
+| Self-fulfilling forecasting laboratory | Implemented | Population and finite-sample maps, multiplicity, basin/stability tests, independent oracle report |
 | Multi-agent FX laboratory | Planned for `0.1.0` | Heterogeneous agents, balance constraints, batch clearing, conservation diagnostics |
 | AI-mediated credit laboratory | Planned for `0.1.0` | Endogenous adoption, selective labels, frozen and retrained counterfactuals |
 | Experiment artifacts and stable facade | Planned for `0.1.0` | Reproducible manifests, tables, traces, documented `ewm` entry points |
