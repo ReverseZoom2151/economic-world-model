@@ -20,7 +20,7 @@ from .model import (
     FXTrade,
 )
 from .presets import FXSimulationConfig, research_config, smoke_config
-from .simulation import paired_comparisons, run_fx_simulation
+from .simulation import run_fx_simulation
 
 __all__ = [
     "FXAccount",
@@ -37,7 +37,6 @@ __all__ = [
     "clear_market",
     "firm_order",
     "household_order",
-    "paired_comparisons",
     "research_config",
     "run_fx_simulation",
     "smoke_config",

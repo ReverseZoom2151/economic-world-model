@@ -44,7 +44,7 @@ a small mathematical laboratory can solve a DDGE without being an L3 to L6 world
 | Laboratory | Temporal agent world | Endogenous learned component | DDGE solved | Independent checks |
 |---|---|---|---|---|
 | Forecasting | No, scalar aggregate process | Forecasting slope | Yes, population map with multistart | Analytical derivative and Brent bracketing |
-| FX | Yes, L2 symbolic agents | Beliefs adapt within rollout, but no outer learned-system DDGE | No | Conservation property tests and paired configurations |
+| FX | Yes, L2 symbolic agents | Beliefs adapt within rollout, but no outer learned-system DDGE | No | Conservation property tests and replicated paired intervals |
 | Credit | No, synthetic cohort equilibrium | Ridge-logistic screening model | Yes, selective and full-information regimes | Frozen/realized sign test, omniscient oracle, and sensitivity boundary |
 
 ## Public capability matrix
@@ -89,4 +89,3 @@ a small mathematical laboratory can solve a DDGE without being an L3 to L6 world
 - [Approved design](plans/2026-08-27-ewm-prototype-design.md)
 - [Audited dependency map](architecture/ewm_foundations_dependency_map.md)
 - [`tests/`](../tests)
-

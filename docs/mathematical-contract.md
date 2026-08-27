@@ -180,6 +180,9 @@ $$
 
 The tests cover example books and generated feasible books, including budget and inventory
 rejections, clearing equality, deterministic matching, and both conservation identities.
+Prespecified firm-demand, trend-intensity, and fixed-belief interventions are paired with the
+adaptive baseline by common random numbers. The experiment layer reports intervention-minus-baseline
+mean differences and normal-approximation Monte Carlo intervals across independent seeds.
 
 ## AI-mediated credit laboratory
 
@@ -215,6 +218,7 @@ reports both the terminal residual and the smallest recent residual as a floor.
 | Fixed-point multiplicity and stability | `ewm.equilibrium` | `tests/unit/test_fixed_point.py`, `tests/unit/test_diagnostics.py` |
 | Forecasting roots and derivative | `ewm.scenarios.forecasting` | Analytical derivative plus Brent bracketing in `tests/scenarios/test_forecasting.py` |
 | FX feasibility and conservation | `ewm.scenarios.fx` | Example and Hypothesis property tests in `tests/scenarios` and `tests/properties` |
+| FX comparative statics | `ewm.experiments.fx` | Replicated common-random-number effects and interval tests in `tests/integration/test_comparisons.py` |
 | Credit adoption and observation regimes | `ewm.scenarios.credit` | Economic-invariant and sensitivity tests in `tests/scenarios/test_credit.py` |
 | One-way dependencies | Package layer boundaries | AST enforcement in `tests/test_architecture.py` |
 | Reproducible public runs | `ewm.api`, `ewm.experiments`, `ewm.cli` | Integration tests for identical artifacts and public flows |

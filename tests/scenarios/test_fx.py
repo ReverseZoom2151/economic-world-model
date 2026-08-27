@@ -9,7 +9,6 @@ from ewm.scenarios.fx import (
     FXOrder,
     FXState,
     clear_market,
-    paired_comparisons,
     run_fx_simulation,
     smoke_config,
 )
@@ -116,26 +115,16 @@ def test_order_input_order_does_not_change_tie_breaking_or_settlement() -> None:
     assert forward.state == reverse.state
 
 
-def test_adaptive_rollout_is_seeded_and_reports_paired_comparisons() -> None:
+def test_adaptive_rollout_is_seeded_and_conserves_assets() -> None:
     config = smoke_config(periods=12)
 
     first = run_fx_simulation(config, seed=42)
     second = run_fx_simulation(config, seed=42)
-    comparisons = paired_comparisons(config, seed=42)
-
     assert first == second
     assert len(first.prices) == config.periods + 1
     assert len(first.volumes) == config.periods
     assert first.max_cash_residual < 1e-10
     assert first.max_foreign_residual < 1e-10
-    assert set(comparisons) == {
-        "firm_demand_shock",
-        "trend_intensity",
-        "adaptive_beliefs",
-    }
-    assert all("mean_price" in effects for effects in comparisons.values())
-    assert all("volatility" in effects for effects in comparisons.values())
-    assert comparisons["firm_demand_shock"]["total_volume"] >= 0.0
 
 
 def test_config_variants_remain_explicit() -> None:

@@ -100,7 +100,7 @@ reproducible artifact layer, public Python facade, and non-interactive CLI are i
 | Economic-world runtime | Implemented | Deterministic agent order, owned RNGs, constraints before mechanisms, immutable transitions, events |
 | Equilibrium and DDGE numerics | Implemented | Root solving, damping, multistart multiplicity discovery, residual/Jacobian/stability diagnostics |
 | Self-fulfilling forecasting laboratory | Implemented | Population and finite-sample maps, multiplicity, basin/stability tests, independent oracle report |
-| Multi-agent FX laboratory | Implemented | Symbolic households/firms/bank, aggregate balance reservation, uniform-price pro-rata clearing, adaptive beliefs, conservation properties |
+| Multi-agent FX laboratory | Implemented | Symbolic households/firms/bank, aggregate balance reservation, uniform-price pro-rata clearing, adaptive beliefs, conservation properties, replicated paired comparisons |
 | AI-mediated credit laboratory | Implemented | Endogenous decision-flip adoption, common potential outcomes, selective/full-information DDGE, frozen and omniscient counterfactuals, sensitivity boundaries |
 | Experiment artifacts and stable facade | Implemented | Reproducible manifests, tables, traces, `ewm` Python entry points, and CLI |
 
@@ -172,7 +172,7 @@ On Windows PowerShell, activate the environment with `.venv\Scripts\Activate.ps1
 
 ## Quick start
 
-Discover and run the three registered experiments:
+Discover and run the registered experiments:
 
 ```bash
 ewm list
@@ -285,7 +285,9 @@ and banks supply liquidity subject to inventory and exposure limits. A uniform-p
 validates orders, clears compatible demand and supply, and settles cash against foreign currency.
 
 The scientific focus is feasibility, accounting conservation, clearing residuals, endogenous belief
-adaptation, and prespecified comparative statics. It is not an empirical exchange-rate forecaster.
+adaptation, and prespecified comparative statics. Paired simulations reuse random-number streams to
+estimate intervention effects and Monte Carlo intervals. It is not an empirical exchange-rate
+forecaster.
 
 ### 3. AI-mediated credit
 

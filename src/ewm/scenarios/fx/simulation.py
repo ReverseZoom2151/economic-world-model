@@ -1,9 +1,6 @@
-"""Adaptive FX rollout and prespecified paired comparisons."""
+"""Adaptive FX rollout."""
 
 from __future__ import annotations
-
-from collections.abc import Mapping
-from dataclasses import replace
 
 import numpy as np
 
@@ -93,27 +90,3 @@ def run_fx_simulation(config: FXSimulationConfig, *, seed: int) -> FXSimulationR
         max_cash_residual=max(cash_residuals, default=0.0),
         max_foreign_residual=max(foreign_residuals, default=0.0),
     )
-
-
-def paired_comparisons(
-    config: FXSimulationConfig, *, seed: int
-) -> Mapping[str, Mapping[str, float]]:
-    """Run prespecified common-seed FX comparisons and return effect differences."""
-
-    baseline = run_fx_simulation(config, seed=seed).metrics
-    variants = {
-        "firm_demand_shock": replace(config, firm_demand=config.firm_demand * 1.5),
-        "trend_intensity": replace(config, trend_weight=config.trend_weight * 1.5),
-        "adaptive_beliefs": replace(config, adaptive_beliefs=False),
-    }
-    variant_metrics = {
-        name: run_fx_simulation(variant, seed=seed).metrics
-        for name, variant in variants.items()
-    }
-    return {
-        name: {
-            metric: metrics[metric] - baseline_value
-            for metric, baseline_value in baseline.items()
-        }
-        for name, metrics in variant_metrics.items()
-    }

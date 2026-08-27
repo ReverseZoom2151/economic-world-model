@@ -39,6 +39,7 @@ from ewm.scenarios.fx import (
 )
 
 from .credit import run_credit_regimes
+from .fx import replicated_fx_comparisons
 
 SCENARIO_DESCRIPTIONS: Mapping[str, str] = {
     "credit": (
@@ -190,6 +191,64 @@ def _fx(preset: str, seed: int) -> ExperimentPayload:
     )
 
 
+def _fx_comparative_statics(preset: str, seed: int) -> ExperimentPayload:
+    if preset == "smoke":
+        config = fx_smoke_config()
+        replications = 8
+    elif preset == "research":
+        config = fx_research_config()
+        replications = 50
+    else:
+        raise ValueError("preset must be 'smoke' or 'research'")
+    reports = replicated_fx_comparisons(
+        config,
+        seed=seed,
+        replications=replications,
+    )
+    records = tuple(
+        {
+            "comparison": comparison,
+            "metric": metric,
+            **asdict(estimate),
+        }
+        for comparison, estimates in reports.items()
+        for metric, estimate in estimates.items()
+    )
+    metrics = {
+        f"{record['comparison']}.{record['metric']}.{field}": record[field]
+        for record in records
+        for field in (
+            "mean_difference",
+            "standard_error",
+            "interval_low",
+            "interval_high",
+            "sample_size",
+        )
+    }
+    return ExperimentPayload(
+        result=ExperimentResult(
+            scenario="fx",
+            experiment="fx.comparative_statics",
+            metrics=metrics,
+            records=records,
+            metadata={"preset": preset, "seed": seed},
+        ),
+        parameters={**asdict(config), "replications": replications},
+        traces={
+            field: np.asarray([record[field] for record in records])
+            for field in (
+                "mean_difference",
+                "standard_error",
+                "interval_low",
+                "interval_high",
+            )
+        },
+        events=tuple(
+            {"kind": "paired_comparison", **record} for record in records
+        ),
+    )
+
+
 def _credit(preset: str, seed: int) -> ExperimentPayload:
     if preset == "smoke":
         config = paper_like_config(population_size=800)
@@ -267,6 +326,12 @@ EXPERIMENTS: Mapping[str, ExperimentSpec] = {
         "fx",
         "Run the adaptive heterogeneous FX economy and record clearing diagnostics.",
         _fx,
+    ),
+    "fx.comparative_statics": ExperimentSpec(
+        "fx.comparative_statics",
+        "fx",
+        "Estimate replicated common-random-number FX effects and uncertainty intervals.",
+        _fx_comparative_statics,
     ),
 }
 

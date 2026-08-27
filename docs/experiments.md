@@ -28,6 +28,7 @@ Windows PowerShell uses `.venv\Scripts\Activate.ps1` for activation.
 |---|---|---|
 | `forecasting.ddge` | Self-fulfilling forecasting | Distinct fixed points, derivative agreement, stability, and simulated autocorrelation |
 | `fx.rollout` | Heterogeneous foreign exchange | Prices, volume, volatility, rejections, and accounting residuals |
+| `fx.comparative_statics` | Heterogeneous foreign exchange | Replicated paired intervention effects and normal-approximation intervals |
 | `credit.regimes` | AI-mediated credit | Economic, predictive, observation, and DDGE metrics for five regimes |
 
 Run any smoke experiment with
@@ -35,6 +36,7 @@ Run any smoke experiment with
 ```bash
 ewm run forecasting.ddge --preset smoke --seed 42 --output runs
 ewm run fx.rollout --preset smoke --seed 42 --output runs
+ewm run fx.comparative_statics --preset smoke --seed 42 --output runs
 ewm run credit.regimes --preset smoke --seed 42 --output runs
 ```
 
@@ -46,7 +48,8 @@ synthetic; they increase numerical scale, not empirical validity.
 | Scenario | Smoke | Research |
 |---|---|---|
 | Forecasting | 4,096 stationary samples, 64 chains, 256 burn-in periods | 131,072 samples, 256 chains, 2,000 burn-in periods |
-| FX | 24 periods, 6 households | 500 periods, 40 households, deeper bank liquidity |
+| FX rollout | 24 periods, 6 households | 500 periods, 40 households, deeper bank liquidity |
+| FX comparative statics | 8 common-random-number replications | 50 common-random-number replications |
 | Credit | Named paper-like configuration with 800 applicants | 10,000 applicants and tighter DDGE tolerance |
 
 The complete parameter set is serialized into `config.json`; code, documentation, and a remembered
@@ -132,6 +135,11 @@ multistart result.
 - `rejected_orders` counts explicit feasibility failures.
 - `max_cash_residual` and `max_foreign_residual` audit settlement conservation.
 
+`fx.comparative_statics` reports `firm_demand_shock`, `trend_intensity`, and `fixed_beliefs`
+comparisons. Every effect is intervention minus the adaptive baseline. For each output metric it
+records the paired mean difference, standard error, interval endpoints, and replication count. The
+same seed is used for each baseline-intervention pair; consecutive seeds define the replications.
+
 The FX output describes the synthetic mechanism under its configuration. It is not a forecast of an
 observed exchange rate.
 
@@ -168,4 +176,3 @@ python examples/credit.py
 ```
 
 CI executes this contract on Python 3.11 and 3.12.
-
