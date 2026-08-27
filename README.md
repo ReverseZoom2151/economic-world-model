@@ -90,7 +90,7 @@ Cong's Definition 2.6 groups an Economic World Model into named blocks:
 | Block | Paper objects | Package role |
 |---|---|---|
 | Economic spaces | $\mathcal{S},\mathcal{A},\mathcal{Y},\mathcal{I}$ | States, actions, outcomes, and regimes |
-| Agent population | $N$ and $\left\{(\mathcal{I}_t^n,\Pi^n,\mu_t^n)\right\}_{n=1}^N$ | Information, admissible policies, and beliefs for each agent |
+| Agent population | $N$ and $\lbrace(\mathcal{I}_t^n,\Pi^n,\mu_t^n)\rbrace_{n=1}^{N}$ | Information, admissible policies, and beliefs for each agent |
 | Economic coherence | $\mathcal{C}$ | Hard equalities, hard inequalities, and soft diagnostics |
 | Learned system | $T_\theta,O_\theta$ | Transition and observation kernels |
 | Intervention semantics | $\Psi$ | Declared component changes under each regime |
@@ -99,12 +99,11 @@ For learned components $\theta$ and regime $i$, the inner correspondence holds t
 fixed:
 
 $$
-E_i(\theta)=\left\{(\pi,\mu)\;\middle|\;(\pi,\mu)
-\text{ satisfy the inner conditions under }(\theta,i)\right\}.
+E_i(\theta)=\lbrace(\pi,\mu)\mid \pi\text{ is behaviorally optimal or admissible, and }
+\mu\text{ is belief-consistent under }(\theta,i)\rbrace.
 $$
 
-The two inner conditions are behavioral optimality or admissibility and belief consistency. If
-$E_i(\theta)$ is a singleton, write its selector as
+These are the two inner conditions. If $E_i(\theta)$ is a singleton, write its selector as
 $S_i(\theta)=(\pi_i(\theta),\mu_i(\theta))$. Data generation $D$ and learning $L$ then induce the
 outer map
 

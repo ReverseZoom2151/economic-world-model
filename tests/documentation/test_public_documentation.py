@@ -24,12 +24,13 @@ def test_public_documentation_matches_the_current_release_contract() -> None:
     assert "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940" in readme
     assert "https://arxiv.org/abs/2608.06020v1" in readme
     assert r"E_i(\theta)" in readme
+    assert r"E_i(\theta)=\lbrace" in readme
+    assert r"\rbrace." in readme
+    assert r"\left\{" not in readme
+    assert r"\begin{array}" not in readme
     assert r"F_i(\theta)" in readme
     assert r"\theta^{\star}=F_i(\theta^{\star})" in readme
-    assert (
-        r"\left\{(\mathcal{I}_t^n,\Pi^n,\mu_t^n)\right\}_{n=1}^N"
-        in readme
-    )
+    assert r"\lbrace(\mathcal{I}_t^n,\Pi^n,\mu_t^n)\rbrace_{n=1}^{N}" in readme
     assert "ewm.run.v2" in readme
     assert "ewm verify-run" in readme
     assert "ewm replay-run" in readme
