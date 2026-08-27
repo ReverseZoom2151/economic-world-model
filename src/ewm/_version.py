@@ -1,5 +1,3 @@
-"""Distribution version without importing the public API graph."""
+"""Single source of truth for the distribution version."""
 
-from importlib.metadata import version
-
-__version__ = version("economic-world-model")
+__version__ = "0.2.0"

@@ -4,12 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "economic-world-model"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Transparent synthetic laboratories for Economic World Models and Data-Driven Generative Equilibria"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
 authors = [{ name = "ReverseZoom2151" }]
+maintainers = [{ name = "ReverseZoom2151" }]
 keywords = ["economics", "world-models", "agent-based-modeling", "equilibrium", "simulation"]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -35,6 +36,7 @@ ewm-run-protocol = "ewm.experiments.protocol_cli:main"
 dev = [
   "build>=1.2",
   "coverage[toml]>=7.6",
+  "hatchling>=1.26",
   "hypothesis>=6.100",
   "mypy>=1.11",
   "pypdf>=6,<7",
@@ -44,16 +46,43 @@ dev = [
   "scikit-learn-stubs>=0.0.3",
   "scipy-stubs>=1.17.1.5,<1.18; python_version < '3.12'",
   "scipy-stubs>=1.18.1.0; python_version >= '3.12'",
+  "twine>=6.1",
+]
+mutation = ["mutmut==3.7.0"]
+release = ["cffconvert==2.0.0"]
+security = [
+  "bandit[toml]>=1.8",
+  "pip-audit>=2.9",
 ]
 
 [project.urls]
 Repository = "https://github.com/ReverseZoom2151/economic-world-model"
 Issues = "https://github.com/ReverseZoom2151/economic-world-model/issues"
+Documentation = "https://github.com/ReverseZoom2151/economic-world-model#readme"
+Changelog = "https://github.com/ReverseZoom2151/economic-world-model/blob/main/CHANGELOG.md"
+Security = "https://github.com/ReverseZoom2151/economic-world-model/security/policy"
 "Cong paper" = "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940"
 "Han et al. paper" = "https://arxiv.org/abs/2608.06020v1"
 
+[tool.hatch.version]
+path = "src/ewm/_version.py"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/ewm"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/.github",
+  "/examples",
+  "/references",
+  "/scripts",
+  "/src",
+  "/tests",
+  "/*.cff",
+  "/*.md",
+  "/LICENSE",
+  "/pyproject.toml",
+]
 
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers"
@@ -82,3 +111,10 @@ fail_under = 85
 precision = 1
 show_missing = true
 skip_covered = true
+
+[tool.mutmut]
+source_paths = ["src/ewm"]
+only_mutate = ["src/ewm/experiments/statistics.py"]
+pytest_add_cli_args_test_selection = ["tests/unit/test_statistics.py"]
+pytest_add_cli_args = ["-q"]
+mutate_only_covered_lines = false
