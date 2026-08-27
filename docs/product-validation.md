@@ -1,6 +1,6 @@
 # Local product validation
 
-**Document version:** 1.1<br>
+**Document version:** 1.2<br>
 **Last reviewed:** 2026-08-27<br>
 **Environment:** Python 3.12.3 on x86-64 WSL2, 64 logical CPUs<br>
 **Scope:** Version `0.1.0` software behavior and synthetic scientific evidence
@@ -14,6 +14,30 @@ conformance, prespecified scientific stress tests, and isolated performance meas
 This does not test whether independent economic-AI researchers understand or value the package.
 That requires external participants. It also does not provide empirical validation, policy validity,
 or evidence that the synthetic economies represent an observed economy.
+
+## Final local release audit
+
+The 27 August 2026 release audit ran against the `main` lineage through `a0410bc`. A later section
+records the pushed audit commit and GitHub Actions runs after remote verification.
+
+| Gate | Result |
+|---|---|
+| Ruff | Passed across the repository |
+| Strict mypy | Passed across 67 source files |
+| Pytest with branch coverage | 221 passed; 85.84% total branch coverage against an 85% floor |
+| Source and wheel build | `economic_world_model-0.1.0.tar.gz` and `economic_world_model-0.1.0-py3-none-any.whl` built in isolated environments |
+| Paper conformance | 10 passed; both locked paper hashes matched; Han level L2; DDGE supported; empirical validity not assessed |
+| Full scientific stress | All seven checks passed across 18 forecasting cases, 81 FX configurations, 50 paired FX replications, and 10 credit populations |
+| Full isolated benchmark | Eight experiment-preset cells completed with stable run hashes |
+| Fresh wheel installation | `pip check` passed in a new Python 3.12 virtual environment |
+| Package contents | `ewm/py.typed` present in the wheel; paper registries, scripts, examples, tests, and docs present in the source distribution |
+| Installed public surface | CLI discovery and all eight public examples passed against the installed wheel |
+| Claim audit | Exact, calibration, twin, and L3 to L6 terms are tied to evidence or an explicit limitation |
+
+The conformance report's source fingerprint was
+`44c14067a914f445bacac7be299b0ba68e86a8c24d0a12fa5e57eff3f61f185e`.
+The clean-install import resolved to the temporary environment's `site-packages/ewm`, which rules out
+an accidental editable-source import during the wheel examples.
 
 ## Protocol
 
@@ -189,20 +213,20 @@ interventions, including results that did and did not meet the strict sign-rever
 
 Each measurement ran in a fresh process. Elapsed time starts immediately before the public
 `run_experiment` call, so it excludes interpreter startup while peak RSS includes imported numerical
-libraries. Smoke results use 10 samples and research results use 5. The p95 and p99 research values
-are interpolated from five samples and should be treated as a local baseline, not a production
+libraries. Smoke results use 10 samples and research results use 3. The p95 and p99 research values
+are interpolated from three samples and should be treated as a local baseline, not a production
 service-level objective.
 
 | Experiment | Preset | p50 | p95 | p99 | Maximum peak RSS |
 |---|---|---:|---:|---:|---:|
-| Credit regimes | Smoke | 0.934s | 1.013s | 1.047s | 171 MiB |
-| Credit regimes | Research | 7.757s | 8.110s | 8.151s | 316 MiB |
-| Forecasting DDGE | Smoke | 0.462s | 0.465s | 0.466s | 152 MiB |
-| Forecasting DDGE | Research | 3.656s | 3.665s | 3.665s | 157 MiB |
-| FX comparisons | Smoke | 0.337s | 0.348s | 0.351s | 149 MiB |
-| FX comparisons | Research | 39.439s | 39.781s | 39.785s | 154 MiB |
-| FX rollout | Smoke | 0.256s | 0.268s | 0.269s | 149 MiB |
-| FX rollout | Research | 0.447s | 0.451s | 0.451s | 150 MiB |
+| Credit regimes | Smoke | 0.996s | 1.045s | 1.046s | 173 MiB |
+| Credit regimes | Research | 7.710s | 7.920s | 7.939s | 315 MiB |
+| Forecasting DDGE | Smoke | 0.537s | 0.577s | 0.582s | 153 MiB |
+| Forecasting DDGE | Research | 3.787s | 3.912s | 3.923s | 158 MiB |
+| FX comparisons | Smoke | 0.427s | 0.432s | 0.433s | 151 MiB |
+| FX comparisons | Research | 38.819s | 39.054s | 39.075s | 155 MiB |
+| FX rollout | Smoke | 0.358s | 0.407s | 0.408s | 150 MiB |
+| FX rollout | Research | 0.608s | 0.649s | 0.653s | 151 MiB |
 
 One cold CLI observation took approximately 1.6 to 2.3 seconds for the smoke experiments, showing
 that interpreter and scientific-library startup dominate the smallest workloads.
@@ -244,11 +268,11 @@ python examples/offline_alignment.py
 python scripts/run_conformance.py
 python scripts/scientific_stress.py --quick
 python scripts/scientific_stress.py
-python scripts/benchmark_experiments.py --smoke-repeats 10 --research-repeats 5
+python scripts/benchmark_experiments.py
 ```
 
 The full benchmark takes several minutes because it executes the 50-replication FX research workload
-five times in isolated processes.
+three times in isolated processes, in addition to ten smoke samples.
 
 ## Work that still requires external participants or data
 
