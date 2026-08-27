@@ -105,7 +105,7 @@ reproducible artifact layer, public Python facade, and non-interactive CLI are i
 | Economic-world runtime | Implemented | Deterministic agent order, owned RNGs, constraints before mechanisms, immutable transitions, events |
 | Equilibrium and DDGE numerics | Implemented | Root solving, damping, multistart multiplicity discovery, residual/Jacobian/stability diagnostics |
 | Cong scalar DDGE laboratory | Implemented | Exact Appendix A.8 equations, closed forms, pitchfork, amplification, damping, and independent bracketing |
-| Self-fulfilling forecasting laboratory | Implemented | Population and finite-sample maps, multiplicity, basin/stability tests, independent oracle report |
+| Self-fulfilling forecasting laboratory | Implemented | Exact Figure 4 parameters and targets, population and finite-sample maps, basin/stability tests, independent oracle report |
 | Multi-agent FX laboratory | Implemented | Symbolic households/firms/bank, aggregate balance reservation, uniform-price pro-rata clearing, adaptive beliefs, conservation properties, replicated paired comparisons |
 | AI-mediated credit laboratory | Implemented | Endogenous decision-flip adoption, common potential outcomes, residual-qualified selective/full-information DDGE solvers, frozen and omniscient counterfactuals, sensitivity boundaries |
 | Experiment artifacts and stable facade | Implemented | Reproducible manifests with source/runtime identity, tables, traces, `ewm` Python entry points, and CLI |
@@ -297,7 +297,10 @@ that process are used to re-estimate the slope. This laboratory tests uniqueness
 feedback, pitchfork multiplicity after the critical value, local stability, basin dependence,
 finite-sample escape from an unstable equilibrium, and the limits of within-regime predictive fit.
 
-It is the mathematical acceptance test for the generic DDGE solver.
+The Figure 4 preset reproduces the reported slopes near $\{-0.795,0,+0.795\}$ at $c=1.8$ and
+$\sigma=0.5$, including 4,000-observation retraining rounds and the ACF contrast. The paper omits
+the path damping coefficient, so reports identify it as a package choice. This laboratory is also the
+mathematical acceptance test for the generic DDGE solver.
 
 ### 3. Heterogeneous foreign exchange
 

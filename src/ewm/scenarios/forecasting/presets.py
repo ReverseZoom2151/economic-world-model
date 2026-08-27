@@ -29,3 +29,29 @@ def research_config(*, feedback: float = 1.8) -> ForecastingConfig:
         chains=256,
         seed=123,
     )
+
+
+def paper_config() -> ForecastingConfig:
+    """Return Figure 4's population-map parameters and a high-precision integration grid."""
+
+    return ForecastingConfig(
+        feedback=1.8,
+        noise_std=0.5,
+        burn_in=3_000,
+        sample_size=262_144,
+        chains=512,
+        seed=123,
+    )
+
+
+def paper_finite_sample_config(*, seed: int = 123) -> ForecastingConfig:
+    """Return Figure 4(c)'s source-specified 4,000-observation round configuration."""
+
+    return ForecastingConfig(
+        feedback=1.8,
+        noise_std=0.5,
+        burn_in=512,
+        sample_size=4_000,
+        chains=1,
+        seed=seed,
+    )

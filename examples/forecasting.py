@@ -6,6 +6,7 @@ import numpy as np
 
 import ewm
 from ewm.equilibrium import FixedPointConfig
+from ewm.scenarios.forecasting import paper_replication_report
 
 
 def main() -> None:
@@ -24,6 +25,14 @@ def main() -> None:
             f"theta={point.theta[0]: .8f}  residual={point.residual_norm:.2e}  "
             f"stable={point.stable}  spectral_radius={point.spectral_radius:.6f}"
         )
+
+    paper = paper_replication_report(seed=42, rounds=2, damping=0.5)
+    assert abs(paper.population_roots[2] - 0.795) < 0.003
+    print(
+        f"paper_outer_root={paper.population_roots[2]:.8f}  "
+        f"momentum_acf={paper.momentum_autocorrelation:.6f}  "
+        f"zero_acf={paper.zero_autocorrelation:.6f}"
+    )
 
 
 if __name__ == "__main__":

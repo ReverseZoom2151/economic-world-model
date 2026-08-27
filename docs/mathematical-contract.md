@@ -254,6 +254,19 @@ branches and an unstable origin. An independent Brent bracketing oracle verifies
 iteration. A separate realized finite-sample update retains sampling noise and can leave the unstable
 origin.
 
+The named `paper_config` locks Figure 4's reported $c=1.8$ and $\sigma=0.5$. Its population
+integration reproduces the three slopes $\{-0.795,0,+0.795\}$ within $0.003$, checks
+$F'(0)=c$ within one percent, and verifies stable outer branches. The population implementation
+uses the model's analytical odd symmetry, so the two outer roots are exact negatives rather than
+independent Monte Carlo approximations.
+
+`paper_finite_sample_config` uses the source-specified 4,000 observations per retraining round.
+Seeded paths from $\theta_1^{(0)}=\pm0.10$ select the matching outer branch, while sampling noise
+ejects an initialization at zero. The deployed momentum root produces a first autocorrelation near
+the fitted slope, while the zero model produces a nearly flat ACF. Cong does not report the damping
+coefficient used for this panel. Every replication report therefore records the selected damping as
+a package-authored implementation choice.
+
 ## Foreign-exchange laboratory
 
 At candidate price $p$, aggregate executable demand and supply are

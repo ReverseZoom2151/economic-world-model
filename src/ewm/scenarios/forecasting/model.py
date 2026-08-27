@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
+
+from ewm.equilibrium import damped_update
 
 
 @dataclass(frozen=True, slots=True)
@@ -61,12 +63,14 @@ def population_update(theta: float, config: ForecastingConfig) -> float:
 
     if theta == 0.0:
         return 0.0
-    states = stationary_samples(theta, config)
-    conditional_mean = np.tanh(config.feedback * theta * states)
+    magnitude = abs(theta)
+    states = stationary_samples(magnitude, config)
+    conditional_mean = np.tanh(config.feedback * magnitude * states)
     denominator = float(np.mean(states * states))
     if denominator <= 0.0:
         raise ValueError("stationary sample has zero second moment")
-    return float(np.mean(states * conditional_mean) / denominator)
+    positive_update = float(np.mean(states * conditional_mean) / denominator)
+    return float(np.copysign(positive_update, theta))
 
 
 def simulate_series(
@@ -88,16 +92,48 @@ def simulate_series(
     return series[config.burn_in :]
 
 
-def finite_sample_update(theta: float, config: ForecastingConfig) -> float:
+def finite_sample_update(
+    theta: float,
+    config: ForecastingConfig,
+    *,
+    seed: int | None = None,
+) -> float:
     """Regress realized transitions, retaining the sampling noise absent from the population map."""
 
-    series = simulate_series(theta, config)
+    series = simulate_series(theta, config, seed=seed)
     current = series[:-1]
     following = series[1:]
     denominator = float(current @ current)
     if denominator <= 0.0:
         raise ValueError("realized sample has zero second moment")
     return float((current @ following) / denominator)
+
+
+def finite_sample_retraining_path(
+    initial_theta: float,
+    config: ForecastingConfig,
+    *,
+    rounds: int,
+    damping: float = 0.5,
+    seed: int | None = None,
+) -> tuple[float, ...]:
+    """Retrain on a fresh finite cohort each round with explicit damping and seed."""
+
+    if rounds < 0:
+        raise ValueError("rounds must be non-negative")
+    if not 0.0 < damping <= 1.0:
+        raise ValueError("damping must lie in (0, 1]")
+    rng = np.random.default_rng(config.seed if seed is None else seed)
+    theta = float(initial_theta)
+    path = [theta]
+    for _round in range(rounds):
+        round_seed = int(rng.integers(0, np.iinfo(np.uint32).max))
+        raw = finite_sample_update(theta, replace(config, seed=round_seed))
+        theta = float(
+            damped_update(np.array([theta]), np.array([raw]), damping)[0]
+        )
+        path.append(theta)
+    return tuple(path)
 
 
 @dataclass(frozen=True, slots=True)

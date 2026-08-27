@@ -251,11 +251,11 @@ source = "cong-2026"
 section = "Appendix C.4, Laboratory III"
 pages = "65-66, 72"
 summary = "A deployed slope creates the aggregate persistence on which OLS retrains."
-status = "partial"
+status = "implemented"
 claim = "exact-replication"
-implementation = ["src/ewm/scenarios/forecasting/model.py", "src/ewm/scenarios/forecasting/oracles.py"]
-evidence = ["tests/scenarios/test_forecasting.py"]
-limitation = "The mechanism and roots are implemented; paper-target parameters and all four panel claims need a dedicated replication test."
+implementation = ["src/ewm/scenarios/forecasting/model.py", "src/ewm/scenarios/forecasting/oracles.py", "src/ewm/scenarios/forecasting/verification.py"]
+evidence = ["tests/scenarios/test_forecasting.py", "tests/scenarios/test_forecasting_replication.py"]
+limitation = "The paper omits the damping coefficient for its finite-sample paths; the report labels the selected coefficient as package-authored."
 
 [[item]]
 id = "cong-prop-d.1"
