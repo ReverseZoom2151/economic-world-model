@@ -573,9 +573,11 @@ source = "han-et-al-2026"
 section = "Section 3.1, L4"
 pages = "8"
 summary = "Agents persistently expand strategies, skills, tools, memories, or routines."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "No persistent evaluated capability acquisition exists."
+implementation = ["src/ewm/capabilities/evolution.py"]
+evidence = ["tests/unit/test_capability_evolution.py"]
+limitation = "The artifact-neutral registry enforces evaluated promotion, persistence, and rollback, but no agent has yet proposed and empirically improved a capability in a language-model experiment, so L4 is not awarded."
 
 [[item]]
 id = "han-level-l5"
