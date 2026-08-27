@@ -307,8 +307,8 @@ pages = "4"
 summary = "Agent beliefs update from prior beliefs, private state, aggregates, controls, and institutions."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/agents.py"]
-evidence = ["tests/scenarios/test_fx.py"]
+implementation = ["src/ewm/scenarios/fx/agents.py", "src/ewm/capabilities/cognition.py"]
+evidence = ["tests/scenarios/test_fx.py", "tests/unit/test_cognition.py"]
 
 [[item]]
 id = "han-eq-4"
@@ -318,8 +318,8 @@ pages = "4"
 summary = "Policies map information and beliefs into economic actions."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/protocols.py", "src/ewm/scenarios/fx/agents.py"]
-evidence = ["tests/unit/test_world.py", "tests/scenarios/test_fx.py"]
+implementation = ["src/ewm/core/protocols.py", "src/ewm/scenarios/fx/agents.py", "src/ewm/capabilities/cognition.py"]
+evidence = ["tests/unit/test_world.py", "tests/scenarios/test_fx.py", "tests/unit/test_cognition.py"]
 
 [[item]]
 id = "han-eq-5"
@@ -361,11 +361,10 @@ source = "han-et-al-2026"
 section = "Section 4.1, Agents"
 pages = "11-12"
 summary = "Stateful economic actors observe permitted signals and produce typed feasible actions."
-status = "partial"
+status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/agents.py", "src/ewm/core/protocols.py"]
-evidence = ["tests/unit/test_world.py", "tests/scenarios/test_fx.py"]
-limitation = "Roles, objectives, beliefs, memory, tools, and skills are not yet one declarative specification."
+implementation = ["src/ewm/core/agents.py", "src/ewm/core/specs.py", "src/ewm/capabilities/cognition.py"]
+evidence = ["tests/unit/test_world.py", "tests/unit/test_specs.py", "tests/unit/test_cognition.py"]
 
 [[item]]
 id = "han-component-environment"
@@ -562,9 +561,11 @@ source = "han-et-al-2026"
 section = "Section 3.1, L3"
 pages = "7-8"
 summary = "Language-model agents use explicit beliefs, expectations, memory, tools, and language-mediated reasoning."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "A provider-neutral cognitive substrate and behavioral evidence gates are planned; no L3 claim is currently made."
+implementation = ["src/ewm/capabilities/cognition.py"]
+evidence = ["tests/unit/test_cognition.py", "examples/cognitive_agent.py"]
+limitation = "The provider-neutral substrate passes deterministic protocol tests, but fake-backend conformance does not establish language-model behavioral fidelity or award L3."
 
 [[item]]
 id = "han-level-l4"

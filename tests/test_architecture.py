@@ -11,6 +11,7 @@ PACKAGE = SRC / "ewm"
 
 LAYER_IMPORTS = {
     "core": ("ewm.core",),
+    "capabilities": ("ewm.capabilities", "ewm.core"),
     "equilibrium": ("ewm.core", "ewm.equilibrium"),
     "scenarios": ("ewm.core", "ewm.scenarios"),
     "experiments": (
