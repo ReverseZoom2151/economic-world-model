@@ -85,8 +85,9 @@ exact numerical result.
 | Area | Claim class | Current evidence |
 |---|---|---|
 | Cong EWM and DDGE objects | Source definition and conformance | Typed definitions, finite correspondence certificates, inner and outer residuals, theorem diagnostics |
-| Cong Laboratory II | Exact replication | Scalar equations, displacement, pitchfork, damping, stability, and independent root checks |
-| Cong Laboratory III | Exact replication with one disclosed package choice | Figure 4 parameters and slopes near $\{-0.795,0,+0.795\}$; the paper omits path damping |
+| Cong Laboratory II | Exact replication | Scalar equations, displacement, pitchfork, damping, stability, and internal root cross-checks |
+| Cong Laboratory III population | Exact replication target match | Figure 4 parameters and slopes near $\{-0.795,0,+0.795\}$; an external code-independent oracle is pending |
+| Cong Laboratory III finite sample | Paper-inspired | The paper specifies 4,000 observations but omits path damping, which is package-authored |
 | Cong Laboratory I | Qualitative reconstruction | Credit adoption, selective outcomes, retraining, oracle comparisons, and a machine-readable missing-input registry |
 | Cong Appendix D | Paper-inspired | Household budget, firm problem, and market clearing from the paper; preferences, technology parameters, continuation closure, and finite distribution from this package |
 | Han specification and runtime | Protocol conformance | Agent, environment, co-evolution, alignment, evaluation, and all seven logged runtime calls |
@@ -102,7 +103,7 @@ paper-level checks with:
 $ python scripts/run_conformance.py
 ...
 "achieved_level": "L2"
-"ddge_consistency": "supported"
+"ddge_assessments": {"cong-lab-ii": {"status": "supported"}, ...}
 "empirical_validity": "not_assessed"
 ```
 
@@ -197,7 +198,7 @@ does not prove Proposition D.1 for the general model.
 
 | Laboratory | Main mechanism | Primary evidence |
 |---|---|---|
-| [Scalar DDGE](examples/scalar.py) | Linear behavior-response feedback with linear or saturating learning | Closed forms, independent bracketing, multiplicity and stability tests |
+| [Scalar DDGE](examples/scalar.py) | Linear behavior-response feedback with linear or saturating learning | Closed forms, internal bracketing cross-checks, multiplicity and stability tests |
 | [Self-fulfilling forecasting](examples/forecasting.py) | A deployed slope changes the process used to retrain that slope | Population and finite-sample maps, Figure 4 targets, basin and ACF checks |
 | [Heterogeneous FX](examples/fx.py) | Households, firms, and banks clear a uniform-price batch market | Budget and inventory feasibility, conservation properties, paired intervention intervals |
 | [AI-mediated credit](examples/credit.py) | Text polishing changes selection while repayment quality stays fixed | Five regimes, selective labels, oracle comparisons, source-target differences |

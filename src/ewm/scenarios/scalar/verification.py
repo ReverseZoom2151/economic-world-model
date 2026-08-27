@@ -58,7 +58,7 @@ def bracketed_fixed_points(
 
 @dataclass(frozen=True, slots=True)
 class ScalarVerificationReport:
-    """Closed-form facts checked by an independent bracketing oracle."""
+    """Closed-form facts checked by an internal bracketing cross-check."""
 
     bracketing_roots: tuple[float, ...]
     derivatives: tuple[float, ...]

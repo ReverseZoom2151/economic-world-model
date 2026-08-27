@@ -84,19 +84,21 @@ python scripts/run_conformance.py
 
 Expected conditions:
 
-- the `tests/conformance` suite reports 10 passed tests;
+- the declared conformance and capability-evidence tests pass;
 - `schema_version` is `ewm.conformance.v1`;
 - `paper_sources` contains the expected registry hashes shown in the table above;
 - `source_verification` reports the observation for each local PDF, including `not_present` when an
   ignored file is absent;
-- `capability_assessment.achieved_level` is `L2`;
-- `ddge_consistency` is `supported`;
+- `capability_assessment.achieved_level` is `L2` after a passing suite and `L0` when the suite is
+  failed or not run;
+- `ddge_assessments.cong-lab-ii.status` is `supported` after the scalar conformance check passes,
+  while unexercised scenario claims remain `not_assessed`;
 - `empirical_validity` is `not_assessed`;
 - the report lists the missing external evidence for L3 through L6, calibration, policy use, and
   exact credit replication.
 
-The source fingerprint changes when Python files change. Compare it only when reproducing a specific
-commit.
+The conformance fingerprint changes when package code, conformance registries and protocols, or the
+reporter changes. Compare it only when reproducing a specific commit.
 
 To combine conformance with a strict local PDF gate, run:
 
@@ -121,7 +123,8 @@ The exact obligations are:
 - Equation (A.1) agrees with its closed-form inner solution;
 - the linear intervention fixed point agrees with the closed form within $10^{-11}$;
 - the saturating model has one DDGE when composite gain $g\leq1$ and three when $g>1$;
-- independent sign bracketing and fixed-point iteration agree within $10^{-9}$;
+- internal sign bracketing and fixed-point iteration agree within $10^{-9}$; these methods share
+  package model primitives and are not an external code-independent oracle;
 - every fixed-point residual is below $10^{-10}$;
 - the Figure 3 near-onset relative error stays below `0.0265` through $g=1.045$ and is
   $0.029\pm0.0002$ at $g=1.05$;
@@ -131,7 +134,7 @@ The exact obligations are:
 The public example's current symmetric roots are approximately
 $\{-0.71251478,0,0.71251478\}$, with the origin unstable and the outer roots stable.
 
-## Cong Laboratory III: exact reported targets with disclosed damping
+## Cong Laboratory III: population targets and package-authored finite-sample damping
 
 Run:
 
@@ -162,6 +165,11 @@ Expected acceptance conditions:
 
 The current public report prints `paper_outer_root=0.79532610`, `momentum_acf=0.797495`, and
 `zero_acf=0.017492` for seed 42.
+
+The population target match and the finite-sample path are separate claims. The population roots
+match the locked source targets, but the current analytical and bracketing checks share package
+model primitives and are internal cross-checks, not an external code-independent oracle. The
+finite-sample path is `paper-inspired` because its damping coefficient is package-authored.
 
 ## Cong Laboratory I: qualitative credit reconstruction
 

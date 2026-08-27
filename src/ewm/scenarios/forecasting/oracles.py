@@ -1,4 +1,4 @@
-"""Independent numerical checks for the forecasting fixed points."""
+"""Internal numerical cross-checks for the forecasting fixed points."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from .model import (
 
 @dataclass(frozen=True, slots=True)
 class ForecastingOracleReport:
-    """Independent bracketing, derivative, stability, and simulation checks."""
+    """Bracketing, derivative, stability, and simulation cross-checks."""
 
     bracketing_roots: tuple[float, ...]
     analytical_derivative_zero: float
