@@ -99,17 +99,12 @@ For learned components $\theta$ and regime $i$, the inner correspondence holds t
 fixed:
 
 $$
-E_i(\theta)
-=
-\left\{(\pi,\mu):
-\begin{array}{l}
-\pi\text{ satisfies behavioral optimality or admissibility, and}\\
-\mu\text{ is belief-consistent under }(\theta,i)
-\end{array}
-\right\}.
+E_i(\theta)=\left\{(\pi,\mu)\;\middle|\;(\pi,\mu)
+\text{ satisfy the inner conditions under }(\theta,i)\right\}.
 $$
 
-If $E_i(\theta)$ is a singleton, write its selector as
+The two inner conditions are behavioral optimality or admissibility and belief consistency. If
+$E_i(\theta)$ is a singleton, write its selector as
 $S_i(\theta)=(\pi_i(\theta),\mu_i(\theta))$. Data generation $D$ and learning $L$ then induce the
 outer map
 
