@@ -263,9 +263,11 @@ source = "cong-2026"
 section = "Proposition D.1"
 pages = "66-68"
 summary = "Standard assumptions give competitive prices and allocations for each feasible aggregate state."
-status = "planned"
+status = "partial"
 claim = "paper-inspired"
-limitation = "Cong supplies a template, not complete primitives; any executable instantiation must label package-authored preferences and technology."
+implementation = ["src/ewm/scenarios/production/model.py", "src/ewm/experiments/production.py"]
+evidence = ["tests/scenarios/test_production.py", "examples/production.py"]
+limitation = "The package instantiates Equations D.1-D.7 with disclosed CRRA, continuation-value, finite-distribution, and decreasing-returns Cobb-Douglas choices that Cong does not specify. Numerical existence for this bounded instance is not a proof of Proposition D.1 in general."
 
 [[item]]
 id = "cong-theorem-e.1"

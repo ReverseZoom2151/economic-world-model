@@ -10,6 +10,7 @@ from .credit import (
     run_credit_regimes,
 )
 from .fx import replicated_fx_comparisons
+from .production import solve_production_equilibrium
 from .registry import EXPERIMENTS, SCENARIO_DESCRIPTIONS, experiment_spec
 from .runner import ExperimentRun, run_experiment
 from .statistics import PairedEstimate, paired_estimate
@@ -30,4 +31,5 @@ __all__ = [
     "replicated_fx_comparisons",
     "run_credit_regimes",
     "run_experiment",
+    "solve_production_equilibrium",
 ]

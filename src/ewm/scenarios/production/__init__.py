@@ -1,11 +1,10 @@
-"""Economic scenario laboratories built on the shared EWM kernel.
+"""Competitive production-economy instantiation of Cong's Appendix D template."""
 
-The `scalar` module reproduces Cong's closed-form Laboratory II independently from the
-simulation-based forecasting and credit laboratories.
-"""
-
-from .production import (
+from .model import (
+    PACKAGE_AUTHORED_PRIMITIVES,
     DistributionState,
+    FirmDecision,
+    HouseholdDecision,
     ProductionEconomy,
     ProductionEquilibrium,
     ProductionPrimitives,
@@ -13,7 +12,10 @@ from .production import (
 )
 
 __all__ = [
+    "PACKAGE_AUTHORED_PRIMITIVES",
     "DistributionState",
+    "FirmDecision",
+    "HouseholdDecision",
     "ProductionEconomy",
     "ProductionEquilibrium",
     "ProductionPrimitives",
