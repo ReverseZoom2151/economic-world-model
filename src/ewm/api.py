@@ -14,6 +14,7 @@ from ewm.core import (
     EnvironmentSpecification,
     EvaluationSpecification,
     WorldSpecification,
+    compile_world,
 )
 from ewm.core.specs import (
     agent,
@@ -179,6 +180,7 @@ __all__ = [
     "agent_updates",
     "alignment",
     "coevolution",
+    "compile_world",
     "constraints",
     "correction",
     "data_sources",

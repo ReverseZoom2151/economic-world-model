@@ -2,6 +2,18 @@
 
 from .agents import FunctionalAgent
 from .coevolution import ControlledCoevolution, ProposalRule
+from .compiler import (
+    AgentFactory,
+    InitialStateFactory,
+    MechanismFactory,
+    MechanismKey,
+    ObservationFactory,
+    RuntimeAdapter,
+    RuntimeAdapterRegistry,
+    WorldBindings,
+    compile_world,
+    mechanism_key,
+)
 from .constraints import ConstraintSet, FunctionalConstraint
 from .definition import (
     AgentBlock,
@@ -85,6 +97,7 @@ __all__ = [
     "EVENT_SCHEMA_VERSION",
     "Action",
     "AgentBlock",
+    "AgentFactory",
     "AgentPolicy",
     "AgentSpecification",
     "AlignmentReportRecord",
@@ -126,6 +139,7 @@ __all__ = [
     "FunctionalMechanism",
     "FunctionalStateReconciler",
     "GeneratedDataset",
+    "InitialStateFactory",
     "InstitutionChangeProposal",
     "InstitutionChangeReport",
     "InstitutionManifestRecord",
@@ -135,12 +149,17 @@ __all__ = [
     "LayeredEvaluationReport",
     "MeasurementStatus",
     "Mechanism",
+    "MechanismFactory",
+    "MechanismKey",
     "MechanismSpecification",
     "MetricMeasurement",
+    "ObservationFactory",
     "ProposalRule",
     "RealWorldAlignment",
     "ReconciliationRule",
     "RunMetadata",
+    "RuntimeAdapter",
+    "RuntimeAdapterRegistry",
     "SchedulerSpecification",
     "SpaceDefinition",
     "StateFeasibilityRule",
@@ -149,10 +168,13 @@ __all__ = [
     "Transition",
     "UpdateSpecification",
     "World",
+    "WorldBindings",
     "WorldComponent",
     "WorldSpecification",
+    "compile_world",
     "convex_update",
     "evaluate_event_log",
     "make_rng",
+    "mechanism_key",
     "spawn_rngs",
 ]
