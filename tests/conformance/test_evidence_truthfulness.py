@@ -77,6 +77,8 @@ def test_failed_or_unrun_conformance_cannot_emit_supported_evidence(
 
     assert report["capability_assessment"]["achieved_level"] == "L0"
     assert report["capability_assessment"]["satisfied_requirements"] == []
+    assert report["han_l1_l2_validation"]["status"] == "not_run"
+    assert report["han_l1_l2_validation"]["artifacts"] == []
     assert "ddge_consistency" not in report["capability_assessment"]
     assert report["ddge_assessments"]["cong-lab-ii"]["status"] == expected_scalar
     assert all(
@@ -98,6 +100,21 @@ def test_passing_conformance_supports_only_the_exercised_ddge_claim(
     report = conformance.build_report(source_dir=tmp_path)
 
     assert report["capability_assessment"]["achieved_level"] == "L2"
+    validation = report["han_l1_l2_validation"]
+    assert validation["classification"] == "synthetic_systems_conformance"
+    assert validation["excluded_claims"] == [
+        "empirical_validation",
+        "prospective_behavioral_study",
+    ]
+    assert len(validation["artifacts"]) == 5
+    assert len({item["payload_sha256"] for item in validation["artifacts"]}) == 5
+    assert all(item["status"] == "pass" for item in validation["artifacts"])
+    assert report["capability_assessment"]["blocked_levels"] == {
+        "L3": "missing controlled language-model behavioral evidence",
+        "L4": "missing persistent capability-improvement evidence",
+        "L5": "missing endogenous institutional-outcome evidence",
+        "L6": "missing external repeated out-of-sample evidence",
+    }
     assert report["ddge_assessments"] == {
         "cong-lab-i": {
             "claim": "qualitative-reconstruction",
@@ -128,6 +145,9 @@ def test_conformance_fingerprint_covers_code_registries_protocols_and_reporter(
 ) -> None:
     tracked = {
         "src/ewm/model.py": "model = 1\n",
+        "src/ewm/scenarios/fx/han-l1-l2-validation-v1.toml": (
+            'schema_version = "ewm.han-l1-l2.protocol.v1"\n'
+        ),
         "references/conformance.toml": "schema_version = 1\n",
         "tests/conformance/test_protocol.py": "def test_protocol(): ...\n",
         "scripts/run_conformance.py": "SCHEMA_VERSION = 'one'\n",
