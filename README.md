@@ -1,138 +1,39 @@
-<div align="center">
+<h1 align="center">Economic World Model</h1>
 
-# Economic World Model
+<p align="center">
+<a href="https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/ci.yml/badge.svg"></a>
+<a href="https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/security.yml"><img alt="Security" src="https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/security.yml/badge.svg"></a>
+<a href="https://www.python.org/"><img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-3776AB.svg"></a>
+<a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-green.svg"></a>
+</p>
 
-**Model the economy after deployment, when predictions alter decisions and those decisions rewrite the next training set.**
+<p align="center">
+Build executable economies where deployed models reshape decisions, markets, generated data, and the models trained next.
+</p>
 
-[![CI](https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/ci.yml/badge.svg)](https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/ci.yml)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Status: research alpha](https://img.shields.io/badge/status-research%20alpha-orange.svg)](#evidence-status)
+<p align="center">
+<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940">Cong: Economic World Models and Data-Driven Generative Equilibria</a>
+|
+<a href="https://arxiv.org/abs/2608.06020v1">Han et al.: From Economic Agents to Agentic Economies</a>
+</p>
 
-</div>
+Economic World Model is an auditable research implementation of selected definitions, protocols,
+and numerical targets from the two papers. Cong supplies the formal economy and the fixed point that
+closes behavior, generated data, and retraining. Han et al. supply the executable agent-world
+interfaces, capability ladder, and evaluation layers.
 
-Economic World Model is an open-source, executable adaptation of two research papers:
+Release 0.2.0 is a synthetic research alpha. It is suitable for studying declared mechanisms and
+testing implementation contracts. It is not an empirically calibrated economy, a policy model, or a
+deployment system.
 
-- Lin William Cong, [*Economic World Models and Data-Driven Generative Equilibria*](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940)
-- Han et al., [*From Economic Agents to Agentic Economies: A Systems Blueprint for Economic World Models*](https://arxiv.org/abs/2608.06020v1)
+[Quick start](#quick-start) | [Mathematical core](#mathematical-core) |
+[Evidence](#evidence) | [Architecture](#architecture) | [Limitations](#limitations) |
+[Documentation](#documentation)
 
-Cong supplies the formal economic world and the equilibrium closure among behavior, endogenous
-data, and learning. Han et al. supply the systems blueprint for executable agents, environments,
-co-evolution, alignment, and evaluation. This package joins those ideas in a typed Python model with
-reproducible experiments, numerical solvers, event provenance, and claim gates.
+## Quick start
 
-Version `0.1.0` is a synthetic research alpha. It is not an empirically calibrated economy, a
-policy model, a trading or lending system, or a real-world economic twin.
-
-[Quick start](#quick-start) | [Evidence status](#evidence-status) | [Architecture](#architecture) |
-[Replication guide](docs/replication.md) | [Limitations](docs/limitations.md) |
-[Paper traceability](docs/paper-traceability.md)
-
-## The model
-
-Economic predictions are often deployed into the system they describe. A forecast changes agent
-actions, the actions change equilibrium outcomes, and the resulting observations become the next
-training set. A valid solution must close the entire loop.
-
-Let $\theta$ denote the learned components deployed under regime $i$. Holding $\theta$ fixed gives
-an inner economic equilibrium with unique selector
-
-$$
-S_i(\theta)=\bigl(\pi_i(\theta),\mu_i(\theta)\bigr),
-$$
-
-where $\pi_i$ is the policy profile and $\mu_i$ is the belief profile. If $D$ generates data and
-$L$ retrains the learned component, Cong's induced outer map is
-
-$$
-F_i(\theta)=L\!\left(D\!\left(S_i(\theta),\theta;i\right)\right).
-$$
-
-A Data-Driven Generative Equilibrium (DDGE) satisfies
-
-$$
-\theta^{\star}=F_i(\theta^{\star}),
-\qquad
-r_i(\theta)=\left\lVert F_i(\theta)-\theta\right\rVert_2.
-$$
-
-The package keeps four operations separate:
-
-| Operation | Held fixed | Question answered |
-|---|---|---|
-| `rollout` | Declared policies and parameters, except within-world adaptation | What trajectory does the economy generate? |
-| `solve_equilibrium` | Learned parameters and intervention | Which behavior and allocations satisfy the economic conditions? |
-| `retrain` | One generated dataset and learning rule | Which parameter is deployed next? |
-| `solve_ddge` | Nothing inside the declared behavior-data-learning loop | Which learned states are self-consistent? |
-
-A converged rollout need not be an economic equilibrium. A fitted learner need not be a DDGE. A
-small DDGE residual is a consistency diagnostic, not a welfare guarantee without Cong's additional
-contraction and sensitivity assumptions.
-
-Cong's full EWM definition contains state, action, and outcome spaces; interventions; agents;
-information, policies, and beliefs; economic coherence conditions; learned kernels; and intervention
-semantics. The [mathematical contract](docs/mathematical-contract.md) maps each block to code without
-compressing it into an unreadable tuple.
-
-## Evidence status
-
-The repository uses four claim classes. `exact-replication` is reserved for paper equations,
-parameters, and targets that the locked source specifies. `conformance` covers a system protocol or
-invariant. `paper-inspired` identifies a paper template completed with package-authored choices.
-`qualitative-reconstruction` identifies a mechanism whose published inputs are insufficient for an
-exact numerical result.
-
-| Area | Claim class | Current evidence |
-|---|---|---|
-| Cong EWM and DDGE objects | Source definition and conformance | Typed definitions, finite correspondence certificates, inner and outer residuals, theorem diagnostics |
-| Cong Laboratory II | Exact replication | Scalar equations, displacement, pitchfork, damping, stability, and internal root cross-checks |
-| Cong Laboratory III population | Exact replication target match | Figure 4 parameters and slopes near $\{-0.795,0,+0.795\}$; an external code-independent oracle is pending |
-| Cong Laboratory III finite sample | Paper-inspired | The paper specifies 4,000 observations but omits path damping, which is package-authored |
-| Cong Laboratory I | Qualitative reconstruction | Credit adoption, selective outcomes, retraining, oracle comparisons, and a machine-readable missing-input registry |
-| Cong Appendix D | Paper-inspired | Household budget, firm problem, and market clearing from the paper; preferences, technology parameters, continuation closure, and finite distribution from this package |
-| Han specification and runtime | Protocol conformance | Agent, environment, co-evolution, alignment, evaluation, and all seven logged runtime calls |
-| Han capability ladder | L2 awarded | L3 to L6 substrates exist, but controlled or external evidence required for those awards is absent |
-| Han evaluation stack | Protocol conformance | Agent, environment, co-evolution, alignment, and efficiency layers; missing measurements remain `not_measured` |
-
-The conformance registry records section and page anchors, expected source hashes, code paths,
-tests, status, and limitations for every declared item. The separate replication-target registry
-classifies audited numerical facts as source-stated, derived, or package-authored. Run the
-paper-level checks with:
-
-```console
-$ python scripts/run_conformance.py
-...
-"achieved_level": "L2"
-"ddge_assessments": {"cong-lab-ii": {"status": "supported"}, ...}
-"empirical_validity": "not_assessed"
-```
-
-The command runs the conformance suite and emits `ewm.conformance.v1` JSON. Its `paper_sources`
-field is the declared lock map from `references/papers.toml`; it is not evidence that a PDF was read.
-The separate `source_verification` field reports what was observed in the selected source directory,
-alongside runtime versions, the package source fingerprint, seed sets, evidence gates, and unresolved
-dependencies. Because the PDFs are ignored and are not present in ordinary CI checkouts, absence is
-reported as `not_present` and does not fail the default command.
-
-Verify locally supplied PDFs independently, or make them a required conformance gate, with:
-
-```bash
-python scripts/verify_sources.py --source-dir . --require-all
-python scripts/run_conformance.py --source-dir . --require-sources
-```
-
-Both strict commands fail on a missing source as well as a hash, page-count, or PDF-structure
-mismatch. Neither command downloads or redistributes a paper.
-
-## Installation
-
-Requirements:
-
-- Python 3.11 or 3.12
-- Linux, macOS, Windows, or WSL with a standard Python virtual environment
-- No database, web server, model-provider account, or agent SDK
-
-Install the alpha from a clone:
+Economic World Model supports Python 3.11 and 3.12 on Linux, macOS, Windows, and WSL. A local
+clone needs no database or model-provider account.
 
 ```bash
 git clone https://github.com/ReverseZoom2151/economic-world-model.git
@@ -141,219 +42,198 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e .
+ewm list
 ```
 
-On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`.
+Windows PowerShell uses `.venv\Scripts\Activate.ps1` for activation. Install `-e ".[dev]"` to run
+the tests and release checks.
 
-For tests, static checks, and builds, install `-e ".[dev]"` instead.
-
-## Quick start
-
-List the registered scenarios and experiments:
-
-```console
-$ ewm list
-Scenarios:
-  credit
-  forecasting
-  fx
-  scalar
-Experiments:
-  credit.regimes
-  forecasting.ddge
-  fx.comparative_statics
-  fx.rollout
-```
-
-Run a reproducible experiment bundle:
+Create a sealed FX run, then verify and replay it:
 
 ```bash
-ewm describe forecasting.ddge
-ewm run forecasting.ddge --preset smoke --seed 42 --output runs
+ewm run fx.rollout --preset smoke --seed 42 --output runs
+ewm verify-run runs/<run_hash>
+ewm replay-run runs/<run_hash>
 ```
 
-Use the stable Python facade for an agent-economy rollout:
+The `run` command prints the concrete run directory. `verify-run` checks sealed `ewm.run.v2`
+payloads and can inspect legacy `ewm.run.v1` bundles without modifying them. `replay-run` currently
+requires a sealed v2 `fx.rollout` run and reconstructs its compiled world deterministically. Other
+registered experiments can still be run and verified.
+
+The public Python facade exposes the same scenario registry:
 
 ```python
 import ewm
 
-world = ewm.make("fx", preset="smoke", seed=42)
-trajectory = ewm.rollout(world, periods=24)
+scenario = ewm.make("fx", preset="smoke", seed=42)
+trajectory = ewm.rollout(scenario, periods=24)
 
 print(trajectory.metrics)
 ```
 
-Solve the disclosed production-economy instantiation:
+The CLI provides four experiments:
 
-```console
-$ python examples/production.py
-converged=True rental_rate=0.147500 wage=0.718658 clearing_norm=3.764e-14
-primitive_source=package-authored; template_source=Cong Appendix D
+```bash
+ewm describe forecasting.ddge
+ewm run forecasting.ddge --preset smoke --seed 42 --output runs
+ewm run fx.comparative_statics --preset smoke --seed 42 --output runs
+ewm run credit.regimes --preset smoke --seed 42 --output runs
 ```
 
-The numerical result validates the declared finite instance. It is not a target reported by Cong and
-does not prove Proposition D.1 for the general model.
+Research presets increase numerical scale. They do not add empirical validity.
 
-## Research laboratories
+## Mathematical core
 
-| Laboratory | Main mechanism | Primary evidence |
+Cong's Definition 2.6 groups an Economic World Model into named blocks:
+
+| Block | Paper objects | Package role |
 |---|---|---|
-| [Scalar DDGE](examples/scalar.py) | Linear behavior-response feedback with linear or saturating learning | Closed forms, internal bracketing cross-checks, multiplicity and stability tests |
-| [Self-fulfilling forecasting](examples/forecasting.py) | A deployed slope changes the process used to retrain that slope | Population and finite-sample maps, Figure 4 targets, basin and ACF checks |
-| [Heterogeneous FX](examples/fx.py) | Households, firms, and banks clear a uniform-price batch market | Budget and inventory feasibility, conservation properties, paired intervention intervals |
-| [AI-mediated credit](examples/credit.py) | Text polishing changes selection while repayment quality stays fixed | Five regimes, selective labels, oracle comparisons, source-target differences |
-| [Competitive production](examples/production.py) | Households supply assets and labor to a decreasing-returns firm | Independent equilibrium solve, budget and first-order conditions, both market residuals |
+| Economic spaces | $\mathcal{S},\mathcal{A},\mathcal{Y},\mathcal{I}$ | States, actions, outcomes, and regimes |
+| Agent population | $N$ and $\left\{(\mathcal{I}_t^n,\Pi^n,\mu_t^n)\right\}_{n=1}^N$ | Information, admissible policies, and beliefs for each agent |
+| Economic coherence | $\mathcal{C}$ | Hard equalities, hard inequalities, and soft diagnostics |
+| Learned system | $T_\theta,O_\theta$ | Transition and observation kernels |
+| Intervention semantics | $\Psi$ | Declared component changes under each regime |
 
-The [experiment guide](docs/experiments.md) documents presets, metrics, seeds, artifact files, and
-expected runtimes. The [replication guide](docs/replication.md) gives paper versions, exact commands,
-and acceptance ranges.
+For learned components $\theta$ and regime $i$, the inner correspondence holds the learned system
+fixed:
 
-## Han systems implementation
+$$
+E_i(\theta)
+=
+\left\{(\pi,\mu):
+\begin{array}{l}
+\pi\text{ satisfies behavioral optimality or admissibility, and}\\
+\mu\text{ is belief-consistent under }(\theta,i)
+\end{array}
+\right\}.
+$$
 
-The package implements Han et al.'s compact lifecycle:
+If $E_i(\theta)$ is a singleton, write its selector as
+$S_i(\theta)=(\pi_i(\theta),\mu_i(\theta))$. Data generation $D$ and learning $L$ then induce the
+outer map
 
-```text
-reset -> run_agents -> step -> coevolve -> align -> evaluate -> log
-```
+$$
+F_i(\theta)=L\!\left(D\!\left(S_i(\theta),\theta;i\right)\right).
+$$
 
-Every call emits an immutable `ewm.event.v1` record with ordering and state-version provenance. The
-runtime covers deterministic scheduling, action validation, clearing and settlement, controlled
-component updates, bounded external-evidence correction, and read-only layered evaluation.
+A Data-Driven Generative Equilibrium (DDGE) closes the outer loop:
 
-The optional capability substrates include:
+$$
+\theta^{\star}=F_i(\theta^{\star}).
+$$
 
-- provider-neutral cognitive agents with explicit beliefs, bounded memory, tools, schemas, retries,
-  atomic state commits, and decision provenance;
-- content-addressed capability proposals with evaluation, safety gates, persistence, promotion, and
-  rollback;
-- governed institutional proposals with authority, constitutional checks, atomic application, audit,
-  and rollback;
-- timestamped external observations, discrepancy metrics, bounded corrections, restoration, and
-  provenance.
+The full DDGE also requires the selected policy and beliefs to satisfy the inner conditions. A small
+outer residual does not establish behavioral optimality, welfare accuracy, uniqueness, or empirical
+validity.
 
-The included cognitive backend and alignment source are deterministic offline fixtures. Their tests
-establish protocol behavior, not L3 language-model fidelity or L6 real-world validity. See the
-[capability matrix](docs/capability-matrix.md) for every award gate.
+The package keeps execution modes distinct:
 
-## Architecture
-
-The package is a modular monolith. Shared infrastructure owns runtime semantics, numerical solution,
-events, evidence, and artifacts. Scenario modules own economic assumptions.
-
-```mermaid
-flowchart TB
-    API[Public API and CLI] --> EXP[Experiment orchestration]
-    API --> CORE[Typed EWM core]
-    EXP --> SCN[Scenario economics]
-    EXP --> EQ[Equilibrium and DDGE solvers]
-    EXP --> CAP[Capability and claim gates]
-    SCN --> CORE
-    EQ --> CORE
-    CAP --> CORE
-    CORE --> EVT[Versioned events and owned RNGs]
-```
-
-This structure keeps scheduling, validation, random-number ownership, fixed-point search, logging,
-and artifact identity out of individual laboratories. The audited
-[dependency map](docs/architecture/ewm_foundations_dependency_map.md) records the enforced import
-boundaries.
-
-### Why no agent SDK dependency?
-
-Economic agents require feasibility, accounting, market clearing, settlement, and equilibrium
-contracts. LangChain, LangGraph, Mastra, Mesa, and similar packages do not define those economic
-semantics. The core therefore uses small Python protocols.
-
-Optional adapters can sit above the core when a study needs Mesa scheduling, a language-model
-provider, or a multi-agent reinforcement-learning interface. The numerical economy remains usable
-without any orchestration service.
-
-## Reproducibility and artifacts
-
-Each registered run writes an `ewm.run.v1` bundle containing configuration, metrics, traces, event
-records, manifest data, and source/runtime identity. Equal source, parameters, and seeds produce the
-same content hash. A changed seed or source fingerprint changes the run identity.
-
-The project records:
-
-- independent inner-equilibrium and outer-DDGE residuals;
-- all distinct roots, failed starts, and initialization basins;
-- damping and local Jacobian diagnostics;
-- accounting, conservation, and clearing errors;
-- package-authored primitives and missing paper inputs;
-- measurement provenance, with absent evidence represented as missing rather than zero.
-
-Synthetic tests establish conformance to these declared contracts. They do not establish behavioral,
-empirical, causal, or policy validity.
-
-## Documentation
-
-| Document | Purpose |
+| Operation | Contract |
 |---|---|
-| [Replication guide](docs/replication.md) | Source versions, commands, seeds, expected values, and claim boundaries |
-| [Mathematical contract](docs/mathematical-contract.md) | Formal objects, equations, numerical scope, and evidence map |
-| [Paper traceability](docs/paper-traceability.md) | Expected source locks, observed local verification, and section-to-code registry policy |
-| [Capability matrix](docs/capability-matrix.md) | Han L1 to L6 evidence gates and the separate DDGE axis |
-| [Experiment guide](docs/experiments.md) | Presets, CLI usage, artifacts, metrics, and interpretation |
-| [Limitations](docs/limitations.md) | Missing evidence, omitted primitives, numerical scope, and non-goals |
-| [Product validation](docs/product-validation.md) | Local clean-install, stress, performance, and claims-audit evidence |
+| `rollout` | Generate a trajectory under declared policies and within-world adaptation |
+| `solve_equilibrium` | Solve the inner economic residual while holding $\theta$ and $i$ fixed |
+| `retrain` | Apply one generated-data learning update |
+| `solve_ddge` | Search declared initializations for outer fixed points |
 
-## Development
+## Evidence
 
-Run the release gates from the repository root:
+Public claims use four boundaries. `exact-replication` requires source equations, source parameters,
+source targets, and an independent numerical check. `conformance` tests a definition, protocol, or
+invariant. `paper-inspired` marks source templates completed with package choices.
+`qualitative-reconstruction` marks a mechanism whose published inputs do not identify the numerical
+result.
+
+| Area | Current evidence | Boundary |
+|---|---|---|
+| Cong Laboratory II | Direct paper equation, analytical root-count argument, package-import-free bracketing, and iterative solver agreement | Exact replication for the registered scalar targets |
+| Cong Laboratory III population | Package-import-free stationary-kernel and zero-intercept OLS oracle cross-checks the roots near $\{-0.795,0,+0.795\}$ | Exact replication of the population targets only |
+| Cong Laboratory III finite sample | Source-specified 4,000 observations with package-authored damping | Paper-inspired path, with no claim of exact path replication |
+| Cong Laboratory I credit | Mechanism reconstruction plus a prospectively locked local quick protocol | Exact replication is blocked by missing author primitives. All four quick seeds breach the locked solver tolerance, so `analysis_valid=false` and the result is diagnostic only |
+| Cong Appendix D | A package-import-free objective optimizer and direct market-clearing solve cross-check the disclosed finite instance | Paper-inspired package instance, not a paper target or general existence proof |
+| Compiled FX world | Compiled execution matches the direct FX simulation and preserves canonical events, accounting, conservation, and deterministic replay | Synthetic runtime and mechanism conformance |
+| Han L1 and L2 | A hashed two-arm, two-seed compiled FX protocol observes execution, endogenous outcomes, invariants, adaptive state, and persistence | L2 awarded as synthetic systems conformance, not behavioral or empirical validation |
+| Han L3 through L6 | A versioned harness records one local readiness result for each of 16 official requirements | All 16 remain blocked readiness observations; zero higher-level awards |
+| Run artifacts | Canonical v2 identity, checksums for every payload, collision checks, and fail-closed verification | Package engineering evidence, not paper correspondence |
+
+The code-independent oracle modules under `tests/oracles/` cannot import `ewm`; an AST test enforces
+that boundary. The forecasting oracle covers the population stationary-law map only. The production
+oracle checks a package-authored instance. Neither extends its evidence to a finite-sample path or a
+general theorem.
+
+Run the paper and evidence checks with:
 
 ```bash
-ruff check .
-mypy src
-coverage run -m pytest -q
-coverage report
-python -m build
 python scripts/run_conformance.py
-python scripts/scientific_stress.py --quick
-```
-
-When the ignored paper PDFs are available locally, add the strict source gate:
-
-```bash
 python scripts/verify_sources.py --source-dir . --require-all
 python scripts/run_conformance.py --source-dir . --require-sources
 ```
 
-The full stress and benchmark protocols take longer:
+The strict source commands require both ignored local PDFs. The default conformance command records
+missing PDFs as `not_present`; it does not claim to have read files that were absent.
+
+The locked credit protocol is intentionally left at its original thresholds:
 
 ```bash
-python scripts/scientific_stress.py
-python scripts/benchmark_experiments.py
+ewm-run-protocol --quick
 ```
 
-Public examples run without private imports:
+Its current nonzero exit status preserves the prespecified failure. Outcome summaries remain useful
+for diagnosis, but they authorize no inference or scientific claim.
 
-```bash
-python examples/scalar.py
-python examples/forecasting.py
-python examples/fx.py
-python examples/credit.py
-python examples/production.py
-python examples/cognitive_agent.py
-python examples/offline_alignment.py
-python examples/extensions/cobweb.py
+## Architecture
+
+The repository is a modular monolith. Scenario modules own economic assumptions. Shared layers own
+runtime contracts, fixed-point search, artifacts, and evidence boundaries.
+
+```mermaid
+flowchart LR
+    API[Public API and CLI] --> EXP[Experiment registry]
+    API --> CORE[Typed core and compiler]
+    EXP --> SCN[Scenario economics]
+    EXP --> EQ[Equilibrium solvers]
+    EXP --> EVID[Evidence and artifact gates]
+    SCN --> CORE
+    EQ --> CORE
+    CORE --> EVT[Canonical events and owned RNGs]
 ```
 
-Focused contributions on economic semantics, numerical correctness, reproducibility, or testable
-scenario design are welcome through [GitHub Issues](https://github.com/ReverseZoom2151/economic-world-model/issues).
-Do not describe synthetic results as empirical evidence.
+The compiled FX path uses the same economic mechanism as the direct simulation while adding strict
+action contracts, state codecs, event-chain provenance, rollback-safe randomness, and replay. The
+[audited dependency map](docs/architecture/ewm_foundations_dependency_map.md) records enforced
+one-way imports.
 
-## Source credit
+## Limitations
+
+- The bundled laboratories use synthetic populations and package-authored assumptions. They do not
+  estimate effects in an observed economy.
+- The generic DDGE solver searches a single-valued outer map from declared starts. It does not prove
+  completeness outside the search region or solve a general Kakutani correspondence.
+- Restricted affine and polyhedral certificates validate declared finite assumptions and residuals.
+  General existence and welfare claims still require model-specific proofs.
+- The highest awarded Han capability is L2 for the compiled FX validation. Fixture-backed cognition,
+  evolution, institutions, and alignment do not award L3, L4, L5, or L6.
+- `replay-run` currently supports sealed FX rollout artifacts only. Legacy v1 bundles are verified in
+  read-only compatibility mode and cannot be replayed under the v2 contract.
+- Credit, FX, forecasting, and production outputs must not guide lending, trading, employment,
+  pricing, regulatory, or public-policy decisions.
+
+See [Limitations and non-goals](docs/limitations.md) for the complete boundary.
+
+## Documentation
+
+| Document | Use it for |
+|---|---|
+| [Experiment guide](docs/experiments.md) | Registry, CLI, v2 artifacts, verification, replay, and metric interpretation |
+| [Mathematical contract](docs/mathematical-contract.md) | Formal objects, theorem obligations, equations, and scenario mechanics |
+| [Replication guide](docs/replication.md) | Source locks, claim classes, exact commands, targets, and tolerances |
+| [Paper traceability](docs/paper-traceability.md) | Source identity, registry policy, code-independent oracles, and evidence gates |
+| [Capability matrix](docs/capability-matrix.md) | Han L1 to L6 requirements and the separate DDGE axis |
+| [Product validation](docs/product-validation.md) | Historical benchmarks plus the current 0.2.0 audit |
+| [Limitations and non-goals](docs/limitations.md) | Numerical, empirical, runtime, and deployment boundaries |
 
 The formal ideas and paper-specific equations belong to the cited authors. This repository is an
 independent implementation and is not an official release or endorsement by either paper's authors.
-When using a paper-derived result, cite the corresponding source:
+Citation metadata is in [`CITATION.cff`](CITATION.cff).
 
-- Lin William Cong, *Economic World Models and Data-Driven Generative Equilibria*,
-  [SSRN 6559940](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940).
-- Jiale Han et al., *From Economic Agents to Agentic Economies: A Systems Blueprint for Economic
-  World Models*, [arXiv:2608.06020v1](https://arxiv.org/abs/2608.06020v1).
-
-The software is available under the [MIT License](LICENSE).
-
-Documentation last reviewed: **2026-08-27**.
+Documentation last reviewed: 2026-08-28.

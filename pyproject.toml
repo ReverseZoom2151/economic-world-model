@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "economic-world-model"
 dynamic = ["version"]
-description = "Transparent synthetic laboratories for Economic World Models and Data-Driven Generative Equilibria"
+description = "Executable economic worlds with agent-economy runtimes and Data-Driven Generative Equilibrium laboratories"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
