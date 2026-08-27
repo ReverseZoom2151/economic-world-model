@@ -126,8 +126,9 @@ used as official `capability:` evidence.
 
 ## Package engineering is not paper correspondence
 
-Sealed `ewm.run.v2` verification and deterministic replay protect the identity, integrity, and
-reproducibility of run evidence. Legacy `ewm.run.v1` inspection remains read-only and unsealed.
+Artifact v2 verification and deterministic replay protect the identity, integrity, and
+reproducibility of sealed `ewm.run.v2` evidence. Legacy `ewm.run.v1` inspection remains read-only
+and unsealed.
 These are package engineering contracts, not paper correspondence, because neither locked source
 specifies this checksum format, command-line interface, or replay bundle. The traceability registry
 maps compiled FX execution and canonical event logging to Han's runtime interfaces, but it does not
