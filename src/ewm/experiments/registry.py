@@ -54,6 +54,10 @@ SCENARIO_DESCRIPTIONS: Mapping[str, str] = {
         "A heterogeneous household, firm, and bank economy with uniform-price batch clearing, "
         "adaptive beliefs, balance feasibility, and conservation diagnostics."
     ),
+    "scalar": (
+        "Cong's closed-form scalar DDGE laboratory for displacement, multiplicity, "
+        "amplification, instability, and damping."
+    ),
 }
 
 

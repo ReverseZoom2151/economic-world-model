@@ -31,10 +31,10 @@ def test_make_rollout_and_ddge_use_the_public_facade() -> None:
 
 
 def test_registry_descriptions_and_errors_are_helpful() -> None:
-    assert ewm.list_scenarios() == ("credit", "forecasting", "fx")
+    assert ewm.list_scenarios() == ("credit", "forecasting", "fx", "scalar")
     assert "Data-Driven Generative Equilibrium" in ewm.describe("forecasting")
 
-    with pytest.raises(ValueError, match=r"unknown scenario.*credit, forecasting, fx"):
+    with pytest.raises(ValueError, match=r"unknown scenario.*credit, forecasting, fx, scalar"):
         ewm.make("missing")
     with pytest.raises(ValueError, match="does not define a DDGE problem"):
         ewm.make("fx").ddge_problem()

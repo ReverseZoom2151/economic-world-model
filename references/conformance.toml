@@ -152,9 +152,10 @@ source = "cong-2026"
 section = "Proposition A.4"
 pages = "52"
 summary = "Belief-behavior feedback amplifies the derivative of the outer learning map."
-status = "planned"
+status = "implemented"
 claim = "theorem-diagnostic"
-limitation = "The exact scalar derivative decomposition will be added with Laboratory II."
+implementation = ["src/ewm/scenarios/scalar/model.py"]
+evidence = ["tests/scenarios/test_scalar.py"]
 
 [[item]]
 id = "cong-eq-a.1"
@@ -162,9 +163,10 @@ source = "cong-2026"
 section = "Equation A.1"
 pages = "53"
 summary = "The scalar worked model closes behavior, response, and a tanh learner."
-status = "planned"
+status = "implemented"
 claim = "exact-replication"
-limitation = "The source fully specifies this model; an independent scenario implementation is planned."
+implementation = ["src/ewm/scenarios/scalar/model.py"]
+evidence = ["tests/scenarios/test_scalar.py"]
 
 [[item]]
 id = "cong-prop-a.5"
@@ -172,9 +174,10 @@ source = "cong-2026"
 section = "Proposition A.5"
 pages = "53-55"
 summary = "The scalar model has closed-form displacement, pitchfork multiplicity, amplification, and stability properties."
-status = "planned"
+status = "implemented"
 claim = "exact-replication"
-limitation = "Closed-form and independent numerical verification will be implemented together."
+implementation = ["src/ewm/scenarios/scalar/model.py", "src/ewm/scenarios/scalar/verification.py"]
+evidence = ["tests/scenarios/test_scalar.py"]
 
 [[item]]
 id = "cong-prop-a.6"
@@ -237,9 +240,10 @@ source = "cong-2026"
 section = "Appendix C.3, Laboratory II"
 pages = "64, 71"
 summary = "The fully specified scalar model verifies displacement, multiplicity, instability, damping, and residual bounds."
-status = "planned"
+status = "implemented"
 claim = "exact-replication"
-limitation = "The equations and plotted parameters are source-complete and scheduled for exact reproduction."
+implementation = ["src/ewm/scenarios/scalar/model.py", "src/ewm/scenarios/scalar/verification.py"]
+evidence = ["tests/scenarios/test_scalar.py"]
 
 [[item]]
 id = "cong-lab-iii"

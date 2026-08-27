@@ -43,8 +43,10 @@ from ewm.scenarios.fx import (
 from ewm.scenarios.fx import (
     smoke_config as fx_smoke_config,
 )
+from ewm.scenarios.scalar import ScalarConfig, ScalarProblem
+from ewm.scenarios.scalar import paper_config as scalar_paper_config
 
-ScenarioConfig = ForecastingConfig | FXSimulationConfig | CreditConfig
+ScenarioConfig = ForecastingConfig | FXSimulationConfig | CreditConfig | ScalarConfig
 RolloutResult = NDArray[np.float64] | FXSimulationResult
 
 
@@ -72,6 +74,8 @@ class ScenarioHandle:
                 generate_population(self.config),
                 regime,
             )
+        if isinstance(self.config, ScalarConfig):
+            return ScalarProblem(self.config)
         raise ValueError(f"scenario {self.name!r} does not define a DDGE problem")
 
 
@@ -94,6 +98,8 @@ def _preset(name: str, preset: str, seed: int) -> ScenarioConfig:
             else credit_research_config()
         )
         return replace(credit_config, seed=seed)
+    if name == "scalar":
+        return scalar_paper_config()
     choices = ", ".join(sorted(SCENARIO_DESCRIPTIONS))
     raise ValueError(f"unknown scenario {name!r}; choose from: {choices}")
 
@@ -137,9 +143,7 @@ def rollout(
             else scenario.config
         )
         return run_fx_simulation(fx_config, seed=scenario.seed)
-    raise ValueError(
-        "credit is a cohort equilibrium experiment; use run_experiment('credit.regimes')"
-    )
+    raise ValueError(f"scenario {scenario.name!r} does not define a temporal rollout")
 
 
 def list_scenarios() -> tuple[str, ...]:

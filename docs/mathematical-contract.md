@@ -200,7 +200,36 @@ $$
 
 Damping is an algorithmic choice. It is not an existence, uniqueness, or welfare proof.
 
-## Forecasting laboratory
+## Cong Laboratory II: scalar DDGE
+
+The scalar module implements Appendix equation (A.1) directly:
+
+$$
+a=\kappa b+\theta+\delta,
+\qquad
+b=\gamma a,
+\qquad
+\theta^+=\Lambda\tanh(a).
+$$
+
+With inner feedback $\phi=\kappa\gamma$ and $|\phi|<1$, its fixed-environment solution and
+composite gain are
+
+$$
+a^\star(\theta)=\frac{\theta+\delta}{1-\phi},
+\qquad
+b^\star(\theta)=\frac{\gamma(\theta+\delta)}{1-\phi},
+\qquad
+g=\frac{\Lambda}{1-\phi}.
+$$
+
+The implementation checks the exact linear intervention displacement, the one-versus-three-root
+threshold at $g=1$, the near-onset expansion, stability of all branches, self-confirming versus
+contrarian damping, and the a posteriori distance bound. SciPy sign bracketing and the package's
+fixed-point iteration find the roots independently. The tests reproduce the error ranges reported for
+Figure 3, including the near-onset approximation and the first-order saturating displacement.
+
+## Cong Laboratory III: self-fulfilling forecasting
 
 The implementation defines
 
