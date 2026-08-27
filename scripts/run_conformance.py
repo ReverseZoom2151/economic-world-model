@@ -21,9 +21,15 @@ from ewm.capabilities import (
     assess_capability,
     documented_prototype_evidence,
 )
+from ewm.experiments.source_verification import (
+    SourceVerification,
+    verification_failed,
+    verify_sources,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_VERSION = "ewm.conformance.v1"
+PAPER_REGISTRY = ROOT / "references" / "papers.toml"
 
 
 def _source_fingerprint() -> str:
@@ -38,12 +44,9 @@ def _source_fingerprint() -> str:
 
 
 def _paper_hashes() -> dict[str, str]:
-    with (ROOT / "references" / "papers.toml").open("rb") as handle:
+    with PAPER_REGISTRY.open("rb") as handle:
         registry = tomllib.load(handle)
-    return {
-        str(source["id"]): str(source["sha256"])
-        for source in registry["source"]
-    }
+    return {str(source["id"]): str(source["sha256"]) for source in registry["source"]}
 
 
 def _test_outcome(*, skip_tests: bool) -> dict[str, Any]:
@@ -75,8 +78,12 @@ def _test_outcome(*, skip_tests: bool) -> dict[str, Any]:
     }
 
 
-def build_report(*, skip_tests: bool = False) -> dict[str, Any]:
-    """Build the complete local conformance report without writing external state."""
+def _build_report(
+    *,
+    skip_tests: bool,
+    source_dir: Path,
+) -> tuple[dict[str, Any], tuple[SourceVerification, ...]]:
+    source_results = verify_sources(PAPER_REGISTRY, source_dir=source_dir)
 
     assessment = assess_capability(
         documented_prototype_evidence(),
@@ -89,9 +96,10 @@ def build_report(*, skip_tests: bool = False) -> dict[str, Any]:
         ),
     )
     test_outcome = _test_outcome(skip_tests=skip_tests)
-    return {
+    report = {
         "schema_version": SCHEMA_VERSION,
         "paper_sources": _paper_hashes(),
+        "source_verification": {result.source_id: result.as_dict() for result in source_results},
         "package": {
             "name": "economic-world-model",
             "version": __version__,
@@ -113,12 +121,8 @@ def build_report(*, skip_tests: bool = False) -> dict[str, Any]:
         },
         "capability_assessment": {
             "achieved_level": assessment.achieved_level.name,
-            "satisfied_requirements": [
-                item.value for item in assessment.satisfied_requirements
-            ],
-            "missing_requirements": [
-                item.value for item in assessment.missing_requirements
-            ],
+            "satisfied_requirements": [item.value for item in assessment.satisfied_requirements],
+            "missing_requirements": [item.value for item in assessment.missing_requirements],
             "warnings": list(assessment.warnings),
             "ddge_consistency": assessment.ddge_consistency.status.value,
             "empirical_validity": assessment.empirical_validity.status.value,
@@ -134,6 +138,21 @@ def build_report(*, skip_tests: bool = False) -> dict[str, Any]:
             "paper-authored numerical primitives for exact credit replication",
         ],
     }
+    return report, source_results
+
+
+def build_report(
+    *,
+    skip_tests: bool = False,
+    source_dir: Path | None = None,
+) -> dict[str, Any]:
+    """Build the complete local conformance report without writing external state."""
+
+    report, _ = _build_report(
+        skip_tests=skip_tests,
+        source_dir=ROOT if source_dir is None else source_dir,
+    )
+    return report
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -148,14 +167,33 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         help="optional JSON output path; stdout is always emitted",
     )
+    parser.add_argument(
+        "--source-dir",
+        type=Path,
+        default=ROOT,
+        help="directory containing the untracked source PDFs (default: repository root)",
+    )
+    parser.add_argument(
+        "--require-sources",
+        action="store_true",
+        help="fail when any registered source PDF is absent",
+    )
     args = parser.parse_args(argv)
-    report = build_report(skip_tests=args.skip_tests)
+    report, source_results = _build_report(
+        skip_tests=args.skip_tests,
+        source_dir=args.source_dir,
+    )
     encoded = json.dumps(report, indent=2, sort_keys=True) + "\n"
     if args.output is not None:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(encoded, encoding="utf-8")
     print(encoded, end="")
-    return 0 if report["test_outcomes"]["passed"] is not False else 1
+    failed_tests = report["test_outcomes"]["passed"] is False
+    failed_sources = verification_failed(
+        source_results,
+        require_sources=args.require_sources,
+    )
+    return 1 if failed_tests or failed_sources else 0
 
 
 if __name__ == "__main__":
