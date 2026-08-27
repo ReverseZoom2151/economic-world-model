@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+
 from ewm.experiments.source_verification import (
     load_paper_sources,
     verify_sources,
