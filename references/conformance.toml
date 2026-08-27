@@ -56,11 +56,10 @@ source = "cong-2026"
 section = "Definition 3.1"
 pages = "24"
 summary = "DDGE jointly requires behavioral optimality, belief consistency, and learning consistency."
-status = "partial"
+status = "implemented"
 claim = "source-definition"
-implementation = ["src/ewm/equilibrium/ddge.py", "src/ewm/core/protocols.py"]
-evidence = ["tests/unit/test_fixed_point.py", "tests/scenarios/test_credit.py"]
-limitation = "The numerical protocol solves a single-valued outer update and does not separately certify all three conditions."
+implementation = ["src/ewm/equilibrium/correspondence.py", "src/ewm/core/records.py"]
+evidence = ["tests/unit/test_correspondence.py"]
 
 [[item]]
 id = "cong-assumption-3.2"
@@ -215,9 +214,9 @@ pages = "61"
 summary = "DDGE computation alternates inner solution, data generation, learning, and joint residual checks."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/equilibrium/ddge.py", "src/ewm/scenarios/credit/model.py"]
-evidence = ["tests/scenarios/test_credit.py", "tests/unit/test_fixed_point.py"]
-limitation = "The generic solver covers single-valued outer maps; joint component certificates are planned."
+implementation = ["src/ewm/equilibrium/ddge.py", "src/ewm/equilibrium/correspondence.py", "src/ewm/scenarios/credit/model.py"]
+evidence = ["tests/scenarios/test_credit.py", "tests/unit/test_fixed_point.py", "tests/unit/test_correspondence.py"]
+limitation = "Joint certificates are available for finite declared candidate sets; numerical search still covers single-valued outer maps."
 
 [[item]]
 id = "cong-lab-i"

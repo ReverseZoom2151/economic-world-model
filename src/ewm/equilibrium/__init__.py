@@ -1,5 +1,6 @@
 """Inner-equilibrium and Data-Driven Generative Equilibrium solvers."""
 
+from .correspondence import EquilibriumCorrespondence
 from .damping import damped_eigenvalue, damped_update
 from .ddge import solve_ddge
 from .diagnostics import (
@@ -13,6 +14,7 @@ from .fixed_point import FixedPointConfig, iterate_fixed_point, solve_multistart
 from .inner import solve_equilibrium
 
 __all__ = [
+    "EquilibriumCorrespondence",
     "FixedPointConfig",
     "damped_eigenvalue",
     "damped_update",

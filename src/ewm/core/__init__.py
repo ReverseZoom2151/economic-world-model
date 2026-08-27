@@ -25,7 +25,10 @@ from .protocols import (
 from .randomness import make_rng, spawn_rngs
 from .records import (
     Action,
+    ConsistencyCheck,
     ConstraintViolation,
+    DDGECandidate,
+    DDGEConsistencyCertificate,
     DDGEResult,
     EquilibriumResult,
     ExperimentResult,
@@ -42,9 +45,12 @@ __all__ = [
     "AgentPolicy",
     "CoherenceCondition",
     "CoherenceKind",
+    "ConsistencyCheck",
     "Constraint",
     "ConstraintSet",
     "ConstraintViolation",
+    "DDGECandidate",
+    "DDGEConsistencyCertificate",
     "DDGEProblem",
     "DDGEResult",
     "EconomicWorld",

@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from copy import deepcopy
 from dataclasses import dataclass, field
+from math import isfinite
 from types import MappingProxyType
 from typing import Any
 
@@ -163,6 +164,93 @@ class DDGEResult:
             raise ValueError("selected_index must identify a fixed point")
         object.__setattr__(self, "fixed_points", points)
         object.__setattr__(self, "diagnostics", freeze_value(self.diagnostics))
+
+
+@dataclass(frozen=True, slots=True)
+class DDGECandidate:
+    """A complete behavior, belief, aggregate, and learned-parameter candidate."""
+
+    policies: Mapping[str, Any]
+    beliefs: Mapping[str, Any]
+    theta: NDArray[np.floating[Any]]
+    aggregates: Mapping[str, Any] = field(default_factory=dict)
+    data: Any = None
+
+    def __post_init__(self) -> None:
+        theta = np.asarray(self.theta, dtype=float)
+        if theta.ndim != 1 or not np.all(np.isfinite(theta)):
+            raise ValueError("candidate theta must be a finite one-dimensional array")
+        object.__setattr__(self, "policies", freeze_value(self.policies))
+        object.__setattr__(self, "beliefs", freeze_value(self.beliefs))
+        object.__setattr__(self, "theta", freeze_value(theta))
+        object.__setattr__(self, "aggregates", freeze_value(self.aggregates))
+        object.__setattr__(self, "data", freeze_value(self.data))
+
+
+@dataclass(frozen=True, slots=True)
+class ConsistencyCheck:
+    """One named DDGE consistency residual and its acceptance tolerance."""
+
+    component: str
+    residual: float
+    tolerance: float
+
+    def __post_init__(self) -> None:
+        if not self.component:
+            raise ValueError("consistency component must not be empty")
+        if not isfinite(self.residual) or self.residual < 0.0:
+            raise ValueError("consistency residual must be finite and non-negative")
+        if not isfinite(self.tolerance) or self.tolerance < 0.0:
+            raise ValueError("consistency tolerance must be finite and non-negative")
+
+    @property
+    def passed(self) -> bool:
+        """Whether this component is consistent at its declared tolerance."""
+
+        return self.residual <= self.tolerance
+
+
+@dataclass(frozen=True, slots=True)
+class DDGEConsistencyCertificate:
+    """Separate evidence for every condition in Cong's DDGE definition."""
+
+    candidate: DDGECandidate
+    checks: tuple[ConsistencyCheck, ...]
+
+    def __post_init__(self) -> None:
+        checks = tuple(self.checks)
+        names = tuple(check.component for check in checks)
+        if not checks:
+            raise ValueError("a DDGE certificate must contain checks")
+        if len(names) != len(set(names)):
+            raise ValueError("DDGE certificate components must be unique")
+        object.__setattr__(self, "checks", checks)
+
+    @property
+    def consistent(self) -> bool:
+        """Whether every certified DDGE condition passes."""
+
+        return all(check.passed for check in self.checks)
+
+    @property
+    def failed_components(self) -> tuple[str, ...]:
+        """Names of conditions whose residual exceeds its tolerance."""
+
+        return tuple(check.component for check in self.checks if not check.passed)
+
+    @property
+    def max_residual(self) -> float:
+        """Largest raw component residual in this certificate."""
+
+        return max(check.residual for check in self.checks)
+
+    def check(self, component: str) -> ConsistencyCheck:
+        """Return one named component check."""
+
+        for check in self.checks:
+            if check.component == component:
+                return check
+        raise KeyError(f"unknown consistency component {component!r}")
 
 
 @dataclass(frozen=True, slots=True)

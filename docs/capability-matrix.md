@@ -62,7 +62,8 @@ a small mathematical laboratory can solve a DDGE without being an L3 to L6 world
 | Live trading or lending | No | Research-only local package with no execution connector |
 | Dashboard, web app, or database | No | Explicitly outside the initial model package |
 | Distributed or parallel runtime | No | Synchronous deterministic version 0.1 runtime |
-| General arbitrary equilibrium correspondence solver | No | Single-valued update protocol with multistart discovery only |
+| Finite set-valued equilibrium verification | Yes | Separate behavior, belief, feasibility, aggregate, and learning certificates over declared candidates |
+| General arbitrary equilibrium correspondence solver | No | Finite verification plus a single-valued update solver; no generic Kakutani algorithm |
 
 ## Claims permitted for version 0.1
 

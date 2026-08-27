@@ -112,10 +112,18 @@ economic equilibrium, and inner equilibrium does not prove learning consistency.
 
 ## Version 0.1 numerical scope
 
-The theory permits set-valued correspondences. The code accepts a single-valued `DDGEProblem.update`
-map and uses multistart iteration to retain distinct fixed points and their initialization basins. It
-records failed starts, residual histories, damping, finite-difference Jacobians, spectral radii, and
-local stability. It does not solve arbitrary set-valued equilibrium correspondences.
+The theory permits set-valued correspondences. For finite declared candidate sets,
+`EquilibriumCorrespondence` enumerates every inner behavior-belief equilibrium and refuses to select
+silently when the set is empty or contains several candidates. Its `verify` method returns a
+`DDGEConsistencyCertificate` with separate residual checks for behavioral optimality, belief
+consistency, feasibility, aggregate consistency, and learning consistency. A candidate that satisfies
+only the outer learned-parameter equation therefore fails certification.
+
+The numerical solver remains deliberately narrower. It accepts a single-valued
+`DDGEProblem.update` map and uses multistart iteration to retain distinct fixed points and their
+initialization basins. It records failed starts, residual histories, damping, finite-difference
+Jacobians, spectral radii, and local stability. The package verifies finite set-valued candidate sets;
+it does not claim a general Kakutani or infinite-dimensional correspondence solver.
 
 For a differentiable update $F$, the local diagnostic is
 
