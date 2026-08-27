@@ -28,26 +28,31 @@ Most predictive pipelines treat their data-generating process as external. Econo
 cannot: a deployed forecast changes decisions; those decisions change prices, allocations, and
 observations; retraining on those observations changes the next deployed forecast.
 
-For intervention or regime $i$, an economic world is represented by
+For intervention or regime $i$, the papers use $\mathcal{W}_i$ as the name of the complete economic
+world. It is a structured model made from the following layers, not a single behavioral equation:
+
+| Layer | Mathematical objects | Role in the world |
+|---|---|---|
+| Spaces | $\mathcal{S}$, $\mathcal{A}$, $\mathcal{Y}$, $\Theta$ | States, feasible actions, economic outcomes, and learned-model parameters |
+| Institutions and agents | $\mathcal{I}_i$, $\mathcal{B}_i$, $\mathcal{U}_i$ | The intervention, agent behavior, and objectives |
+| Markets | $\Gamma_i$, $\mathcal{K}_i$ | Market mechanisms and economic constraints |
+| Evolution and evidence | $T_i$, $O_i$, $D_i$ | State transitions, observations, and endogenous data generation |
+| Learning | $L_i$ | The rule that trains the next deployed model from generated data |
+
+The substantive mathematical loop is
 
 $$
-\mathcal{W}_i =
-\left(
-\mathcal{S},\mathcal{A},\mathcal{Y},\Theta,
-\mathcal{I}_i,\mathcal{B}_i,\mathcal{U}_i,
-\Gamma_i,\mathcal{K}_i,T_i,O_i,D_i,L_i
-\right).
+\theta
+\xrightarrow{\ E_i\ }
+(\pi,\mu)
+\xrightarrow{\ D_i(\,\cdot\,,\theta)\ }
+\mathcal{D}_i
+\xrightarrow{\ L_i\ }
+\theta',
 $$
 
-| Symbol | Meaning |
-|---|---|
-| $\mathcal{S},\mathcal{A},\mathcal{Y}$ | States, feasible actions, and economic outcomes |
-| $\Theta$ | Parameters of the deployed learned component |
-| $\mathcal{I}_i$ | Intervention or institutional regime |
-| $\mathcal{B}_i,\mathcal{U}_i$ | Agent behavior and objectives |
-| $\Gamma_i,\mathcal{K}_i$ | Market or institutional mechanisms and constraints |
-| $T_i,O_i$ | State transition and observation operators |
-| $D_i,L_i$ | Endogenous data generation and learning operators |
+where $\theta$ is the currently deployed model, $(\pi,\mu)$ is an economic equilibrium, $\mathcal{D}_i$
+is the data generated under that equilibrium, and $\theta'$ is the retrained model.
 
 Holding the learned parameter $\theta$ fixed gives the inner economic equilibrium correspondence
 
