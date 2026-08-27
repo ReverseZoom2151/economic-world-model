@@ -1,6 +1,6 @@
 # Paper traceability
 
-**Document version:** 1.1
+**Document version:** 1.2
 **Last reviewed:** 2026-08-27
 
 This repository is an adaptation of two specific source versions, not a claim of author-endorsed
@@ -9,9 +9,14 @@ auditable.
 
 ## Locked sources
 
-[`papers.toml`](../references/papers.toml) records the title, authors, version, public source, page
-count, and SHA-256 hash of each PDF used for implementation. Both local PDFs passed a structural
-page preflight. The PDFs themselves remain ignored and are not redistributed.
+[`papers.toml`](../references/papers.toml) records the title, authors, version, public source,
+expected page count, expected SHA-256 hash, media type, and local filename for each PDF used for
+implementation. Those recorded values are source locks, not observations. A stored historical
+preflight value cannot prove that a current checkout contains or has read the corresponding bytes.
+
+The release-audit copies were verified locally against their expected hashes and page counts. The
+PDFs themselves remain ignored and are not redistributed, so ordinary clones and remote CI jobs do
+not contain them and cannot repeat that observation without separately supplied files.
 
 The locked sources are:
 
@@ -24,6 +29,13 @@ The locked sources are:
 [`conformance.toml`](../references/conformance.toml) maps the papers' definitions, equations,
 results, laboratories, components, runtime calls, capability levels, and evaluation layers to code,
 tests, and explicit limitations.
+
+[`replication-targets.toml`](../references/replication-targets.toml) is the audited transcription
+boundary for numerical facts used in replication claims. Each target records its source and locator,
+classification, typed value, tolerance, implementation symbol, and executable evidence. A target is
+classified as `source-stated`, `derived`, or `package-authored`. In particular, the finite-sample
+forecasting damping coefficient is a disclosed package-authored choice because Cong does not state
+it; its presence cannot satisfy a source-stated target.
 
 | Label | Meaning |
 |---|---|
@@ -76,8 +88,23 @@ Run the registry integrity check:
 python -m pytest tests/integration/test_paper_traceability.py -q
 ```
 
-The test rejects duplicate or missing item IDs, unknown statuses or claim types, invalid source
-hashes, and implemented/partial claims whose code or evidence paths do not exist.
+The test rejects duplicate or missing item IDs, unknown statuses or claim types, malformed expected
+source hashes, and implemented/partial claims whose code or evidence paths do not exist. It validates
+the declared registry; it does not read an ignored PDF.
+
+Verify any locally supplied source PDFs against the registry:
+
+```bash
+python scripts/verify_sources.py --source-dir .
+```
+
+The JSON output distinguishes `verified`, `not_present`, `hash_mismatch`,
+`page_count_mismatch`, and `invalid_pdf`. Missing ignored PDFs report `not_present` and do not fail
+this default metadata-friendly mode. For a strict local audit, require every source:
+
+```bash
+python scripts/verify_sources.py --source-dir . --require-all
+```
 
 Run the paper-level end-to-end suite and emit its evidence report:
 
@@ -85,7 +112,17 @@ Run the paper-level end-to-end suite and emit its evidence report:
 python scripts/run_conformance.py
 ```
 
-The report contains both source hashes, the package source fingerprint, runtime versions, fixed seed
-sets, conformance test outcomes, achieved capability evidence, DDGE status, empirical-validity
-status, and unresolved external dependencies. The [replication guide](replication.md) defines the
-expected values and tolerances; [limitations](limitations.md) records the non-goals.
+The report keeps `paper_sources` as the declared expected-hash map for schema compatibility and adds
+an observed `source_verification` result for each registered source. A normal checkout can therefore
+complete conformance with `not_present` observations. To require local source bytes as part of that
+same run, use:
+
+```bash
+python scripts/run_conformance.py --source-dir . --require-sources
+```
+
+The strict form fails for missing sources and for every verification mismatch. The report also
+contains the package source fingerprint, runtime versions, fixed seed sets, conformance test
+outcomes, achieved capability evidence, DDGE status, empirical-validity status, and unresolved
+external dependencies. The [replication guide](replication.md) defines the expected values and
+tolerances; [limitations](limitations.md) records the non-goals.

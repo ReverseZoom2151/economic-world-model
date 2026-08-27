@@ -1,6 +1,6 @@
 # Mathematical contract
 
-**Document version:** 1.1
+**Document version:** 1.2
 **Last reviewed:** 2026-08-27  
 **Audience:** Economic-AI researchers and contributors
 
@@ -20,6 +20,13 @@ of an actual economy unless a future calibration explicitly establishes that cla
 | This package | Single-valued numerical protocols, solver choices, the FX equations, missing credit primitives, and the functional forms used to instantiate Cong's Appendix D template |
 
 The two papers are linked in the repository [README](../README.md#source-credit).
+
+Source provenance has two separate checks. [`papers.toml`](../references/papers.toml) declares the
+expected identity, hash, page count, and local filename for each paper; observed verification hashes
+and parses only PDFs actually supplied to the local command. A missing ignored PDF is therefore
+`not_present`, not silently treated as verified. [`replication-targets.toml`](../references/replication-targets.toml)
+records each audited numerical fact, its locator and tolerance, and whether it is source-stated,
+derived, or package-authored. This keeps a package choice from being counted as paper evidence.
 
 ## Economic World Model objects
 
@@ -326,8 +333,9 @@ independent Monte Carlo approximations.
 Seeded paths from $\theta_1^{(0)}=\pm0.10$ select the matching outer branch, while sampling noise
 ejects an initialization at zero. The deployed momentum root produces a first autocorrelation near
 the fitted slope, while the zero model produces a nearly flat ACF. Cong does not report the damping
-coefficient used for this panel. Every replication report therefore records the selected damping as
-a package-authored implementation choice.
+coefficient used for this panel. The replication-target registry classifies the selected value as
+package-authored, and every replication report records it as an implementation choice. It affects
+the numerical path but cannot satisfy a source-stated target.
 
 ## Foreign-exchange laboratory
 
@@ -492,6 +500,7 @@ general existence proposition.
 | Five-layer evaluation | `ewm.experiments.evaluation` | Provenance, missingness, and read-only tests in `tests/integration/test_layered_evaluation.py` |
 | L3 to L6 substrate boundaries | `ewm.capabilities`, `ewm.experiments.claims` | Adversarial evidence-gate and unsupported-claim tests in `tests/unit/test_capability_levels.py` and `tests/conformance/test_claim_boundaries.py` |
 | Constraint-preserving transitions | `ewm.core.reconciliation`, `ewm.core.world` | Induction and atomic-failure checks in `tests/unit/test_reconciliation.py` |
-| Paper-level source integrity | `references/papers.toml`, `references/conformance.toml`, `scripts/run_conformance.py` | Registry and end-to-end conformance tests in `tests/integration/test_paper_traceability.py` and `tests/conformance` |
+| Paper source locks and observed local verification | `references/papers.toml`, `ewm.experiments.source_verification`, `scripts/verify_sources.py`, `scripts/run_conformance.py` | Registry, mismatch, absence, and conformance-report checks in `tests/unit/test_source_verification.py`, `tests/integration/test_paper_traceability.py`, and `tests/integration/test_conformance_source_verification.py` |
+| Audited replication targets | `references/replication-targets.toml` | Classification, symbol, evidence-path, and exact-claim coverage checks in `tests/integration/test_replication_targets.py` |
 | One-way dependencies | Package layer boundaries | AST enforcement in `tests/test_architecture.py` |
 | Reproducible public runs | `ewm.api`, `ewm.experiments`, `ewm.cli` | Integration tests for identical artifacts and public flows |

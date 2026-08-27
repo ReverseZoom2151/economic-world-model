@@ -1,6 +1,6 @@
 # Replication guide
 
-**Document version:** 1.0
+**Document version:** 1.1
 **Last reviewed:** 2026-08-27
 **Scope:** Reproduce the package's paper claims, protocol checks, and disclosed numerical examples
 
@@ -26,8 +26,36 @@ the registered Cong Laboratory II and Laboratory III targets.
 | Han et al., [*From Economic Agents to Agentic Economies*](https://arxiv.org/abs/2608.06020v1) | arXiv:2608.06020v1, 6 August 2026, 44 pages | `918e51bc34b102a4d51c5a55528cdd90ca78576df2bc1955dee31e65c051c8e6` |
 
 The PDFs are not redistributed. [`references/papers.toml`](../references/papers.toml) contains their
-bibliographic identity and hashes. [`references/conformance.toml`](../references/conformance.toml)
+bibliographic identity and expected hashes. Those values are declared locks, not proof that a
+command observed local PDF bytes. [`references/conformance.toml`](../references/conformance.toml)
 maps paper items to code and evidence.
+
+[`references/replication-targets.toml`](../references/replication-targets.toml) records the numerical
+transcription boundary: source locator, classification, typed value, tolerance, implementation
+symbol, and evidence test. `source-stated` entries reproduce facts declared by a paper, `derived`
+entries follow from declared facts, and `package-authored` entries disclose implementation choices.
+A package-authored entry cannot by itself satisfy a source-stated replication target.
+
+### Verify local source files
+
+To inspect PDFs that you supplied in a local directory, run:
+
+```bash
+python scripts/verify_sources.py --source-dir .
+```
+
+The report compares observed bytes and PDF page structure with the expected registry values. An
+ignored PDF that is absent reports `not_present`; absence does not fail this default mode, which is
+also suitable for checkouts and CI jobs that do not receive the papers. Hash, page-count, and PDF
+structure mismatches fail closed.
+
+For a strict local source audit, require every registered PDF:
+
+```bash
+python scripts/verify_sources.py --source-dir . --require-all
+```
+
+The verifier neither downloads nor redistributes a source.
 
 ## Environment
 
@@ -58,7 +86,9 @@ Expected conditions:
 
 - the `tests/conformance` suite reports 10 passed tests;
 - `schema_version` is `ewm.conformance.v1`;
-- both paper hashes match the table above;
+- `paper_sources` contains the expected registry hashes shown in the table above;
+- `source_verification` reports the observation for each local PDF, including `not_present` when an
+  ignored file is absent;
 - `capability_assessment.achieved_level` is `L2`;
 - `ddge_consistency` is `supported`;
 - `empirical_validity` is `not_assessed`;
@@ -67,6 +97,15 @@ Expected conditions:
 
 The source fingerprint changes when Python files change. Compare it only when reproducing a specific
 commit.
+
+To combine conformance with a strict local PDF gate, run:
+
+```bash
+python scripts/run_conformance.py --source-dir . --require-sources
+```
+
+Without `--require-sources`, `not_present` is reported but is not a conformance failure. Any source
+that is present but has the wrong hash, page count, or PDF structure still fails.
 
 ## Cong Laboratory II: exact scalar DDGE
 
@@ -105,7 +144,9 @@ python examples/forecasting.py
 
 The locked Figure 4 parameters are $c=1.8$, $\sigma=0.5$, and 4,000 observations per finite-sample
 retraining round. Seed 42 and damping 0.5 produce the package report. The paper does not state the
-damping coefficient, so that coefficient is package-authored and appears in report provenance.
+damping coefficient, so `references/replication-targets.toml` classifies it as package-authored and
+the report exposes it in provenance. It controls the reported numerical path but is not evidence for
+a source-stated value.
 
 Expected acceptance conditions:
 
@@ -216,9 +257,15 @@ coverage run -m pytest -q
 coverage report
 python -m build
 python scripts/run_conformance.py
+python scripts/verify_sources.py --source-dir . --require-all
+python scripts/run_conformance.py --source-dir . --require-sources
 python scripts/scientific_stress.py
 python scripts/benchmark_experiments.py
 ```
+
+The two strict source commands require the ignored paper PDFs to have been supplied locally. Remote
+CI that has only tracked repository contents should use the non-strict conformance command and will
+record `not_present` rather than claiming to have observed those files.
 
 The benchmark takes several minutes because it repeats the 50-replication FX research workload in
 fresh processes. Performance numbers describe the recorded local environment, not a service-level

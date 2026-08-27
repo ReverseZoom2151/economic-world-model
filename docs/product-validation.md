@@ -1,6 +1,6 @@
 # Local product validation
 
-**Document version:** 1.2<br>
+**Document version:** 1.3<br>
 **Last reviewed:** 2026-08-27<br>
 **Environment:** Python 3.12.3 on x86-64 WSL2, 64 logical CPUs<br>
 **Scope:** Version `0.1.0` software behavior and synthetic scientific evidence
@@ -26,7 +26,7 @@ recorded in commit `362e279`, then independently repeated by GitHub Actions as d
 | Strict mypy | Passed across 67 source files |
 | Pytest with branch coverage | 221 passed; 85.84% total branch coverage against an 85% floor |
 | Source and wheel build | `economic_world_model-0.1.0.tar.gz` and `economic_world_model-0.1.0-py3-none-any.whl` built in isolated environments |
-| Paper conformance | 10 passed; both locked paper hashes matched; Han level L2; DDGE supported; empirical validity not assessed |
+| Paper conformance | 10 passed; report carried both expected source locks; a separate local check observed matching PDF hashes and page counts; Han level L2; DDGE supported; empirical validity not assessed |
 | Full scientific stress | All seven checks passed across 18 forecasting cases, 81 FX configurations, 50 paired FX replications, and 10 credit populations |
 | Full isolated benchmark | Eight experiment-preset cells completed with stable run hashes |
 | Fresh wheel installation | `pip check` passed in a new Python 3.12 virtual environment |
@@ -51,7 +51,10 @@ completed successfully on both supported Python versions:
 
 Each job passed repository linting, strict type checking, the branch-coverage gate, isolated package
 builds, paper-level conformance checks, the quick scientific stress protocol, and all eight public
-examples.
+examples. The paper PDFs were ignored and were not supplied to those remote jobs. Remote conformance
+therefore validated the declared registry and executable claims; it did not independently observe or
+rehash the local release-audit copies. The matching-byte statement in the table above is local audit
+evidence only.
 
 ## Protocol
 
@@ -70,8 +73,9 @@ The local audit uses eight complementary tests.
    `scripts/scientific_stress.py`.
 6. Measure isolated public-API latency and peak resident memory with
    `scripts/benchmark_experiments.py`, then profile the slowest workload with `cProfile`.
-7. Run the Cong and Han end-to-end conformance suite, validate both locked source hashes, and require
-   unsupported exact, calibrated, policy-valid, and digital-twin claims to fail closed.
+7. Run the Cong and Han end-to-end conformance suite, validate the declared source-lock metadata,
+   separately verify the locally supplied PDFs against their expected hashes and page counts, and
+   require unsupported exact, calibrated, policy-valid, and digital-twin claims to fail closed.
 8. Execute the production, cognitive-agent, and offline-alignment examples, then test their
    independent numerical checks, atomicity, provenance, restoration, and evidence gates.
 
@@ -134,9 +138,17 @@ the same package version and parameters from silently sharing a run directory.
 ## Paper conformance and capability evidence
 
 `python scripts/run_conformance.py` runs ten end-to-end tests and emits an
-`ewm.conformance.v1` report. The report records both PDF hashes, the current source fingerprint,
-runtime versions, deterministic seed sets, test results, the achieved Han capability level, separate
-DDGE and empirical-validity assessments, and unresolved dependencies.
+`ewm.conformance.v1` report. `paper_sources` records the expected hash map declared in
+`references/papers.toml`; it does not claim that the command read a PDF. `source_verification`
+records the actual observation for each source in the selected directory. The report also records
+the current source fingerprint, runtime versions, deterministic seed sets, test results, the achieved
+Han capability level, separate DDGE and empirical-validity assessments, and unresolved dependencies.
+
+The default command permits ignored PDFs to be absent and records `not_present`, so ordinary CI can
+test conformance without paper redistribution. Local release verification uses
+`python scripts/verify_sources.py --source-dir . --require-all` and
+`python scripts/run_conformance.py --source-dir . --require-sources`; both strict forms require every
+source and reject hash, page-count, and PDF-structure mismatches.
 
 The Cong conformance path traverses an EWM declaration, an inner equilibrium, generated data, a
 learner, an outer fixed point, a five-component consistency certificate, and theorem-derived bounds.
@@ -279,7 +291,9 @@ python examples/extensions/cobweb.py
 python examples/production.py
 python examples/cognitive_agent.py
 python examples/offline_alignment.py
+python scripts/verify_sources.py --source-dir . --require-all
 python scripts/run_conformance.py
+python scripts/run_conformance.py --source-dir . --require-sources
 python scripts/scientific_stress.py --quick
 python scripts/scientific_stress.py
 python scripts/benchmark_experiments.py

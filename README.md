@@ -93,8 +93,10 @@ exact numerical result.
 | Han capability ladder | L2 awarded | L3 to L6 substrates exist, but controlled or external evidence required for those awards is absent |
 | Han evaluation stack | Protocol conformance | Agent, environment, co-evolution, alignment, and efficiency layers; missing measurements remain `not_measured` |
 
-The conformance registry records section and page anchors, source hashes, code paths, tests, status,
-and limitations for every declared item. Run its paper-level checks with:
+The conformance registry records section and page anchors, expected source hashes, code paths,
+tests, status, and limitations for every declared item. The separate replication-target registry
+classifies audited numerical facts as source-stated, derived, or package-authored. Run the
+paper-level checks with:
 
 ```console
 $ python scripts/run_conformance.py
@@ -104,8 +106,22 @@ $ python scripts/run_conformance.py
 "empirical_validity": "not_assessed"
 ```
 
-The command runs the conformance suite and emits `ewm.conformance.v1` JSON with locked paper hashes,
-runtime versions, source fingerprint, seed sets, evidence gates, and unresolved dependencies.
+The command runs the conformance suite and emits `ewm.conformance.v1` JSON. Its `paper_sources`
+field is the declared lock map from `references/papers.toml`; it is not evidence that a PDF was read.
+The separate `source_verification` field reports what was observed in the selected source directory,
+alongside runtime versions, the package source fingerprint, seed sets, evidence gates, and unresolved
+dependencies. Because the PDFs are ignored and are not present in ordinary CI checkouts, absence is
+reported as `not_present` and does not fail the default command.
+
+Verify locally supplied PDFs independently, or make them a required conformance gate, with:
+
+```bash
+python scripts/verify_sources.py --source-dir . --require-all
+python scripts/run_conformance.py --source-dir . --require-sources
+```
+
+Both strict commands fail on a missing source as well as a hash, page-count, or PDF-structure
+mismatch. Neither command downloads or redistributes a paper.
 
 ## Installation
 
@@ -275,7 +291,7 @@ empirical, causal, or policy validity.
 |---|---|
 | [Replication guide](docs/replication.md) | Source versions, commands, seeds, expected values, and claim boundaries |
 | [Mathematical contract](docs/mathematical-contract.md) | Formal objects, equations, numerical scope, and evidence map |
-| [Paper traceability](docs/paper-traceability.md) | Locked paper hashes and section-to-code registry policy |
+| [Paper traceability](docs/paper-traceability.md) | Expected source locks, observed local verification, and section-to-code registry policy |
 | [Capability matrix](docs/capability-matrix.md) | Han L1 to L6 evidence gates and the separate DDGE axis |
 | [Experiment guide](docs/experiments.md) | Presets, CLI usage, artifacts, metrics, and interpretation |
 | [Limitations](docs/limitations.md) | Missing evidence, omitted primitives, numerical scope, and non-goals |
@@ -293,6 +309,13 @@ coverage report
 python -m build
 python scripts/run_conformance.py
 python scripts/scientific_stress.py --quick
+```
+
+When the ignored paper PDFs are available locally, add the strict source gate:
+
+```bash
+python scripts/verify_sources.py --source-dir . --require-all
+python scripts/run_conformance.py --source-dir . --require-sources
 ```
 
 The full stress and benchmark protocols take longer:
