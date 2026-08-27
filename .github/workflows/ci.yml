@@ -125,7 +125,7 @@ jobs:
 
       - name: Run fail-closed evidence checks
         run: |
-          pytest -q \
+          python -m pytest -q \
             tests/conformance \
             tests/integration/test_artifact_integrity.py \
             tests/integration/test_conformance_source_verification.py \
