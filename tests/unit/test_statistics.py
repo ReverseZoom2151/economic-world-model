@@ -136,6 +136,19 @@ def test_wilson_interval_rejects_invalid_counts(successes: int, trials: int) -> 
         wilson_interval(successes=successes, trials=trials)
 
 
+@pytest.mark.parametrize(
+    "confidence",
+    (float("-inf"), -0.5, 0.0, 1.0, 1.5, float("inf"), float("nan")),
+)
+def test_wilson_interval_rejects_nonfinite_and_out_of_range_confidence(
+    confidence: float,
+) -> None:
+    with pytest.raises(ValueError) as error:
+        wilson_interval(successes=1, trials=2, confidence=confidence)
+
+    assert error.value.args == ("confidence must lie in (0, 1)",)
+
+
 def test_holm_correction_preserves_original_hypothesis_order() -> None:
     correction = holm_correction((0.01, 0.04, 0.03), alpha=0.05)
 
