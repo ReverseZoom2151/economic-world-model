@@ -137,6 +137,21 @@ def test_fx_blueprint_compiles_bank_batch_and_adaptive_belief_state() -> None:
     assert verify_event_chain(world.events.snapshot()) == world.events[-1].event_hash
 
 
+def test_fx_blueprint_summary_provenance_omits_replay_payloads() -> None:
+    world = fx_world_blueprint(smoke_config(periods=1)).compile(
+        provenance_mode="summary"
+    )
+    state = world.reset(seed=42)
+    world.step(world.run_agents(state))
+
+    reset, run_agents, step = world.events.snapshot()
+    assert "state" not in reset.payload
+    assert "actions" not in run_agents.payload
+    assert "submitted_actions" not in step.payload
+    assert "after_state_digest" not in step.payload
+    assert verify_event_chain(world.events.snapshot()) == step.event_hash
+
+
 def test_fx_world_run_preserves_result_and_exposes_canonical_events() -> None:
     config = smoke_config(periods=4)
 

@@ -18,6 +18,7 @@ from ewm.core import (
     WorldBindings,
     WorldSpecification,
     make_rng,
+    verify_event_chain,
 )
 
 MECHANISM_KEY = (
@@ -137,6 +138,48 @@ def test_compile_world_expands_roles_and_executes_the_declared_runtime() -> None
     assert tuple(action.agent_id for action in actions) == world.agent_ids
     assert transition.state["total"] == pytest.approx(3.5)
     assert transition.outcomes["accepted"] == 2
+
+
+def test_summary_provenance_preserves_execution_without_replay_payloads() -> None:
+    full = ewm.compile_world(
+        _specification(),
+        bindings=_bindings(),
+        adapters=_registry(),
+    )
+    summary = ewm.compile_world(
+        _specification(),
+        bindings=_bindings(),
+        adapters=_registry(),
+        provenance_mode="summary",
+    )
+
+    full_state = full.reset(seed=7)
+    summary_state = summary.reset(seed=7)
+    full_transition = full.step(full.run_agents(full_state))
+    summary_transition = summary.step(summary.run_agents(summary_state))
+
+    assert summary.provenance_mode == "summary"
+    assert summary_transition.state == full_transition.state
+    assert summary_transition.outcomes == full_transition.outcomes
+    assert verify_event_chain(summary.events.snapshot()) == summary.events[-1].event_hash
+    reset, run_agents, step = summary.events.snapshot()
+    assert "state" not in reset.payload
+    assert "state_digest" not in reset.payload
+    assert "runtime_contract_digest" in reset.payload
+    assert "actions" not in run_agents.payload
+    assert "submitted_actions" not in step.payload
+    assert "before_state_digest" not in step.payload
+    assert "after_state_digest" not in step.payload
+
+
+def test_compile_world_rejects_unknown_provenance_mode() -> None:
+    with pytest.raises(ValueError, match="provenance_mode"):
+        ewm.compile_world(
+            _specification(),
+            bindings=_bindings(),
+            adapters=_registry(),
+            provenance_mode="unknown",  # type: ignore[arg-type]
+        )
 
 
 def test_world_bindings_and_adapter_registry_take_immutable_ownership() -> None:

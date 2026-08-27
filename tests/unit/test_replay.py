@@ -129,6 +129,19 @@ def _world() -> World:
     )
 
 
+def test_summary_provenance_world_cannot_export_replay() -> None:
+    world = ewm.compile_world(
+        _specification(),
+        bindings=_bindings(),
+        adapters=_registry(),
+        provenance_mode="summary",
+    )
+    world.reset(seed=5)
+
+    with pytest.raises(RuntimeError, match="full provenance"):
+        ewm.export_replay(world)
+
+
 def test_event_v1_hash_chain_is_canonical_and_log_view_is_read_only() -> None:
     first = Event(
         0,
