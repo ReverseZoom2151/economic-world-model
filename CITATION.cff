@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, cite the software release and the relevant source papers."
+title: "Economic World Model"
+type: software
+authors:
+  - name: "ReverseZoom2151"
+version: "0.2.0"
+date-released: "2026-08-28"
+repository-code: "https://github.com/ReverseZoom2151/economic-world-model"
+url: "https://github.com/ReverseZoom2151/economic-world-model"
+license: MIT
+keywords:
+  - economics
+  - world models
+  - equilibrium
+  - simulation
