@@ -28,68 +28,56 @@ Most predictive pipelines treat their data-generating process as external. Econo
 cannot: a deployed forecast changes decisions; those decisions change prices, allocations, and
 observations; retraining on those observations changes the next deployed forecast.
 
-For intervention or regime $i$, the papers use $\mathcal{W}_i$ as the name of the complete economic
-world. It is a structured model made from the following layers, not a single behavioral equation:
+Cong's Definition 2.6 names the complete economic world $\mathcal{W}$. Rather than reproducing its
+long tuple as a comma-separated display, the exact blocks are grouped here:
 
-| Layer | Mathematical objects | Role in the world |
-|---|---|---|
-| Spaces | $\mathcal{S}$, $\mathcal{A}$, $\mathcal{Y}$, $\Theta$ | States, feasible actions, economic outcomes, and learned-model parameters |
-| Institutions and agents | $\mathcal{I}_i$, $\mathcal{B}_i$, $\mathcal{U}_i$ | The intervention, agent behavior, and objectives |
-| Markets | $\Gamma_i$, $\mathcal{K}_i$ | Market mechanisms and economic constraints |
-| Evolution and evidence | $T_i$, $O_i$, $D_i$ | State transitions, observations, and endogenous data generation |
-| Learning | $L_i$ | The rule that trains the next deployed model from generated data |
+| Block in Cong's definition | Meaning |
+|---|---|
+| $\mathcal{S}$, $\mathcal{A}$, $\mathcal{Y}$ | State, action, and outcome spaces |
+| $\mathcal{I}$ | Interventions, policies, technologies, or institutional regimes |
+| $N$, $\{\mathcal{I}_t^n,\Pi^n,\mu_t^n\}_{n=1}^{N}$ | Agents, their information, admissible policies, and beliefs |
+| $\mathcal{C}$ | Hard and soft economic coherence conditions |
+| $T_{\theta}$, $O_{\theta}$ | Learned transition and observation kernels |
+| $\Psi$ | Intervention semantics: which parts of the world a regime changes |
 
-The substantive mathematical loop is
+Han et al. supply the complementary systems organization: economic agents, an executable economic
+environment, agent-environment co-evolution, real-time alignment, and evaluation. The DDGE
+notation below comes specifically from Cong's Sections 3.2 and 3.3.
 
-$$
-\theta
-\xrightarrow{E_i}
-(\pi,\mu)
-\xrightarrow{D_i(\cdot,\theta)}
-\mathcal{D}_i
-\xrightarrow{L_i}
-\theta',
-$$
-
-where $\theta$ is the currently deployed model, $(\pi,\mu)$ is an economic equilibrium, $\mathcal{D}_i$
-is the data generated under that equilibrium, and $\theta'$ is the retrained model.
-
-Holding $\theta$ fixed defines an inner economic problem. Its solution set is $E_i(\theta)$. The
-implementation selects an equilibrium pair
+Let $\pi$ be the profile of agent policies, $\mu$ the profile of beliefs, and $\theta$ the learned
+components deployed in the world. Holding $\theta$ fixed gives the inner equilibrium set
+$E_i(\theta)$. When that equilibrium is unique, Cong writes its selector as
 
 $$
-e_i(\theta)=(\pi_i(\theta),\mu_i(\theta))\in E_i(\theta),
+S_i(\theta)=(\pi_i(\theta),\mu_i(\theta)).
 $$
 
-where $\pi_i(\theta)$ is the agents' policy profile and $\mu_i(\theta)$ is the associated equilibrium
-distribution. Membership in $E_i(\theta)$ means that behavior, beliefs, feasibility, and market
-conditions all hold under the deployed model.
-
-That equilibrium produces a dataset, and the learner produces the next deployed model:
+The generated-data shorthand and induced outer learning map are
 
 $$
-\begin{aligned}
-\mathcal{D}_i(\theta)
-  &=D_i(e_i(\theta),\theta),\\
-F_i(\theta)
-  &=L_i(\mathcal{D}_i(\theta))
-   =\theta'.
-\end{aligned}
+D(S_i(\theta),\theta;i)
+\equiv
+D(\pi_i(\theta),\mu_i(\theta),\theta;i),
 $$
 
-A Data-Driven Generative Equilibrium is a self-consistent learned state. In the general,
-set-valued formulation,
-
 $$
-\theta^{\star}\in F_i(\theta^{\star}).
+F_i(\theta)=L(D(S_i(\theta),\theta;i)).
 $$
 
-Version `0.1` implements a single-valued update and searches for
+The full DDGE definition also requires behavioral optimality and belief consistency. Its learning
+consistency condition is
+
+$$
+\theta^{\star}=L(D(\pi^{\star},\mu^{\star},\theta^{\star};i)).
+$$
+
+Under the unique selector above, version `0.1` searches for the equivalent outer fixed point and
+reports Cong's frozen-equilibrium residual:
 
 $$
 \theta^{\star}=F_i(\theta^{\star}),
 \qquad
-r_i(\theta)=d_{\Theta}(\theta,F_i(\theta)).
+r_i(\theta)=\lVert F_i(\theta)-\theta\rVert.
 $$
 
 The reported residual $r_i(\theta)$ measures model-environment inconsistency. It does not become a
