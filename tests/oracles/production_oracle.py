@@ -82,9 +82,24 @@ def _household_optimum(
         )
         return -utility
 
+    def negative_objective_gradient(
+        candidate: NDArray[np.float64],
+    ) -> NDArray[np.float64]:
+        labor, _consumption, _next_assets, resources = allocation(candidate)
+        saving_fraction = float(expit(candidate[1]))
+        labor_gradient = (
+            (1.0 + CONTINUATION_WEIGHT) * wage * labor / resources
+            - labor_weight * labor ** (1.0 + LABOR_CURVATURE)
+        )
+        saving_gradient = CONTINUATION_WEIGHT - (
+            1.0 + CONTINUATION_WEIGHT
+        ) * saving_fraction
+        return -np.array([labor_gradient, saving_gradient])
+
     solved = minimize(
         negative_objective,
         np.array([log(0.5), log(CONTINUATION_WEIGHT)]),
+        jac=negative_objective_gradient,
         method="L-BFGS-B",
         bounds=((-12.0, 4.0), (-12.0, 12.0)),
         options={
@@ -115,9 +130,23 @@ def _firm_optimum(*, rental_rate: float, wage: float) -> _FirmOptimum:
         output = PRODUCTIVITY * capital**CAPITAL_SHARE * labor**LABOR_SHARE
         return -(output - user_cost * capital - wage * labor)
 
+    def negative_profit_gradient(
+        candidate: NDArray[np.float64],
+    ) -> NDArray[np.float64]:
+        capital = exp(float(candidate[0]))
+        labor = exp(float(candidate[1]))
+        output = PRODUCTIVITY * capital**CAPITAL_SHARE * labor**LABOR_SHARE
+        return -np.array(
+            [
+                CAPITAL_SHARE * output - user_cost * capital,
+                LABOR_SHARE * output - wage * labor,
+            ]
+        )
+
     solved = minimize(
         negative_profit,
         np.log(np.array([float(WEIGHTS @ ASSETS), 1.0])),
+        jac=negative_profit_gradient,
         method="L-BFGS-B",
         bounds=((-12.0, 8.0), (-12.0, 8.0)),
         options={
