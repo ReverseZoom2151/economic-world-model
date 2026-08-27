@@ -13,7 +13,7 @@ from .coevolution import ControlledCoevolution
 from .constraints import ConstraintSet
 from .contracts import RuntimeContract
 from .evaluation import EvaluationReport, evaluate_event_log
-from .events import Event, EventLog
+from .events import Event, EventLog, EventLogView
 from .protocols import (
     AgentPolicy,
     AlignmentReportRecord,
@@ -34,6 +34,12 @@ from .records import (
     freeze_value,
     thaw_value,
 )
+from .serialization import (
+    StateCodec,
+    action_to_data,
+    state_digest,
+    violation_to_data,
+)
 
 
 class World:
@@ -53,6 +59,7 @@ class World:
         state_reconciler: StateReconciler | None = None,
         intervention: Any = None,
         runtime_contract: RuntimeContract | None = None,
+        state_codec: StateCodec | None = None,
     ) -> None:
         ordered_agents = tuple(sorted(agents, key=lambda agent: agent.agent_id))
         identifiers = [agent.agent_id for agent in ordered_agents]
@@ -69,6 +76,9 @@ class World:
         self._state_reconciler = state_reconciler
         self._intervention = intervention
         self._runtime_contract = runtime_contract
+        self._state_codec = state_codec
+        if runtime_contract is not None and state_codec is None:
+            raise ValueError("compiled runtime contract requires a state codec")
         if runtime_contract is not None and set(runtime_contract.agent_roles) != set(
             identifiers
         ):
@@ -86,8 +96,8 @@ class World:
         self._closed = False
 
     @property
-    def events(self) -> EventLog:
-        return self._events
+    def events(self) -> EventLogView:
+        return EventLogView(self._events)
 
     @property
     def agent_ids(self) -> tuple[str, ...]:
@@ -98,6 +108,12 @@ class World:
         """Return strict compiled-world rules, or ``None`` for a direct world."""
 
         return self._runtime_contract
+
+    @property
+    def state_codec(self) -> StateCodec | None:
+        """Return the codec attached to a replayable compiled world."""
+
+        return self._state_codec
 
     @property
     def current_state(self) -> Any:
@@ -157,20 +173,27 @@ class World:
 
     def reset(self, seed: int | None = None) -> Any:
         self._ensure_open()
-        self._rng = make_rng(seed)
-        self._events = EventLog()
-        state = freeze_value(self._initial_state(self._rng))
+        rng = make_rng(seed)
+        state = freeze_value(self._initial_state(rng))
         if self._state_reconciler is not None and not self._state_reconciler.is_feasible(
             state
         ):
             raise ValueError("initial world state is outside the feasible-state set")
+        payload: dict[str, Any] = {"seed": seed, "agent_ids": self.agent_ids}
+        if self._state_codec is not None:
+            payload.update(
+                {
+                    "state": self._state_codec.encode(state),
+                    "state_codec": self._state_codec.codec_id,
+                    "state_digest": state_digest(self._state_codec, state),
+                }
+            )
+        events = EventLog()
+        events.append("reset", payload, state_version=0)
+        self._rng = rng
+        self._events = events
         self._state = state
         self._state_version = 0
-        self._events.append(
-            "reset",
-            {"seed": seed, "agent_ids": self.agent_ids},
-            state_version=self._state_version,
-        )
         return state
 
     def observe(self, state: Any, agent_id: str) -> Any:
@@ -206,19 +229,22 @@ class World:
                     )
                 collected.append(action)
             actions = tuple(collected)
+            payload = {
+                "agent_ids": tuple(action.agent_id for action in actions),
+                "parallel_requested": parallel,
+                "parallel_executed": False,
+            }
+            if self._runtime_contract is not None:
+                payload["actions"] = tuple(action_to_data(action) for action in actions)
+            self._events.append(
+                "run_agents",
+                payload,
+                state_version=self._state_version if self._state_version >= 0 else None,
+            )
         except Exception:
             if rng_state is not None:
                 self._rng.bit_generator.state = rng_state
             raise
-        self._events.append(
-            "run_agents",
-            {
-                "agent_ids": tuple(action.agent_id for action in actions),
-                "parallel_requested": parallel,
-                "parallel_executed": False,
-            },
-            state_version=self._state_version if self._state_version >= 0 else None,
-        )
         return actions
 
     @overload
@@ -296,21 +322,45 @@ class World:
                     "state_reconciled": reconciled,
                 },
             )
-        except Exception:
-            if rng_state is not None:
-                self._rng.bit_generator.state = rng_state
-            raise
-        next_version = self._state_version + 1
-        self._events.append(
-            "step",
-            {
+            next_version = self._state_version + 1
+            event_payload: dict[str, Any] = {
                 "submitted_count": len(submitted),
                 "accepted_count": len(scheduled),
                 "violation_count": len(violations),
                 "state_reconciled": reconciled,
-            },
-            state_version=next_version,
-        )
+            }
+            if self._runtime_contract is not None:
+                if self._state_codec is None:
+                    raise RuntimeError("compiled world is missing its state codec")
+                event_payload.update(
+                    {
+                        "accepted_actions": tuple(
+                            action_to_data(action) for action in scheduled
+                        ),
+                        "after_state_digest": state_digest(
+                            self._state_codec,
+                            transition.state,
+                        ),
+                        "before_state_digest": state_digest(self._state_codec, state),
+                        "diagnostics": transition.diagnostics,
+                        "outcomes": transition.outcomes,
+                        "submitted_actions": tuple(
+                            action_to_data(action) for action in submitted
+                        ),
+                        "violations": tuple(
+                            violation_to_data(violation) for violation in violations
+                        ),
+                    }
+                )
+            self._events.append(
+                "step",
+                event_payload,
+                state_version=next_version,
+            )
+        except Exception:
+            if rng_state is not None:
+                self._rng.bit_generator.state = rng_state
+            raise
         self._state = transition.state
         self._state_version = next_version
         return transition

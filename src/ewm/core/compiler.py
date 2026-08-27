@@ -21,6 +21,7 @@ from .protocols import (
     StateReconciler,
 )
 from .records import freeze_value
+from .serialization import CanonicalStateCodec, StateCodec
 from .specs import AgentSpecification, WorldSpecification
 from .world import World
 
@@ -105,10 +106,13 @@ class WorldBindings:
     alignment: RealWorldAlignment | None = None
     state_reconciler: StateReconciler | None = None
     intervention: Any = None
+    state_codec: StateCodec = field(default_factory=CanonicalStateCodec)
 
     def __post_init__(self) -> None:
         if not callable(self.initial_state):
             raise TypeError("initial_state must be callable")
+        if not isinstance(self.state_codec, StateCodec):
+            raise TypeError("state_codec must implement the StateCodec protocol")
         factories = dict(self.agent_factories)
         constraints = dict(self.constraints)
         if any(not name for name in factories):
@@ -231,4 +235,5 @@ def compile_world(
         state_reconciler=bindings.state_reconciler,
         intervention=bindings.intervention,
         runtime_contract=runtime_contract,
+        state_codec=bindings.state_codec,
     )

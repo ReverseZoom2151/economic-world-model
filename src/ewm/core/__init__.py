@@ -34,7 +34,14 @@ from .evaluation import (
     MetricMeasurement,
     evaluate_event_log,
 )
-from .events import EVENT_SCHEMA_VERSION, Event, EventLog
+from .events import (
+    EVENT_GENESIS_HASH,
+    EVENT_SCHEMA_VERSION,
+    Event,
+    EventLog,
+    EventLogView,
+    verify_event_chain,
+)
 from .mechanisms import FunctionalMechanism
 from .protocols import (
     AgentPolicy,
@@ -76,6 +83,22 @@ from .records import (
     RunMetadata,
     Transition,
 )
+from .replay import (
+    REPLAY_SCHEMA_VERSION,
+    ReplayBundle,
+    ReplayManifest,
+    ReplayReport,
+    export_replay,
+    replay_world,
+)
+from .serialization import (
+    CANONICAL_STATE_CODEC_ID,
+    CanonicalStateCodec,
+    StateCodec,
+    canonical_json,
+    content_digest,
+    state_digest,
+)
 from .specs import (
     AgentSpecification,
     AlignmentSpecification,
@@ -95,7 +118,10 @@ from .updates import convex_update
 from .world import World
 
 __all__ = [
+    "CANONICAL_STATE_CODEC_ID",
+    "EVENT_GENESIS_HASH",
     "EVENT_SCHEMA_VERSION",
+    "REPLAY_SCHEMA_VERSION",
     "Action",
     "AgentBlock",
     "AgentFactory",
@@ -103,6 +129,7 @@ __all__ = [
     "AgentSpecification",
     "AlignmentReportRecord",
     "AlignmentSpecification",
+    "CanonicalStateCodec",
     "CoevolutionProposal",
     "CoevolutionReport",
     "CoevolutionSnapshot",
@@ -132,6 +159,7 @@ __all__ = [
     "EvaluationSpecification",
     "Event",
     "EventLog",
+    "EventLogView",
     "ExperimentResult",
     "ExternalEvidenceRecord",
     "FixedPoint",
@@ -158,6 +186,9 @@ __all__ = [
     "ProposalRule",
     "RealWorldAlignment",
     "ReconciliationRule",
+    "ReplayBundle",
+    "ReplayManifest",
+    "ReplayReport",
     "RunMetadata",
     "RuntimeAdapter",
     "RuntimeAdapterRegistry",
@@ -165,6 +196,7 @@ __all__ = [
     "SchedulerPolicy",
     "SchedulerSpecification",
     "SpaceDefinition",
+    "StateCodec",
     "StateFeasibilityRule",
     "StateReconciler",
     "StateSpecification",
@@ -175,10 +207,16 @@ __all__ = [
     "WorldBindings",
     "WorldComponent",
     "WorldSpecification",
+    "canonical_json",
     "compile_world",
+    "content_digest",
     "convex_update",
     "evaluate_event_log",
+    "export_replay",
     "make_rng",
     "mechanism_key",
+    "replay_world",
     "spawn_rngs",
+    "state_digest",
+    "verify_event_chain",
 ]

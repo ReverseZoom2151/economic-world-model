@@ -25,6 +25,7 @@ from .api import (
     scheduler,
     state,
 )
+from .core import export_replay, replay_world
 from .equilibrium import solve_ddge, solve_equilibrium
 
 __all__ = [
@@ -43,10 +44,12 @@ __all__ = [
     "environment",
     "environment_updates",
     "evaluation",
+    "export_replay",
     "list_experiments",
     "list_scenarios",
     "make",
     "mechanism",
+    "replay_world",
     "rollout",
     "run_experiment",
     "scheduler",

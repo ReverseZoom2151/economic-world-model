@@ -155,6 +155,7 @@ def test_event_v1_hash_chain_is_canonical_and_log_view_is_read_only() -> None:
     assert tuple(view) == view.snapshot()
     assert len(view) == 2
     assert not hasattr(view, "append")
+    assert isinstance(_world().events, EventLogView)
 
 
 def test_canonical_state_codec_round_trips_supported_state_values() -> None:
