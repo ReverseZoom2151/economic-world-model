@@ -28,6 +28,8 @@ from ewm.capabilities.readiness import (
     run_han_l3_l6_readiness,
 )
 from ewm.core.evidence import EvidenceStatus, ValidatedEvidenceArtifact
+from ewm.experiments.protocol_runner import run_locked_protocol
+from ewm.experiments.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
 from ewm.experiments.source_verification import (
     SourceVerification,
     verification_failed,
@@ -48,6 +50,10 @@ CAPABILITY_EVIDENCE_PATHS = (
     "tests/properties/test_fx_accounting.py",
     "tests/scenarios/test_fx.py",
 )
+DDGE_EVIDENCE_PATHS = (
+    "tests/integration/test_independent_numerical_oracles.py",
+    "tests/integration/test_locked_protocol_smoke.py",
+)
 
 
 def _source_fingerprint(root: Path = ROOT) -> str:
@@ -60,7 +66,9 @@ def _source_fingerprint(root: Path = ROOT) -> str:
         "protocols/**/*",
         "tests/conformance/**/*.py",
         "tests/integration/test_han_runtime_protocol.py",
+        "tests/oracles/**/*.py",
         *CAPABILITY_EVIDENCE_PATHS,
+        *DDGE_EVIDENCE_PATHS,
         "scripts/run_conformance.py",
     ):
         paths.update(path for path in root.glob(pattern) if path.is_file())
@@ -189,39 +197,93 @@ def _han_readiness_outcome(test_outcome: dict[str, Any]) -> dict[str, Any]:
 
 def _ddge_assessments(test_outcome: dict[str, Any]) -> dict[str, dict[str, Any]]:
     suite_status = str(test_outcome["status"])
-    scalar_status = {
-        EvidenceStatus.PASS.value: "supported",
-        EvidenceStatus.FAIL.value: "failed",
-        EvidenceStatus.NOT_RUN.value: "not_assessed",
-    }[suite_status]
-    scalar_evidence = (
-        ["tests/conformance/test_cong_conformance.py"]
-        if suite_status == EvidenceStatus.PASS.value
-        else []
-    )
-    return {
+    assessments = {
         "cong-lab-i": {
             "claim": "qualitative-reconstruction",
             "evidence": [],
-            "qualification": "not exercised by the conformance suite",
+            "qualification": "conformance evidence gate did not pass",
             "scenario": "credit",
             "status": "not_assessed",
         },
         "cong-lab-ii": {
             "claim": "exact-replication",
-            "evidence": scalar_evidence,
-            "qualification": "internal scalar DDGE conformance",
+            "evidence": [],
+            "qualification": "conformance evidence gate did not pass",
             "scenario": "scalar",
-            "status": scalar_status,
+            "status": "not_assessed",
         },
         "cong-lab-iii-population": {
             "claim": "exact-replication",
             "evidence": [],
-            "qualification": "external code-independent numerical oracle pending",
+            "qualification": "conformance evidence gate did not pass",
             "scenario": "forecasting",
             "status": "not_assessed",
         },
     }
+    if suite_status != EvidenceStatus.PASS.value:
+        return assessments
+
+    assessments["cong-lab-ii"].update(
+        {
+            "evidence": [
+                "tests/conformance/test_cong_conformance.py",
+                "tests/oracles/scalar_oracle.py",
+                "tests/integration/test_independent_numerical_oracles.py",
+            ],
+            "qualification": (
+                "exact scalar Laboratory II equations and targets; package-import-free "
+                "direct-equation and bracketing oracle"
+            ),
+            "status": "supported",
+        }
+    )
+    assessments["cong-lab-iii-population"].update(
+        {
+            "evidence": [
+                "tests/oracles/forecasting_oracle.py",
+                "tests/integration/test_independent_numerical_oracles.py",
+            ],
+            "qualification": (
+                "population stationary-kernel OLS roots only; finite-sample damping "
+                "remains package-authored and excluded"
+            ),
+            "status": "supported",
+        }
+    )
+
+    assessments["cong-lab-i"]["qualification"] = (
+        "locked credit protocol did not produce the prespecified diagnostic result"
+    )
+    protocol = load_protocol(DEFAULT_PROTOCOL_PATH)
+    credit_report = run_locked_protocol(protocol, mode="quick")
+    failures = credit_report.get("failures")
+    expected_diagnostic = (
+        credit_report.get("status") == "fail"
+        and credit_report.get("analysis_valid") is False
+        and credit_report.get("claim_authorized") is False
+        and credit_report.get("evidence_status") == "diagnostic_only"
+        and credit_report.get("completed_replications")
+        == protocol.replication_count("quick")
+        and credit_report.get("deviations") == ()
+        and isinstance(failures, tuple)
+        and bool(failures)
+        and all(item.get("code") == "tolerance_breach" for item in failures)
+    )
+    if expected_diagnostic:
+        assessments["cong-lab-i"].update(
+            {
+                "evidence": [
+                    "src/ewm/protocols/credit-mechanism-v1.toml",
+                    "tests/integration/test_locked_protocol_smoke.py",
+                ],
+                "qualification": (
+                    "prospectively locked quick protocol failed its prespecified "
+                    "solver-residual threshold; diagnostic only and claim unauthorized"
+                ),
+                "status": "diagnostic_only",
+            }
+        )
+    return assessments
 
 
 def _paper_hashes() -> dict[str, str]:
@@ -231,7 +293,11 @@ def _paper_hashes() -> dict[str, str]:
 
 
 def _test_outcome(*, skip_tests: bool) -> dict[str, Any]:
-    test_paths = ("tests/conformance", *CAPABILITY_EVIDENCE_PATHS)
+    test_paths = (
+        "tests/conformance",
+        *CAPABILITY_EVIDENCE_PATHS,
+        *DDGE_EVIDENCE_PATHS,
+    )
     command = [sys.executable, "-m", "pytest", *test_paths, "-q"]
     displayed_command = f"python -m pytest {' '.join(test_paths)} -q"
     if skip_tests:
