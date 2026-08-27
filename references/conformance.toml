@@ -349,9 +349,11 @@ source = "han-et-al-2026"
 section = "Equation 7"
 pages = "4"
 summary = "Institutions may update endogenously from world and agent states."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "Current scenario institutions are fixed within a declared regime."
+implementation = ["src/ewm/core/coevolution.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_coevolution.py"]
+limitation = "Controlled mechanism-parameter updates are implemented; governed rule and institution changes are deferred to the institutional-evolution task."
 
 [[item]]
 id = "han-component-agents"
@@ -382,11 +384,10 @@ source = "han-et-al-2026"
 section = "Section 4.1, Co-evolution"
 pages = "12"
 summary = "Agent and environment improvements form a bidirectional controlled loop."
-status = "partial"
+status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/agents.py", "src/ewm/scenarios/forecasting/model.py"]
-evidence = ["tests/scenarios/test_fx.py", "tests/scenarios/test_forecasting.py"]
-limitation = "Adaptive pieces exist inside scenarios, but no reusable bidirectional co-evolution protocol exists."
+implementation = ["src/ewm/core/coevolution.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_coevolution.py"]
 
 [[item]]
 id = "han-component-alignment"
@@ -494,9 +495,10 @@ source = "han-et-al-2026"
 section = "Figures 8 and 14"
 pages = "12, 16"
 summary = "world.coevolve updates declared agent and environment components from transition feedback."
-status = "planned"
+status = "implemented"
 claim = "conformance"
-limitation = "No reusable runtime call exists."
+implementation = ["src/ewm/core/coevolution.py", "src/ewm/core/world.py", "src/ewm/core/protocols.py"]
+evidence = ["tests/unit/test_coevolution.py"]
 
 [[item]]
 id = "han-runtime-align"
@@ -530,7 +532,7 @@ status = "partial"
 claim = "conformance"
 implementation = ["src/ewm/core/events.py", "src/ewm/core/world.py"]
 evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py"]
-limitation = "All currently implemented runtime calls emit schema and state versions; coevolve and align remain to be added."
+limitation = "All currently implemented runtime calls emit schema and state versions; align remains to be added."
 
 [[item]]
 id = "han-level-l1"

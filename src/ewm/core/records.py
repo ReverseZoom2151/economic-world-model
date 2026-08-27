@@ -99,6 +99,87 @@ class Transition:
 
 
 @dataclass(frozen=True, slots=True)
+class CoevolutionProposal:
+    """One scalar adaptive update proposed from an internal feedback signal."""
+
+    scope: str
+    owner_id: str | None
+    target: str
+    signal: str
+    signal_value: float
+    delta: float
+
+    def __post_init__(self) -> None:
+        if self.scope not in {"agent", "environment"}:
+            raise ValueError("coevolution scope must be 'agent' or 'environment'")
+        if self.scope == "agent" and not self.owner_id:
+            raise ValueError("agent coevolution proposal requires owner_id")
+        if self.scope == "environment" and self.owner_id is not None:
+            raise ValueError("environment coevolution proposal must not have owner_id")
+        if not self.target or not self.signal:
+            raise ValueError("coevolution target and signal must not be empty")
+        if not isfinite(self.signal_value) or not isfinite(self.delta):
+            raise ValueError("coevolution signal and delta must be finite")
+
+
+@dataclass(frozen=True, slots=True)
+class CoevolutionUpdate:
+    """One validated and applied adaptive component update."""
+
+    scope: str
+    owner_id: str | None
+    target: str
+    signal: str
+    before: float
+    delta: float
+    after: float
+    bound: float
+    normalized_delta: float
+
+
+@dataclass(frozen=True, slots=True)
+class CoevolutionSnapshot:
+    """Immutable state of controlled agent and environment components."""
+
+    version: int
+    agent_components: Mapping[str, Mapping[str, float]]
+    environment_components: Mapping[str, float]
+
+    def __post_init__(self) -> None:
+        if self.version < 0:
+            raise ValueError("coevolution snapshot version must be non-negative")
+        object.__setattr__(self, "agent_components", freeze_value(self.agent_components))
+        object.__setattr__(
+            self,
+            "environment_components",
+            freeze_value(self.environment_components),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class CoevolutionReport:
+    """Versioned result and stability diagnostics for one atomic co-evolution call."""
+
+    before_version: int
+    after_version: int
+    signals: Mapping[str, float]
+    updates: tuple[CoevolutionUpdate, ...]
+    max_normalized_delta: float
+
+    def __post_init__(self) -> None:
+        if self.before_version < 0 or self.after_version < self.before_version:
+            raise ValueError("invalid coevolution report versions")
+        object.__setattr__(self, "signals", freeze_value(self.signals))
+        object.__setattr__(self, "updates", tuple(self.updates))
+
+    @property
+    def stable(self) -> bool:
+        """Whether all applied updates remained within declared bounds."""
+
+        return self.max_normalized_delta <= 1.0
+
+
+@dataclass(frozen=True, slots=True)
 class GeneratedDataset:
     """A learner-ready dataset generated inside an economic world."""
 

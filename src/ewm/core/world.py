@@ -7,12 +7,20 @@ from typing import Any, overload
 
 import numpy as np
 
+from .coevolution import ControlledCoevolution
 from .constraints import ConstraintSet
 from .evaluation import EvaluationReport, evaluate_event_log
 from .events import Event, EventLog
 from .protocols import AgentPolicy, Mechanism
 from .randomness import make_rng
-from .records import Action, Transition, freeze_value, thaw_value
+from .records import (
+    Action,
+    CoevolutionReport,
+    CoevolutionSnapshot,
+    Transition,
+    freeze_value,
+    thaw_value,
+)
 
 
 class World:
@@ -26,6 +34,7 @@ class World:
         mechanism: Mechanism,
         constraints: ConstraintSet | None = None,
         observation: Callable[[Any, str], Any] | None = None,
+        coevolution: ControlledCoevolution | None = None,
     ) -> None:
         ordered_agents = tuple(sorted(agents, key=lambda agent: agent.agent_id))
         identifiers = [agent.agent_id for agent in ordered_agents]
@@ -36,6 +45,13 @@ class World:
         self._mechanism = mechanism
         self._constraints = constraints or ConstraintSet()
         self._observation = observation or (lambda state, _agent_id: state)
+        self._coevolution = coevolution
+        if coevolution is not None:
+            unknown_agents = set(coevolution.agent_ids).difference(identifiers)
+            if unknown_agents:
+                raise ValueError(
+                    f"coevolution has unknown agents: {sorted(unknown_agents)}"
+                )
         self._rng = make_rng(0)
         self._events = EventLog()
         self._state: Any | None = None
@@ -63,6 +79,14 @@ class World:
         """Monotone state version, starting at zero after reset."""
 
         return self._state_version
+
+    @property
+    def coevolution_state(self) -> CoevolutionSnapshot:
+        """Return the controlled adaptive state or report missing configuration."""
+
+        if self._coevolution is None:
+            raise RuntimeError("coevolution is not configured")
+        return self._coevolution.snapshot
 
     def _ensure_open(self) -> None:
         if self._closed:
@@ -176,6 +200,31 @@ class World:
             self._events.snapshot(),
             state_version=self._state_version,
         )
+
+    def coevolve(
+        self,
+        state: Any,
+        actions: tuple[Action, ...],
+        next_state: Any,
+    ) -> CoevolutionReport:
+        """Apply controlled agent and environment updates from realized feedback."""
+
+        self._ensure_open()
+        if self._coevolution is None:
+            raise RuntimeError("coevolution is not configured")
+        report = self._coevolution.evolve(state, tuple(actions), next_state)
+        self._events.append(
+            "coevolve",
+            {
+                "before_version": report.before_version,
+                "after_version": report.after_version,
+                "update_count": len(report.updates),
+                "max_normalized_delta": report.max_normalized_delta,
+                "stable": report.stable,
+            },
+            state_version=self._state_version if self._state_version >= 0 else None,
+        )
+        return report
 
     def log(self) -> tuple[Event, ...]:
         """Return an immutable event snapshot after recording the instrumentation call."""

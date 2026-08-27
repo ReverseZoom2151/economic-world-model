@@ -10,7 +10,7 @@ from numpy.typing import NDArray
 
 from .evaluation import EvaluationReport
 from .events import Event
-from .records import Action, Transition
+from .records import Action, CoevolutionReport, Transition
 
 
 class AgentPolicy(Protocol):
@@ -60,6 +60,13 @@ class EconomicWorld(Protocol):
     def step(self, state: Any, actions: tuple[Action, ...], /) -> Transition: ...
 
     def evaluate(self) -> EvaluationReport: ...
+
+    def coevolve(
+        self,
+        state: Any,
+        actions: tuple[Action, ...],
+        next_state: Any,
+    ) -> CoevolutionReport: ...
 
     def log(self) -> tuple[Event, ...]: ...
 

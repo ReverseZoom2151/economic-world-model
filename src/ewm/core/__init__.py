@@ -1,6 +1,7 @@
 """Shared records and protocols for Economic World Models."""
 
 from .agents import FunctionalAgent
+from .coevolution import ControlledCoevolution, ProposalRule
 from .constraints import ConstraintSet, FunctionalConstraint
 from .definition import (
     AgentBlock,
@@ -26,6 +27,10 @@ from .protocols import (
 from .randomness import make_rng, spawn_rngs
 from .records import (
     Action,
+    CoevolutionProposal,
+    CoevolutionReport,
+    CoevolutionSnapshot,
+    CoevolutionUpdate,
     ConsistencyCheck,
     ConstraintViolation,
     DDGECandidate,
@@ -63,7 +68,11 @@ __all__ = [
     "AgentPolicy",
     "AgentSpecification",
     "AlignmentSpecification",
+    "CoevolutionProposal",
+    "CoevolutionReport",
+    "CoevolutionSnapshot",
     "CoevolutionSpecification",
+    "CoevolutionUpdate",
     "CoherenceCondition",
     "CoherenceKind",
     "ConsistencyCheck",
@@ -71,6 +80,7 @@ __all__ = [
     "ConstraintSet",
     "ConstraintViolation",
     "ConstraintsSpecification",
+    "ControlledCoevolution",
     "CorrectionSpecification",
     "DDGECandidate",
     "DDGEConsistencyCertificate",
@@ -96,6 +106,7 @@ __all__ = [
     "KernelDefinition",
     "Mechanism",
     "MechanismSpecification",
+    "ProposalRule",
     "RunMetadata",
     "SchedulerSpecification",
     "SpaceDefinition",
