@@ -23,6 +23,11 @@ The project brings together two complementary papers:
 The first release is a **synthetic research laboratory**, not an empirically calibrated economy, a
 policy oracle, a trading or lending system, or a claim to a real-world economic digital twin.
 
+The exact paper versions, section/equation-to-code mapping, claim classes, and known replication
+limits are recorded in the [paper traceability registry](docs/paper-traceability.md). In particular,
+"exact replication," "protocol conformance," and "paper-inspired reconstruction" are separate
+claims in this project.
+
 ## Why an economic world model?
 
 Most predictive pipelines treat their data-generating process as external. Economic models often

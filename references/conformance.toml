@@ -1,0 +1,639 @@
+schema_version = 1
+
+# Status describes the current repository, not the ambition of the paper.
+# Claim labels separate exact replication from protocol conformance and reconstruction.
+
+[[item]]
+id = "cong-def-2.1"
+source = "cong-2026"
+section = "Definition 2.1"
+pages = "10-11"
+summary = "Economic coherence conditions include hard equalities, inequalities, and soft diagnostics."
+status = "partial"
+claim = "source-definition"
+implementation = ["src/ewm/core/constraints.py"]
+evidence = ["tests/unit/test_constraints.py"]
+limitation = "The current runtime enforces action predicates but does not yet encode all three named coherence classes."
+
+[[item]]
+id = "cong-eq-2.1-2.2"
+source = "cong-2026"
+section = "Equations 2.1 and 2.2"
+pages = "15"
+summary = "Learned transition and observation kernels generate next states and outcomes."
+status = "partial"
+claim = "source-definition"
+implementation = ["src/ewm/core/protocols.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_world.py"]
+limitation = "The runtime supports deterministic or user-randomized mechanisms, not explicit stochastic-kernel records."
+
+[[item]]
+id = "cong-def-2.4"
+source = "cong-2026"
+section = "Definition 2.4"
+pages = "16"
+summary = "Interventions modify declared feasible sets, coherence, information, kernels, objectives, or constraints."
+status = "partial"
+claim = "source-definition"
+implementation = ["src/ewm/core/records.py", "src/ewm/api.py"]
+evidence = ["tests/integration/test_comparisons.py"]
+limitation = "Scenario labels exist, but typed component-level intervention semantics are planned."
+
+[[item]]
+id = "cong-def-2.6"
+source = "cong-2026"
+section = "Definition 2.6"
+pages = "17-18"
+summary = "An EWM declares spaces, interventions, agents, information, policies, beliefs, coherence, kernels, and intervention semantics."
+status = "partial"
+claim = "source-definition"
+implementation = ["src/ewm/core/protocols.py", "src/ewm/core/records.py"]
+evidence = ["tests/unit/test_core_records.py", "tests/test_architecture.py"]
+limitation = "The exact tuple is documented but not yet represented as one validated immutable definition object."
+
+[[item]]
+id = "cong-def-3.1"
+source = "cong-2026"
+section = "Definition 3.1"
+pages = "24"
+summary = "DDGE jointly requires behavioral optimality, belief consistency, and learning consistency."
+status = "partial"
+claim = "source-definition"
+implementation = ["src/ewm/equilibrium/ddge.py", "src/ewm/core/protocols.py"]
+evidence = ["tests/unit/test_fixed_point.py", "tests/scenarios/test_credit.py"]
+limitation = "The numerical protocol solves a single-valued outer update and does not separately certify all three conditions."
+
+[[item]]
+id = "cong-assumption-3.2"
+source = "cong-2026"
+section = "Assumption 3.2"
+pages = "26"
+summary = "Compactness, convexity, upper hemicontinuity, and continuity support DDGE existence."
+status = "planned"
+claim = "source-definition"
+limitation = "General topological assumptions cannot be inferred from a numerical callable; finite certificates will expose explicit checks."
+
+[[item]]
+id = "cong-prop-3.3"
+source = "cong-2026"
+section = "Proposition 3.3"
+pages = "26-27, 49"
+summary = "Kakutani gives existence; a contraction selector gives uniqueness and global outer convergence."
+status = "partial"
+claim = "theorem-diagnostic"
+implementation = ["src/ewm/equilibrium/fixed_point.py", "src/ewm/equilibrium/diagnostics.py"]
+evidence = ["tests/unit/test_fixed_point.py", "tests/unit/test_diagnostics.py"]
+limitation = "Contraction iteration is implemented; no generic Kakutani correspondence solver is claimed."
+
+[[item]]
+id = "cong-theorem-3.4"
+source = "cong-2026"
+section = "Theorem 3.4"
+pages = "28-29, 50-51"
+summary = "A frozen residual bounds DDGE displacement and, under sensitivity assumptions, welfare error."
+status = "partial"
+claim = "theorem-diagnostic"
+implementation = ["src/ewm/equilibrium/diagnostics.py"]
+evidence = ["tests/unit/test_diagnostics.py"]
+limitation = "The a posteriori distance bound exists; the assumption-explicit welfare certificate is planned."
+
+[[item]]
+id = "cong-eq-3.1"
+source = "cong-2026"
+section = "Equation 3.1"
+pages = "29, 50-51"
+summary = "The exact center displacement uses the averaged Jacobian resolvent."
+status = "planned"
+claim = "theorem-diagnostic"
+limitation = "Finite-difference Jacobians exist, but the exact linear/averaged-Jacobian displacement helper is not yet public."
+
+[[item]]
+id = "cong-theorem-3.5"
+source = "cong-2026"
+section = "Theorem 3.5"
+pages = "30, 51-52"
+summary = "Sign crossings create multiple DDGEs and a singular value above one implies local non-contraction."
+status = "implemented"
+claim = "theorem-diagnostic"
+implementation = ["src/ewm/equilibrium/fixed_point.py", "src/ewm/equilibrium/diagnostics.py"]
+evidence = ["tests/unit/test_fixed_point.py", "tests/scenarios/test_forecasting.py"]
+
+[[item]]
+id = "cong-prop-4.1"
+source = "cong-2026"
+section = "Proposition 4.1"
+pages = "40-41, 58-59"
+summary = "Transition misspecification and regime shift decompose in total variation and imply value and robust-regret bounds."
+status = "planned"
+claim = "theorem-diagnostic"
+limitation = "The package has no assumption-explicit total-variation value or robust-regret certificate yet."
+
+[[item]]
+id = "cong-theorem-a.2"
+source = "cong-2026"
+section = "Theorem A.2"
+pages = "45-48"
+summary = "Rich EWM classes approximate measurable policies, beliefs, and stochastic kernels in integrated metrics."
+status = "not-applicable"
+claim = "survey-only"
+
+[[item]]
+id = "cong-prop-a.3"
+source = "cong-2026"
+section = "Proposition A.3"
+pages = "46, 48"
+summary = "Projection of candidate next states into the feasible correspondence preserves feasibility inductively."
+status = "planned"
+claim = "conformance"
+limitation = "Action rejection exists, but a transition-level feasible-state reconciliation operator is not yet represented."
+
+[[item]]
+id = "cong-prop-a.4"
+source = "cong-2026"
+section = "Proposition A.4"
+pages = "52"
+summary = "Belief-behavior feedback amplifies the derivative of the outer learning map."
+status = "planned"
+claim = "theorem-diagnostic"
+limitation = "The exact scalar derivative decomposition will be added with Laboratory II."
+
+[[item]]
+id = "cong-eq-a.1"
+source = "cong-2026"
+section = "Equation A.1"
+pages = "53"
+summary = "The scalar worked model closes behavior, response, and a tanh learner."
+status = "planned"
+claim = "exact-replication"
+limitation = "The source fully specifies this model; an independent scenario implementation is planned."
+
+[[item]]
+id = "cong-prop-a.5"
+source = "cong-2026"
+section = "Proposition A.5"
+pages = "53-55"
+summary = "The scalar model has closed-form displacement, pitchfork multiplicity, amplification, and stability properties."
+status = "planned"
+claim = "exact-replication"
+limitation = "Closed-form and independent numerical verification will be implemented together."
+
+[[item]]
+id = "cong-prop-a.6"
+source = "cong-2026"
+section = "Proposition A.6"
+pages = "55-56"
+summary = "Mean-field games are exact-aggregation DDGEs under stated restrictions."
+status = "not-applicable"
+claim = "survey-only"
+
+[[item]]
+id = "cong-prop-a.8"
+source = "cong-2026"
+section = "Proposition A.8"
+pages = "56-57"
+summary = "Equilibrium, data, and learner Lipschitz constants give a sufficient outer contraction modulus."
+status = "planned"
+claim = "theorem-diagnostic"
+limitation = "The primitive modulus formula is not yet exposed."
+
+[[item]]
+id = "cong-corollary-a.9"
+source = "cong-2026"
+section = "Corollary A.9"
+pages = "57-58"
+summary = "One observed contraction step bounds remaining parameter distance and welfare error."
+status = "partial"
+claim = "theorem-diagnostic"
+implementation = ["src/ewm/equilibrium/diagnostics.py"]
+evidence = ["tests/unit/test_diagnostics.py"]
+limitation = "Parameter distance is implemented; the welfare extension is planned."
+
+[[item]]
+id = "cong-appendix-b-algorithm"
+source = "cong-2026"
+section = "Appendix B"
+pages = "61"
+summary = "DDGE computation alternates inner solution, data generation, learning, and joint residual checks."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/equilibrium/ddge.py", "src/ewm/scenarios/credit/model.py"]
+evidence = ["tests/scenarios/test_credit.py", "tests/unit/test_fixed_point.py"]
+limitation = "The generic solver covers single-valued outer maps; joint component certificates are planned."
+
+[[item]]
+id = "cong-lab-i"
+source = "cong-2026"
+section = "Appendix C.2, Laboratory I"
+pages = "62-64, 70"
+summary = "A heterogeneous credit market closes GenAI adoption, selective outcomes, and lender retraining."
+status = "blocked-external"
+claim = "qualitative-reconstruction"
+implementation = ["src/ewm/scenarios/credit/model.py", "src/ewm/experiments/credit.py"]
+evidence = ["tests/scenarios/test_credit.py", "tests/integration/test_comparisons.py"]
+limitation = "The PDF omits necessary simulation and learner parameters and contains no URL for the stated accompanying code, so exact numerical replication is not currently identifiable."
+
+[[item]]
+id = "cong-lab-ii"
+source = "cong-2026"
+section = "Appendix C.3, Laboratory II"
+pages = "64, 71"
+summary = "The fully specified scalar model verifies displacement, multiplicity, instability, damping, and residual bounds."
+status = "planned"
+claim = "exact-replication"
+limitation = "The equations and plotted parameters are source-complete and scheduled for exact reproduction."
+
+[[item]]
+id = "cong-lab-iii"
+source = "cong-2026"
+section = "Appendix C.4, Laboratory III"
+pages = "65-66, 72"
+summary = "A deployed slope creates the aggregate persistence on which OLS retrains."
+status = "partial"
+claim = "exact-replication"
+implementation = ["src/ewm/scenarios/forecasting/model.py", "src/ewm/scenarios/forecasting/oracles.py"]
+evidence = ["tests/scenarios/test_forecasting.py"]
+limitation = "The mechanism and roots are implemented; paper-target parameters and all four panel claims need a dedicated replication test."
+
+[[item]]
+id = "cong-prop-d.1"
+source = "cong-2026"
+section = "Proposition D.1"
+pages = "66-68"
+summary = "Standard assumptions give competitive prices and allocations for each feasible aggregate state."
+status = "planned"
+claim = "paper-inspired"
+limitation = "Cong supplies a template, not complete primitives; any executable instantiation must label package-authored preferences and technology."
+
+[[item]]
+id = "cong-theorem-e.1"
+source = "cong-2026"
+section = "Theorem E.1"
+pages = "68-69"
+summary = "Reduced-form, structural, agent-based, and generic AI world models nest inside the EWM language."
+status = "not-applicable"
+claim = "survey-only"
+
+[[item]]
+id = "han-eq-1"
+source = "han-et-al-2026"
+section = "Equation 1"
+pages = "3"
+summary = "The EWM transition maps state and joint action to predicted next state."
+status = "implemented"
+claim = "conformance"
+implementation = ["src/ewm/core/world.py"]
+evidence = ["tests/unit/test_world.py"]
+
+[[item]]
+id = "han-eq-2"
+source = "han-et-al-2026"
+section = "Equation 2"
+pages = "4"
+summary = "State groups aggregate variables, private states, beliefs, and institutions."
+status = "partial"
+claim = "source-definition"
+implementation = ["src/ewm/core/records.py", "src/ewm/scenarios/fx/model.py"]
+evidence = ["tests/scenarios/test_fx.py"]
+limitation = "Scenario states contain these ideas but no reusable validated grouped-state schema exists."
+
+[[item]]
+id = "han-eq-3"
+source = "han-et-al-2026"
+section = "Equation 3"
+pages = "4"
+summary = "Agent beliefs update from prior beliefs, private state, aggregates, controls, and institutions."
+status = "implemented"
+claim = "conformance"
+implementation = ["src/ewm/scenarios/fx/agents.py"]
+evidence = ["tests/scenarios/test_fx.py"]
+
+[[item]]
+id = "han-eq-4"
+source = "han-et-al-2026"
+section = "Equation 4"
+pages = "4"
+summary = "Policies map information and beliefs into economic actions."
+status = "implemented"
+claim = "conformance"
+implementation = ["src/ewm/core/protocols.py", "src/ewm/scenarios/fx/agents.py"]
+evidence = ["tests/unit/test_world.py", "tests/scenarios/test_fx.py"]
+
+[[item]]
+id = "han-eq-5"
+source = "han-et-al-2026"
+section = "Equation 5"
+pages = "4"
+summary = "Private agent states update from prior states and actions."
+status = "implemented"
+claim = "conformance"
+implementation = ["src/ewm/scenarios/fx/mechanism.py"]
+evidence = ["tests/properties/test_fx_accounting.py"]
+
+[[item]]
+id = "han-eq-6"
+source = "han-et-al-2026"
+section = "Equation 6"
+pages = "4"
+summary = "The environment aggregates agent states, actions, and beliefs into the next aggregate state."
+status = "implemented"
+claim = "conformance"
+implementation = ["src/ewm/scenarios/fx/mechanism.py"]
+evidence = ["tests/scenarios/test_fx.py", "tests/properties/test_fx_accounting.py"]
+
+[[item]]
+id = "han-eq-7"
+source = "han-et-al-2026"
+section = "Equation 7"
+pages = "4"
+summary = "Institutions may update endogenously from world and agent states."
+status = "planned"
+claim = "conformance"
+limitation = "Current scenario institutions are fixed within a declared regime."
+
+[[item]]
+id = "han-component-agents"
+source = "han-et-al-2026"
+section = "Section 4.1, Agents"
+pages = "11-12"
+summary = "Stateful economic actors observe permitted signals and produce typed feasible actions."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/core/agents.py", "src/ewm/core/protocols.py"]
+evidence = ["tests/unit/test_world.py", "tests/scenarios/test_fx.py"]
+limitation = "Roles, objectives, beliefs, memory, tools, and skills are not yet one declarative specification."
+
+[[item]]
+id = "han-component-environment"
+source = "han-et-al-2026"
+section = "Section 4.1, Economic environments"
+pages = "11-12"
+summary = "The runtime publishes observations, enforces constraints, schedules, clears, settles, and logs."
+status = "implemented"
+claim = "conformance"
+implementation = ["src/ewm/core/world.py", "src/ewm/core/constraints.py", "src/ewm/core/events.py"]
+evidence = ["tests/unit/test_world.py", "tests/properties/test_fx_accounting.py"]
+
+[[item]]
+id = "han-component-coevolution"
+source = "han-et-al-2026"
+section = "Section 4.1, Co-evolution"
+pages = "12"
+summary = "Agent and environment improvements form a bidirectional controlled loop."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/scenarios/fx/agents.py", "src/ewm/scenarios/forecasting/model.py"]
+evidence = ["tests/scenarios/test_fx.py", "tests/scenarios/test_forecasting.py"]
+limitation = "Adaptive pieces exist inside scenarios, but no reusable bidirectional co-evolution protocol exists."
+
+[[item]]
+id = "han-component-alignment"
+source = "han-et-al-2026"
+section = "Section 4.1, Real-time alignment"
+pages = "12"
+summary = "External evidence monitors discrepancy, attributes error, and applies versioned bounded correction."
+status = "planned"
+claim = "conformance"
+limitation = "No external-evidence or correction protocol exists yet."
+
+[[item]]
+id = "han-spec-agent"
+source = "han-et-al-2026"
+section = "Section 4.2.1 and Figure 9"
+pages = "13"
+summary = "The agent specification declares role, objective, states, channels, actions, tools, constraints, and memory."
+status = "planned"
+claim = "conformance"
+limitation = "Functional policies exist, but the paper's declarative agent factory is not implemented."
+
+[[item]]
+id = "han-spec-environment"
+source = "han-et-al-2026"
+section = "Section 4.2.2 and Figure 11"
+pages = "14-15"
+summary = "The environment specification declares state, accounts, constraints, scheduler, mechanism, and settlement."
+status = "planned"
+claim = "conformance"
+limitation = "Low-level pieces exist, but the paper-shaped declarative factory is not implemented."
+
+[[item]]
+id = "han-spec-coevolution"
+source = "han-et-al-2026"
+section = "Section 4.2.3 and Figure 13"
+pages = "15-16"
+summary = "Co-evolution declares agent/environment targets and the feedback signals that may update them."
+status = "planned"
+claim = "conformance"
+limitation = "No allow-listed co-evolution specification exists."
+
+[[item]]
+id = "han-spec-alignment"
+source = "han-et-al-2026"
+section = "Section 4.2.4 and Figure 15"
+pages = "16-17"
+summary = "Alignment declares evidence streams, targets, metrics, tolerances, and bounded correction."
+status = "planned"
+claim = "conformance"
+limitation = "No external-evidence alignment specification exists."
+
+[[item]]
+id = "han-spec-evaluation"
+source = "han-et-al-2026"
+section = "Section 4.2.5"
+pages = "17-19"
+summary = "Evaluation declares trajectory-level metrics and structured reports."
+status = "planned"
+claim = "conformance"
+limitation = "Experiment metrics exist but are not organized into Han's five-layer report."
+
+[[item]]
+id = "han-runtime-reset"
+source = "han-et-al-2026"
+section = "Figure 8"
+pages = "12-13"
+summary = "world.reset initializes state and views."
+status = "implemented"
+claim = "conformance"
+implementation = ["src/ewm/core/world.py"]
+evidence = ["tests/unit/test_world.py"]
+
+[[item]]
+id = "han-runtime-run-agents"
+source = "han-et-al-2026"
+section = "Figures 8 and 10"
+pages = "12-14"
+summary = "world.run_agents maps role-specific observations to typed actions."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/core/world.py"]
+evidence = ["tests/unit/test_world.py"]
+limitation = "The stable call exists but does not accept the paper's parallel option."
+
+[[item]]
+id = "han-runtime-step"
+source = "han-et-al-2026"
+section = "Figures 8 and 12"
+pages = "12, 15"
+summary = "world.step checks feasibility, schedules, clears, settles, updates state, and logs."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/core/world.py"]
+evidence = ["tests/unit/test_world.py"]
+limitation = "The implementation currently requires the prior state as an explicit argument."
+
+[[item]]
+id = "han-runtime-coevolve"
+source = "han-et-al-2026"
+section = "Figures 8 and 14"
+pages = "12, 16"
+summary = "world.coevolve updates declared agent and environment components from transition feedback."
+status = "planned"
+claim = "conformance"
+limitation = "No reusable runtime call exists."
+
+[[item]]
+id = "han-runtime-align"
+source = "han-et-al-2026"
+section = "Figures 8 and 16"
+pages = "12, 18"
+summary = "world.align compares simulation with external evidence and applies bounded corrections."
+status = "planned"
+claim = "conformance"
+limitation = "No reusable runtime call exists."
+
+[[item]]
+id = "han-runtime-evaluate"
+source = "han-et-al-2026"
+section = "Figures 8 and 17"
+pages = "12, 19"
+summary = "world.evaluate reads trajectory logs and returns component-level diagnostics without mutation."
+status = "planned"
+claim = "conformance"
+limitation = "No world-level read-only evaluator exists."
+
+[[item]]
+id = "han-runtime-log"
+source = "han-et-al-2026"
+section = "Figure 8"
+pages = "12"
+summary = "world.log records events from every runtime call."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/core/events.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_world.py"]
+limitation = "Reset, action, and transition events exist; future runtime calls need versioned events too."
+
+[[item]]
+id = "han-level-l1"
+source = "han-et-al-2026"
+section = "Section 3.1, L1"
+pages = "7"
+summary = "Fixed rule-based agents interact in a fixed institutional world."
+status = "implemented"
+claim = "conformance"
+implementation = ["src/ewm/scenarios/fx"]
+evidence = ["tests/scenarios/test_fx.py", "tests/properties/test_fx_accounting.py"]
+
+[[item]]
+id = "han-level-l2"
+source = "han-et-al-2026"
+section = "Section 3.1, L2"
+pages = "7"
+summary = "Symbolic or rule-based agent policies adapt over time while the cognitive substrate and institutions remain fixed."
+status = "implemented"
+claim = "conformance"
+implementation = ["src/ewm/scenarios/fx/agents.py"]
+evidence = ["tests/scenarios/test_fx.py"]
+
+[[item]]
+id = "han-level-l3"
+source = "han-et-al-2026"
+section = "Section 3.1, L3"
+pages = "7-8"
+summary = "Language-model agents use explicit beliefs, expectations, memory, tools, and language-mediated reasoning."
+status = "planned"
+claim = "conformance"
+limitation = "A provider-neutral cognitive substrate and behavioral evidence gates are planned; no L3 claim is currently made."
+
+[[item]]
+id = "han-level-l4"
+source = "han-et-al-2026"
+section = "Section 3.1, L4"
+pages = "8"
+summary = "Agents persistently expand strategies, skills, tools, memories, or routines."
+status = "planned"
+claim = "conformance"
+limitation = "No persistent evaluated capability acquisition exists."
+
+[[item]]
+id = "han-level-l5"
+source = "han-et-al-2026"
+section = "Section 3.1, L5"
+pages = "8"
+summary = "Policies, rules, contracts, governance, and constraints evolve endogenously."
+status = "planned"
+claim = "conformance"
+limitation = "No governed institutional transition exists."
+
+[[item]]
+id = "han-level-l6"
+source = "han-et-al-2026"
+section = "Section 3.1, L6"
+pages = "8"
+summary = "The world repeatedly compares with new observations and corrects agents, parameters, mechanisms, rules, or transitions."
+status = "planned"
+claim = "conformance"
+limitation = "No external observation contract or repeated out-of-sample alignment evidence exists."
+
+[[item]]
+id = "han-eval-agents"
+source = "han-et-al-2026"
+section = "Table 3, Agents"
+pages = "18"
+summary = "Evaluate action validity, role consistency, belief calibration, and behavioral diversity."
+status = "planned"
+claim = "conformance"
+limitation = "Metrics are not yet emitted as one agent-layer report."
+
+[[item]]
+id = "han-eval-environment"
+source = "han-et-al-2026"
+section = "Table 3, Environment"
+pages = "18"
+summary = "Evaluate constraint violations, clearing error, accounting consistency, and settlement."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/scenarios/fx/mechanism.py", "src/ewm/core/world.py"]
+evidence = ["tests/properties/test_fx_accounting.py", "tests/scenarios/test_fx.py"]
+limitation = "Invariants are tested but not yet consolidated into a layered runtime report."
+
+[[item]]
+id = "han-eval-coevolution"
+source = "han-et-al-2026"
+section = "Table 3, Co-evolution"
+pages = "18"
+summary = "Evaluate adaptation gain, stability, drift, policy change, and mechanism recalibration."
+status = "planned"
+claim = "conformance"
+limitation = "No generic co-evolution report exists."
+
+[[item]]
+id = "han-eval-alignment"
+source = "han-et-al-2026"
+section = "Table 3, Real-world alignment"
+pages = "18"
+summary = "Evaluate state and trend errors plus correction magnitudes against observed evidence."
+status = "planned"
+claim = "conformance"
+limitation = "No external-evidence alignment run exists."
+
+[[item]]
+id = "han-eval-efficiency"
+source = "han-et-al-2026"
+section = "Table 3, Efficiency"
+pages = "18"
+summary = "Evaluate runtime, memory, parallel efficiency, and scaling with agents, markets, and horizons."
+status = "partial"
+claim = "conformance"
+implementation = ["scripts/benchmark_experiments.py"]
+evidence = ["tests/integration/test_benchmark_harness.py"]
+limitation = "Local benchmarks exist but are not yet attached to world-level layered reports."

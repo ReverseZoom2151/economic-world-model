@@ -1,0 +1,36 @@
+schema_version = 1
+
+[[source]]
+id = "cong-2026"
+title = "Economic World Models and Data-Driven Generative Equilibria"
+authors = ["Lin William Cong"]
+version = "Current draft, April 2026"
+pages = 72
+public_url = "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940"
+sha256 = "c5ed935e09b5b0a607f0523d6be293ba4de1707bc242083ad1cd5a5937820357"
+preflight = "pass"
+local_pdf_tracked = false
+notes = "The local source is ignored. The PDF says replication code accompanies it but contains no code URL."
+
+[[source]]
+id = "han-et-al-2026"
+title = "From Economic Agents to Agentic Economies: A Systems Blueprint for Economic World Models"
+authors = [
+  "Jiale Han",
+  "Xiang Li",
+  "Jing Qian",
+  "Wenyuan Gu",
+  "Pin Gao",
+  "Ye Luo",
+  "Hongyuan Zha",
+  "Dacheng Tao",
+  "Benyou Wang",
+  "Lin William Cong",
+]
+version = "arXiv:2608.06020v1, 6 August 2026"
+pages = 44
+public_url = "https://arxiv.org/abs/2608.06020v1"
+sha256 = "918e51bc34b102a4d51c5a55528cdd90ca78576df2bc1955dee31e65c051c8e6"
+preflight = "pass"
+local_pdf_tracked = false
+notes = "The locked local PDF hash matches the arXiv v1 download."
