@@ -261,14 +261,12 @@ class ProductionEconomy:
         """Transform an economic price guess into the solver's positive coordinates."""
 
         self._validate_prices(initial_rental_rate, initial_wage)
-        return np.log(
-            np.array(
-                [
-                    initial_rental_rate + self._primitives.depreciation,
-                    initial_wage,
-                ],
-                dtype=float,
-            )
+        return np.array(
+            [
+                log(initial_rental_rate + self._primitives.depreciation),
+                log(initial_wage),
+            ],
+            dtype=np.float64,
         )
 
     def equilibrium_from_result(

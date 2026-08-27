@@ -8,6 +8,7 @@ from hypothesis import given
 from hypothesis import strategies as st
 from scipy.optimize import root
 
+from ewm.core import EquilibriumResult
 from ewm.experiments.production import solve_production_equilibrium
 from ewm.scenarios.production import (
     DistributionState,
@@ -195,3 +196,102 @@ def test_example_discloses_every_package_authored_primitive() -> None:
         "productivity",
     }
     assert all(economy.package_authored_primitives.values())
+
+
+@pytest.mark.parametrize(
+    ("overrides", "message"),
+    [
+        ({"risk_aversion": 0.0}, "must be positive"),
+        ({"capital_share": 0.6, "labor_share": 0.5}, "sum to less than one"),
+        ({"depreciation": 1.0}, "depreciation"),
+        ({"borrowing_bound": float("nan")}, "borrowing_bound"),
+    ],
+)
+def test_invalid_production_primitives_are_rejected(
+    overrides: dict[str, float],
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        ProductionPrimitives(**overrides)
+
+
+@pytest.mark.parametrize(
+    ("values", "message"),
+    [
+        ({"assets": (), "shocks": (), "weights": ()}, "align"),
+        (
+            {"assets": (float("nan"),), "shocks": (1.0,), "weights": (1.0,)},
+            "assets must be finite",
+        ),
+        (
+            {"assets": (0.0,), "shocks": (0.0,), "weights": (1.0,)},
+            "shocks must be finite and positive",
+        ),
+        (
+            {"assets": (0.0,), "shocks": (1.0,), "weights": (0.0,)},
+            "weights must be finite and positive",
+        ),
+        (
+            {"assets": (0.0,), "shocks": (1.0,), "weights": (0.5,)},
+            "weights must sum to one",
+        ),
+    ],
+)
+def test_invalid_distribution_states_are_rejected(
+    values: dict[str, tuple[float, ...]],
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        DistributionState(**values)
+
+
+def test_non_log_preferences_use_the_general_household_solver() -> None:
+    economy = ProductionEconomy(
+        primitives=ProductionPrimitives(risk_aversion=2.0, labor_curvature=1.5),
+        distribution=DistributionState(
+            assets=(0.2,),
+            shocks=(1.0,),
+            weights=(1.0,),
+        ),
+    )
+
+    (decision,) = economy.household_decisions(rental_rate=0.05, wage=1.0)
+
+    assert decision.consumption > 0.0
+    assert abs(decision.savings_foc_residual) < 1e-9
+    assert abs(decision.labor_foc_residual) < 1e-9
+
+
+def test_production_boundary_validation_rejects_invalid_inputs() -> None:
+    economy = package_authored_example()
+
+    with pytest.raises(ValueError, match="prices must be finite"):
+        economy.household_decisions(rental_rate=float("nan"), wage=1.0)
+    with pytest.raises(ValueError, match="user cost"):
+        economy.firm_decision(rental_rate=-economy.primitives.depreciation, wage=1.0)
+    with pytest.raises(ValueError, match="wage must be positive"):
+        economy.firm_decision(rental_rate=0.05, wage=0.0)
+    with pytest.raises(ValueError, match="two finite values"):
+        economy.residual(np.array([0.0]))
+    with pytest.raises(ValueError, match="two log prices"):
+        economy.equilibrium_from_result(
+            EquilibriumResult(
+                solution=np.array([0.0]),
+                residual_norm=0.0,
+                converged=True,
+                iterations=1,
+                message="invalid fixture",
+            )
+        )
+
+
+def test_current_assets_must_respect_the_borrowing_bound() -> None:
+    with pytest.raises(ValueError, match="current household assets"):
+        ProductionEconomy(
+            primitives=ProductionPrimitives(borrowing_bound=0.5),
+            distribution=DistributionState(
+                assets=(0.2,),
+                shocks=(1.0,),
+                weights=(1.0,),
+            ),
+        )
