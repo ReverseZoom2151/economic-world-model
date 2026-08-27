@@ -107,7 +107,7 @@ reproducible artifact layer, public Python facade, and non-interactive CLI are i
 | Cong scalar DDGE laboratory | Implemented | Exact Appendix A.8 equations, closed forms, pitchfork, amplification, damping, and independent bracketing |
 | Self-fulfilling forecasting laboratory | Implemented | Exact Figure 4 parameters and targets, population and finite-sample maps, basin/stability tests, independent oracle report |
 | Multi-agent FX laboratory | Implemented | Symbolic households/firms/bank, aggregate balance reservation, uniform-price pro-rata clearing, adaptive beliefs, conservation properties, replicated paired comparisons |
-| AI-mediated credit laboratory | Implemented | Endogenous decision-flip adoption, common potential outcomes, residual-qualified selective/full-information DDGE solvers, frozen and omniscient counterfactuals, sensitivity boundaries |
+| AI-mediated credit laboratory | Qualitative reconstruction | Cong's published mechanism and orderings, package-authored parameters, explicit target differences, missing-input registry, and no exact-replication claim |
 | Experiment artifacts and stable facade | Implemented | Reproducible manifests with source/runtime identity, tables, traces, `ewm` Python entry points, and CLI |
 
 No dashboard, web application, database, distributed runtime, external economic dataset, or LLM
@@ -325,6 +325,13 @@ full-information DDGE, and omniscient quality oracle. It studies sign reversals,
 misspecification, and residual diagnostics under explicit synthetic assumptions. Finite binary
 selection can produce a small discontinuity cycle, which is reported as a residual floor rather than
 misrepresented as exact convergence.
+
+This is a disclosed qualitative reconstruction of Cong's Laboratory I. The paper fixes the feature
+dimensions, learner family, 40,000-application round size, cutoff equation, mechanism, and headline
+outputs, but omits inputs needed to recreate its numerical map. The package therefore reports its
+values beside the published values as differences. It does not fit or tune to the figure. Its
+recent-iterate residual floor is not the paper's sampling noise floor. The complete boundary is
+machine-readable in `src/ewm/scenarios/credit/provenance.py`.
 
 ## Scientific standards
 

@@ -48,6 +48,13 @@ invariants, and prespecified qualitative sign patterns, but it cannot truthfully
 paper's exact figure. This status can change if the author artifact becomes available and its source
 identity is locked.
 
+`src/ewm/scenarios/credit/provenance.py` records every fixed design fact, Figure 2 magnitude,
+qualitative ordering, and missing primitive used in this determination. The comparison report exposes
+numerical differences without using them as replication assertions. It also records currently
+unmeasured quantities and orderings that the reconstruction does not reproduce. In particular, the
+package's deterministic recent-iterate residual minimum is not Cong's finite-cohort sampling noise
+floor.
+
 ## Han capability levels are evidence gates
 
 Han's L1-L6 ladder is a systems taxonomy. A class named `Alignment` does not create an L6 economic

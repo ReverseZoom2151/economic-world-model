@@ -15,8 +15,8 @@ from ewm.scenarios.credit import (
     CreditConfig,
     CreditDDGEProblem,
     CreditRegime,
+    cong_qualitative_reconstruction,
     generate_population,
-    paper_like_config,
 )
 from ewm.scenarios.credit import (
     research_config as credit_research_config,
@@ -93,7 +93,7 @@ def _preset(name: str, preset: str, seed: int) -> ScenarioConfig:
         return fx_smoke_config() if preset == "smoke" else fx_research_config()
     if name == "credit":
         credit_config = (
-            paper_like_config(population_size=800)
+            cong_qualitative_reconstruction(population_size=800)
             if preset == "smoke"
             else credit_research_config()
         )

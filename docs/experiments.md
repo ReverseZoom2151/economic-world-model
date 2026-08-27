@@ -50,10 +50,10 @@ synthetic; they increase numerical scale, not empirical validity.
 | Forecasting | 4,096 stationary samples, 64 chains, 256 burn-in periods | 131,072 samples, 256 chains, 2,000 burn-in periods |
 | FX rollout | 24 periods, 6 households | 500 periods, 40 households, deeper bank liquidity |
 | FX comparative statics | 8 common-random-number replications | 50 common-random-number replications |
-| Credit | Named paper-like configuration with 800 applicants | 10,000 applicants and tighter DDGE tolerance |
+| Credit | Cong qualitative-reconstruction mechanism with 800 package-generated applicants | 10,000 package-generated applicants and tighter DDGE tolerance |
 
-The complete parameter set is serialized into `config.json`; code, documentation, and a remembered
-command are not substitutes for that manifest.
+The complete parameter set and claim metadata are serialized into `config.json`; code,
+documentation, and a remembered command are not substitutes for that manifest.
 
 ## Python facade
 
@@ -153,8 +153,15 @@ residual diagnostics. The adaptive regimes also report `converged` and `iteratio
 The regime name describes the DDGE target; inspect the convergence flag and residual before calling
 one run an achieved fixed point.
 
-The named paper-like preset is a configuration-specific qualitative test. The sensitivity report is
-the evidence against treating its sign pattern as universal.
+The smoke configuration is named `cong_qualitative_reconstruction` in run metadata. It is a
+configuration-specific mechanism test, not a numerical replication. `config.json` records the claim
+type, exact-replication flag, package-versus-paper target differences, qualitative-ordering results,
+and quantities that remain unmeasured. The sensitivity report is evidence against treating one sign
+pattern as universal.
+
+Cong reports a sampling noise floor for fresh 40,000-application cohorts. This package currently
+reports a minimum recent residual from a deterministic finite cohort. These are different objects.
+The run metadata leaves `sampling_noise_floor` null and records the missing source requirements.
 
 ## Reproducibility checklist
 

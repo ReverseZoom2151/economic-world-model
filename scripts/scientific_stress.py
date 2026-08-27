@@ -13,7 +13,11 @@ import numpy as np
 import ewm
 from ewm.equilibrium import FixedPointConfig
 from ewm.experiments import paired_estimate, replicated_fx_comparisons, run_credit_regimes
-from ewm.scenarios.credit import CreditRegime, paper_like_config, sensitivity_report
+from ewm.scenarios.credit import (
+    CreditRegime,
+    cong_qualitative_reconstruction,
+    sensitivity_report,
+)
 from ewm.scenarios.forecasting import ForecastingProblem, oracle_report, smoke_config
 from ewm.scenarios.fx import FXSimulationConfig, run_fx_simulation
 
@@ -155,7 +159,7 @@ def _credit_stress(*, quick: bool) -> dict[str, Any]:
 
     for seed in seeds:
         config = replace(
-            paper_like_config(population_size=population_size),
+            cong_qualitative_reconstruction(population_size=population_size),
             seed=seed,
         )
         regimes = run_credit_regimes(config)
@@ -207,7 +211,7 @@ def _credit_stress(*, quick: bool) -> dict[str, Any]:
     }
     sensitivity = sensitivity_report(
         replace(
-            paper_like_config(population_size=population_size),
+            cong_qualitative_reconstruction(population_size=population_size),
             seed=seeds[0],
         ),
         polish_shifts=(0.0, 0.75, 1.5, 2.25, 3.0),

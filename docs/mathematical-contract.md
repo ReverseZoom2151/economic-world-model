@@ -321,10 +321,19 @@ F(\theta)=(1-\eta)\theta+\eta\widehat{\theta}(D_{\theta}).
 $$
 
 The five regimes are no GenAI, frozen model, selective-observation DDGE, full-information DDGE,
-and an omniscient quality oracle. The named paper-like preset exhibits a frozen predicted-versus-realized
-profit sign reversal and DDGE repair. Sensitivity cases retain parameter regions where that sign
-pattern does not occur. Finite binary selection can produce a small discontinuity cycle; the runner
-reports both the terminal residual and the smallest recent residual as a floor.
+and an omniscient quality oracle. `cong_qualitative_reconstruction` exhibits a frozen
+predicted-versus-realized profit sign reversal and DDGE repair. The compatibility name
+`paper_like_config` resolves to the same function, but package metadata always uses the explicit
+name. Sensitivity cases retain parameter regions where the sign pattern does not occur.
+
+This configuration is not an exact paper preset. Cong fixes 10 structured features, 15 text
+features, a 26-dimensional ridge-logistic parameter, 40,000 applications per retraining round, and
+the zero-profit cutoff. The locked PDF omits the numerical feature loadings and noise laws,
+repayment link, enhancement parameters, adoption-cost law, payoffs, ridge penalty, damping,
+initialization details, seeds, and sampling-noise estimator. The provenance registry and target
+report retain these omissions and show package-versus-paper differences. A small deterministic
+discontinuity cycle can produce a recent-iterate residual floor in this implementation; that value is
+not relabeled as the paper's sampling noise floor.
 
 ## Evidence map
 
@@ -334,6 +343,6 @@ reports both the terminal residual and the smallest recent residual as a floor.
 | Forecasting roots and derivative | `ewm.scenarios.forecasting` | Analytical derivative plus Brent bracketing in `tests/scenarios/test_forecasting.py` |
 | FX feasibility and conservation | `ewm.scenarios.fx` | Example and Hypothesis property tests in `tests/scenarios` and `tests/properties` |
 | FX comparative statics | `ewm.experiments.fx` | Replicated common-random-number effects and interval tests in `tests/integration/test_comparisons.py` |
-| Credit adoption and observation regimes | `ewm.scenarios.credit` | Economic-invariant and sensitivity tests in `tests/scenarios/test_credit.py` |
+| Credit provenance, adoption, observation, and claim boundaries | `ewm.scenarios.credit`, `ewm.experiments.credit` | Source-target and economic-invariant tests in `tests/scenarios/test_credit_paper_targets.py` and `tests/scenarios/test_credit.py` |
 | One-way dependencies | Package layer boundaries | AST enforcement in `tests/test_architecture.py` |
 | Reproducible public runs | `ewm.api`, `ewm.experiments`, `ewm.cli` | Integration tests for identical artifacts and public flows |

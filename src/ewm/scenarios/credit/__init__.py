@@ -16,18 +16,36 @@ from .model import (
 )
 from .oracles import CreditSensitivityCase, sensitivity_report
 from .population import CreditPopulation, assemble_features, generate_population
-from .presets import CreditConfig, paper_like_config, research_config
+from .presets import (
+    CreditConfig,
+    cong_qualitative_reconstruction,
+    paper_like_config,
+    research_config,
+)
+from .provenance import (
+    CONG_LAB_I_PROVENANCE,
+    CreditLaboratoryProvenance,
+    MissingCreditPrimitive,
+    PublishedCreditOrdering,
+    PublishedCreditTarget,
+)
 
 __all__ = [
+    "CONG_LAB_I_PROVENANCE",
     "CreditConfig",
     "CreditDDGEProblem",
+    "CreditLaboratoryProvenance",
     "CreditMetrics",
     "CreditModel",
     "CreditPopulation",
     "CreditRegime",
     "CreditSensitivityCase",
+    "MissingCreditPrimitive",
+    "PublishedCreditOrdering",
+    "PublishedCreditTarget",
     "adoption_mask",
     "assemble_features",
+    "cong_qualitative_reconstruction",
     "evaluate_credit_model",
     "evaluate_omniscient",
     "fit_credit_model",

@@ -59,14 +59,19 @@ class CreditConfig:
         return self.structured_features + self.text_features
 
 
-def paper_like_config(*, population_size: int = 1_200) -> CreditConfig:
-    """Return the named configuration used for prespecified qualitative hypotheses."""
+def cong_qualitative_reconstruction(*, population_size: int = 1_200) -> CreditConfig:
+    """Return package-authored parameters for Cong's qualitative credit mechanism."""
 
     return CreditConfig(
         population_size=population_size,
         seed=303,
         ddge_max_iterations=200,
     )
+
+
+# Compatibility alias retained without a deprecation warning. The explicit name above is used in
+# package-authored metadata so this configuration cannot be mistaken for an exact paper preset.
+paper_like_config = cong_qualitative_reconstruction
 
 
 def research_config(*, population_size: int = 10_000) -> CreditConfig:

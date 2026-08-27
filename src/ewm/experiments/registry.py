@@ -13,7 +13,7 @@ from ewm.core import ExperimentResult
 from ewm.equilibrium import FixedPointConfig, solve_ddge
 from ewm.scenarios.credit import (
     CreditRegime,
-    paper_like_config,
+    cong_qualitative_reconstruction,
 )
 from ewm.scenarios.credit import (
     research_config as credit_research_config,
@@ -38,7 +38,7 @@ from ewm.scenarios.fx import (
     smoke_config as fx_smoke_config,
 )
 
-from .credit import run_credit_regimes
+from .credit import credit_paper_target_report, run_credit_regimes
 from .fx import replicated_fx_comparisons
 
 SCENARIO_DESCRIPTIONS: Mapping[str, str] = {
@@ -255,13 +255,16 @@ def _fx_comparative_statics(preset: str, seed: int) -> ExperimentPayload:
 
 def _credit(preset: str, seed: int) -> ExperimentPayload:
     if preset == "smoke":
-        config = paper_like_config(population_size=800)
+        config = cong_qualitative_reconstruction(population_size=800)
+        configuration_name = "cong_qualitative_reconstruction"
     elif preset == "research":
         config = credit_research_config()
+        configuration_name = "package_research_scale"
     else:
         raise ValueError("preset must be 'smoke' or 'research'")
     config = replace(config, seed=seed)
     regimes = run_credit_regimes(config)
+    paper_report = credit_paper_target_report(config, regimes=regimes)
     metric_names = (
         "profit_per_applicant",
         "predicted_profit_per_applicant",
@@ -293,7 +296,30 @@ def _credit(preset: str, seed: int) -> ExperimentPayload:
             experiment="credit.regimes",
             metrics=metrics,
             records=records,
-            metadata={"preset": preset, "seed": seed},
+            metadata={
+                "preset": preset,
+                "seed": seed,
+                "configuration": configuration_name,
+                "source_id": "cong-2026",
+                "claim_type": "qualitative-reconstruction",
+                "exact_replication": False,
+                "residual_floor_semantics": (
+                    "minimum recent deterministic iterate residual; not the paper's "
+                    "sampling noise floor"
+                ),
+                "published_target_differences": {
+                    comparison.identifier: comparison.difference
+                    for comparison in paper_report.targets
+                },
+                "qualitative_orderings": {
+                    comparison.identifier: comparison.matches
+                    for comparison in paper_report.orderings
+                },
+                "sampling_noise_floor": paper_report.sampling_noise_floor,
+                "sampling_noise_floor_limitation": (
+                    paper_report.sampling_noise_floor_limitation
+                ),
+            },
         ),
         parameters=asdict(config),
         traces={

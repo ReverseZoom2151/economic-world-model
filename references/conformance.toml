@@ -230,8 +230,8 @@ pages = "62-64, 70"
 summary = "A heterogeneous credit market closes GenAI adoption, selective outcomes, and lender retraining."
 status = "blocked-external"
 claim = "qualitative-reconstruction"
-implementation = ["src/ewm/scenarios/credit/model.py", "src/ewm/experiments/credit.py"]
-evidence = ["tests/scenarios/test_credit.py", "tests/integration/test_comparisons.py"]
+implementation = ["src/ewm/scenarios/credit/provenance.py", "src/ewm/scenarios/credit/model.py", "src/ewm/experiments/credit.py"]
+evidence = ["tests/scenarios/test_credit_paper_targets.py", "tests/scenarios/test_credit.py"]
 limitation = "The PDF omits necessary simulation and learner parameters and contains no URL for the stated accompanying code, so exact numerical replication is not currently identifiable."
 
 [[item]]

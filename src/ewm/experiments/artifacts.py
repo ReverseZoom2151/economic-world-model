@@ -50,6 +50,7 @@ def write_artifacts(
     run_dir.mkdir(parents=True, exist_ok=True)
     configuration = {
         "experiment": experiment,
+        "metadata": result.metadata,
         "parameters": parameters,
         "preset": preset,
         "scenario": scenario,
