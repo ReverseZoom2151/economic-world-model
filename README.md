@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Economic World Model</h1>
-  <p><strong>Behavior changes data. Data changes the models that shape behavior.</strong></p>
+  <p><strong>Build and solve economies where agents, markets, data, and learned models co-evolve.</strong></p>
   <p>
     <a href="https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/ci.yml/badge.svg"></a>
     <a href="https://www.python.org/"><img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-3776AB.svg"></a>
