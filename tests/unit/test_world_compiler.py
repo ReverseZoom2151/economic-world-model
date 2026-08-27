@@ -13,6 +13,7 @@ from ewm.core import (
     FunctionalMechanism,
     RuntimeAdapter,
     RuntimeAdapterRegistry,
+    RuntimeContract,
     World,
     WorldBindings,
     WorldSpecification,
@@ -155,6 +156,20 @@ def test_world_bindings_and_adapter_registry_take_immutable_ownership() -> None:
     assert isinstance(registry.adapters, MappingProxyType)
     assert tuple(bindings.agent_factories) == ("trader",)
     assert tuple(registry.adapters) == (MECHANISM_KEY,)
+
+
+def test_runtime_contract_takes_immutable_ownership() -> None:
+    roles = {"trader-0": "trader"}
+    action_kinds = {"trader-0": frozenset({"add"})}
+
+    contract = RuntimeContract(agent_roles=roles, action_kinds=action_kinds)
+    roles.clear()
+    action_kinds.clear()
+
+    assert isinstance(contract.agent_roles, MappingProxyType)
+    assert isinstance(contract.action_kinds, MappingProxyType)
+    assert contract.agent_roles == {"trader-0": "trader"}
+    assert contract.action_kinds == {"trader-0": frozenset({"add"})}
 
 
 def test_compile_world_rejects_incomplete_or_mismatched_bindings_before_execution() -> None:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Mapping
+from copy import deepcopy
 from datetime import datetime
 from typing import Any, overload
 
@@ -10,6 +11,7 @@ import numpy as np
 
 from .coevolution import ControlledCoevolution
 from .constraints import ConstraintSet
+from .contracts import RuntimeContract
 from .evaluation import EvaluationReport, evaluate_event_log
 from .events import Event, EventLog
 from .protocols import (
@@ -50,6 +52,7 @@ class World:
         alignment: RealWorldAlignment | None = None,
         state_reconciler: StateReconciler | None = None,
         intervention: Any = None,
+        runtime_contract: RuntimeContract | None = None,
     ) -> None:
         ordered_agents = tuple(sorted(agents, key=lambda agent: agent.agent_id))
         identifiers = [agent.agent_id for agent in ordered_agents]
@@ -65,6 +68,11 @@ class World:
         self._alignment = alignment
         self._state_reconciler = state_reconciler
         self._intervention = intervention
+        self._runtime_contract = runtime_contract
+        if runtime_contract is not None and set(runtime_contract.agent_roles) != set(
+            identifiers
+        ):
+            raise ValueError("runtime contract agents must exactly match world agents")
         if coevolution is not None:
             unknown_agents = set(coevolution.agent_ids).difference(identifiers)
             if unknown_agents:
@@ -84,6 +92,12 @@ class World:
     @property
     def agent_ids(self) -> tuple[str, ...]:
         return tuple(agent.agent_id for agent in self._agents)
+
+    @property
+    def runtime_contract(self) -> RuntimeContract | None:
+        """Return strict compiled-world rules, or ``None`` for a direct world."""
+
+        return self._runtime_contract
 
     @property
     def current_state(self) -> Any:
@@ -132,6 +146,15 @@ class World:
             raise RuntimeError("world.reset must be called before stateful step")
         return self._state
 
+    def _ensure_ready(self) -> None:
+        self._ensure_open()
+        if self._runtime_contract is not None and self._state is None:
+            raise RuntimeError("compiled world must be reset before runtime operations")
+
+    def _ensure_current_state(self, state: Any) -> None:
+        if self._runtime_contract is not None and state is not self._state:
+            raise ValueError("state must be the current runtime state")
+
     def reset(self, seed: int | None = None) -> Any:
         self._ensure_open()
         self._rng = make_rng(seed)
@@ -151,7 +174,8 @@ class World:
         return state
 
     def observe(self, state: Any, agent_id: str) -> Any:
-        self._ensure_open()
+        self._ensure_ready()
+        self._ensure_current_state(state)
         if agent_id not in self.agent_ids:
             raise KeyError(f"unknown agent {agent_id!r}")
         return freeze_value(self._observation(state, agent_id))
@@ -162,10 +186,30 @@ class World:
         *,
         parallel: bool = False,
     ) -> tuple[Action, ...]:
-        self._ensure_open()
-        actions = tuple(
-            agent.act(self.observe(state, agent.agent_id), self._rng) for agent in self._agents
+        self._ensure_ready()
+        self._ensure_current_state(state)
+        rng_state = (
+            deepcopy(self._rng.bit_generator.state)
+            if self._runtime_contract is not None
+            else None
         )
+        try:
+            collected: list[Action] = []
+            for agent in self._agents:
+                action = agent.act(self.observe(state, agent.agent_id), self._rng)
+                if self._runtime_contract is not None:
+                    if not isinstance(action, Action):
+                        raise TypeError("agent policies must return Action records")
+                    self._runtime_contract.validate_agent_action(
+                        action,
+                        owner_id=agent.agent_id,
+                    )
+                collected.append(action)
+            actions = tuple(collected)
+        except Exception:
+            if rng_state is not None:
+                self._rng.bit_generator.state = rng_state
+            raise
         self._events.append(
             "run_agents",
             {
@@ -189,46 +233,74 @@ class World:
         actions: tuple[Action, ...] | None = None,
         /,
     ) -> Transition:
-        self._ensure_open()
+        self._ensure_ready()
         if actions is None:
             state = self._state_after_reset()
             submitted = tuple(state_or_actions)
         else:
             state = state_or_actions
+            self._ensure_current_state(state)
             submitted = tuple(actions)
         if any(not isinstance(action, Action) for action in submitted):
             raise TypeError("world.step actions must contain Action records")
+        if self._runtime_contract is not None:
+            self._runtime_contract.validate_actions(submitted)
         working_state = thaw_value(state)
         accepted, violations = self._constraints.validate(working_state, submitted)
-        scheduled = tuple(sorted(accepted, key=lambda action: (action.agent_id, action.kind)))
-        candidate_state, outcomes = self._mechanism.clear(
-            working_state, scheduled, self._rng
-        )
-        next_state = candidate_state
-        reconciled = self._state_reconciler is not None
-        if self._state_reconciler is not None:
-            next_state = self._state_reconciler.reconcile(
-                state,
-                scheduled,
-                self._intervention,
-                candidate_state,
+        if (
+            self._runtime_contract is not None
+            and self._runtime_contract.violation_policy == "raise"
+            and violations
+        ):
+            details = "; ".join(
+                f"{violation.constraint} for {violation.agent_id}: {violation.reason}"
+                for violation in violations
             )
-            if not self._state_reconciler.is_feasible(next_state):
-                raise RuntimeError("state reconciliation returned an infeasible next state")
-        transition = Transition(
-            state=next_state,
-            outcomes=outcomes,
-            accepted_actions=scheduled,
-            violations=violations,
-            diagnostics={
-                "submitted_count": len(submitted),
-                "accepted_count": len(scheduled),
-                "violation_count": len(violations),
-                "state_reconciled": reconciled,
-            },
+            raise ValueError(f"constraint violations under 'raise' policy: {details}")
+        scheduled = (
+            self._runtime_contract.schedule(accepted)
+            if self._runtime_contract is not None
+            else tuple(sorted(accepted, key=lambda action: (action.agent_id, action.kind)))
         )
-        self._state = transition.state
-        self._state_version += 1
+        rng_state = (
+            deepcopy(self._rng.bit_generator.state)
+            if self._runtime_contract is not None
+            else None
+        )
+        try:
+            candidate_state, outcomes = self._mechanism.clear(
+                working_state, scheduled, self._rng
+            )
+            next_state = candidate_state
+            reconciled = self._state_reconciler is not None
+            if self._state_reconciler is not None:
+                next_state = self._state_reconciler.reconcile(
+                    state,
+                    scheduled,
+                    self._intervention,
+                    candidate_state,
+                )
+                if not self._state_reconciler.is_feasible(next_state):
+                    raise RuntimeError(
+                        "state reconciliation returned an infeasible next state"
+                    )
+            transition = Transition(
+                state=next_state,
+                outcomes=outcomes,
+                accepted_actions=scheduled,
+                violations=violations,
+                diagnostics={
+                    "submitted_count": len(submitted),
+                    "accepted_count": len(scheduled),
+                    "violation_count": len(violations),
+                    "state_reconciled": reconciled,
+                },
+            )
+        except Exception:
+            if rng_state is not None:
+                self._rng.bit_generator.state = rng_state
+            raise
+        next_version = self._state_version + 1
         self._events.append(
             "step",
             {
@@ -237,14 +309,16 @@ class World:
                 "violation_count": len(violations),
                 "state_reconciled": reconciled,
             },
-            state_version=self._state_version,
+            state_version=next_version,
         )
+        self._state = transition.state
+        self._state_version = next_version
         return transition
 
     def evaluate(self) -> EvaluationReport:
         """Read the event trajectory without mutating economic state or components."""
 
-        self._ensure_open()
+        self._ensure_ready()
         self._events.append(
             "evaluate",
             {},
@@ -263,7 +337,7 @@ class World:
     ) -> CoevolutionReport:
         """Apply controlled agent and environment updates from realized feedback."""
 
-        self._ensure_open()
+        self._ensure_ready()
         if self._coevolution is None:
             raise RuntimeError("coevolution is not configured")
         report = self._coevolution.evolve(state, tuple(actions), next_state)
@@ -286,7 +360,7 @@ class World:
     ) -> InstitutionChangeReport:
         """Apply a governed institutional proposal and log its regime identity."""
 
-        self._ensure_open()
+        self._ensure_ready()
         if self._institutional_evolution is None:
             raise RuntimeError("institutional evolution is not configured")
         report = self._institutional_evolution.evolve(proposal)
@@ -302,7 +376,7 @@ class World:
     ) -> InstitutionChangeReport:
         """Roll back to an approved institution version and log the regime change."""
 
-        self._ensure_open()
+        self._ensure_ready()
         if self._institutional_evolution is None:
             raise RuntimeError("institutional evolution is not configured")
         report = self._institutional_evolution.rollback(
@@ -338,7 +412,7 @@ class World:
     ) -> AlignmentReportRecord:
         """Compare runtime outputs with timestamped evidence and log corrections."""
 
-        self._ensure_open()
+        self._ensure_ready()
         if self._alignment is None:
             raise RuntimeError("real-world alignment is not configured")
         report = self._alignment.align(simulated, evidence, as_of=as_of)
@@ -360,7 +434,7 @@ class World:
     def log(self) -> tuple[Event, ...]:
         """Return an immutable event snapshot after recording the instrumentation call."""
 
-        self._ensure_open()
+        self._ensure_ready()
         self._events.append(
             "log",
             {},

@@ -11,6 +11,7 @@ import numpy as np
 
 from .coevolution import ControlledCoevolution
 from .constraints import ConstraintSet
+from .contracts import RuntimeContract, SchedulerPolicy, ViolationPolicy
 from .protocols import (
     AgentPolicy,
     Constraint,
@@ -153,16 +154,14 @@ def _validate_bindings(
             f"constraint bindings declared for unknown rules: {unknown_constraints}"
         )
 
-    scheduler = specification.environment.scheduler
-    if scheduler.policy != "deterministic":
-        raise NotImplementedError(
-            f"runtime compiler does not implement scheduler policy {scheduler.policy!r}"
+    unknown_priority_roles = sorted(
+        set(specification.environment.scheduler.priority).difference(declared_roles)
+    )
+    if unknown_priority_roles:
+        raise ValueError(
+            f"runtime scheduler priority has unknown roles: {unknown_priority_roles}"
         )
-    violation_policy = specification.environment.constraints.violation_policy
-    if violation_policy != "reject_and_log":
-        raise NotImplementedError(
-            f"runtime compiler does not implement violation policy {violation_policy!r}"
-        )
+
     if specification.coevolution is not None and bindings.coevolution is None:
         raise ValueError("world specification requires a coevolution binding")
     if specification.coevolution is None and bindings.coevolution is not None:
@@ -185,6 +184,8 @@ def compile_world(
     adapter = adapters.resolve(specification)
 
     agents: list[AgentPolicy] = []
+    agent_roles: dict[str, str] = {}
+    action_kinds: dict[str, frozenset[str]] = {}
     for agent_specification in specification.agents:
         factory = bindings.agent_factories[agent_specification.role]
         for agent_id in agent_specification.instance_ids:
@@ -195,6 +196,20 @@ def compile_world(
                     f"agent {agent.agent_id!r} for {agent_id!r}"
                 )
             agents.append(agent)
+            agent_roles[agent_id] = agent_specification.role
+            action_kinds[agent_id] = frozenset(agent_specification.action_space)
+
+    scheduler = specification.environment.scheduler
+    runtime_contract = RuntimeContract(
+        agent_roles=agent_roles,
+        action_kinds=action_kinds,
+        scheduler_policy=cast(SchedulerPolicy, scheduler.policy),
+        scheduler_priority=scheduler.priority,
+        violation_policy=cast(
+            ViolationPolicy,
+            specification.environment.constraints.violation_policy,
+        ),
+    )
 
     ordered_constraints = tuple(
         bindings.constraints[name]
@@ -215,4 +230,5 @@ def compile_world(
         alignment=bindings.alignment,
         state_reconciler=bindings.state_reconciler,
         intervention=bindings.intervention,
+        runtime_contract=runtime_contract,
     )
