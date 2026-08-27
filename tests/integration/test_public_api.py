@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from dataclasses import replace
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -17,11 +17,19 @@ from ewm.scenarios.credit import (
 from ewm.scenarios.forecasting import (
     ForecastingProblem,
     simulate_series,
+)
+from ewm.scenarios.forecasting import (
     smoke_config as forecasting_smoke_config,
 )
-from ewm.scenarios.fx import run_fx_simulation, smoke_config as fx_smoke_config
-from ewm.scenarios.fx import FXSimulationResult
-from ewm.scenarios.scalar import ScalarProblem, paper_config as scalar_paper_config
+from ewm.scenarios.fx import (
+    FXSimulationResult,
+    run_fx_simulation,
+)
+from ewm.scenarios.fx import (
+    smoke_config as fx_smoke_config,
+)
+from ewm.scenarios.scalar import ScalarProblem
+from ewm.scenarios.scalar import paper_config as scalar_paper_config
 
 
 def test_make_rollout_and_ddge_use_the_public_facade() -> None:

@@ -3,11 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import Any, overload
-
-import numpy as np
-from numpy.typing import NDArray
 
 from ewm.core import (
     AgentSpecification,
@@ -33,45 +30,15 @@ from ewm.core.specs import (
     scheduler,
     state,
 )
-from ewm.experiments import EXPERIMENTS, SCENARIO_DESCRIPTIONS
+from ewm.experiments import (
+    EXPERIMENTS,
+    SCENARIO_DESCRIPTIONS,
+    SCENARIO_REGISTRY,
+    RolloutResult,
+    ScenarioConfig,
+)
 from ewm.experiments.runner import ExperimentRun, run_experiment
-from ewm.scenarios.credit import (
-    CreditConfig,
-    CreditDDGEProblem,
-    CreditRegime,
-    cong_qualitative_reconstruction,
-    generate_population,
-)
-from ewm.scenarios.credit import (
-    research_config as credit_research_config,
-)
-from ewm.scenarios.forecasting import (
-    ForecastingConfig,
-    ForecastingProblem,
-    simulate_series,
-)
-from ewm.scenarios.forecasting import (
-    research_config as forecasting_research_config,
-)
-from ewm.scenarios.forecasting import (
-    smoke_config as forecasting_smoke_config,
-)
-from ewm.scenarios.fx import (
-    FXSimulationConfig,
-    FXSimulationResult,
-    run_fx_simulation,
-)
-from ewm.scenarios.fx import (
-    research_config as fx_research_config,
-)
-from ewm.scenarios.fx import (
-    smoke_config as fx_smoke_config,
-)
-from ewm.scenarios.scalar import ScalarConfig, ScalarProblem
-from ewm.scenarios.scalar import paper_config as scalar_paper_config
-
-ScenarioConfig = ForecastingConfig | FXSimulationConfig | CreditConfig | ScalarConfig
-RolloutResult = NDArray[np.float64] | FXSimulationResult
+from ewm.scenarios.credit import CreditRegime
 
 
 @dataclass(frozen=True, slots=True)
@@ -90,42 +57,10 @@ class ScenarioHandle:
     ) -> DDGEProblem:
         """Construct this scenario's declared behavior-data-learning problem."""
 
-        if isinstance(self.config, ForecastingConfig):
-            return ForecastingProblem(self.config)
-        if isinstance(self.config, CreditConfig):
-            return CreditDDGEProblem(
-                self.config,
-                generate_population(self.config),
-                regime,
-            )
-        if isinstance(self.config, ScalarConfig):
-            return ScalarProblem(self.config)
-        raise ValueError(f"scenario {self.name!r} does not define a DDGE problem")
-
-
-def _preset(name: str, preset: str, seed: int) -> ScenarioConfig:
-    if preset not in ("smoke", "research"):
-        raise ValueError("preset must be 'smoke' or 'research'")
-    if name == "forecasting":
-        forecasting_config = (
-            forecasting_smoke_config()
-            if preset == "smoke"
-            else forecasting_research_config()
+        return SCENARIO_REGISTRY.scenario(self.name).make_ddge_problem(
+            self.config,
+            regime,
         )
-        return replace(forecasting_config, seed=seed)
-    if name == "fx":
-        return fx_smoke_config() if preset == "smoke" else fx_research_config()
-    if name == "credit":
-        credit_config = (
-            cong_qualitative_reconstruction(population_size=800)
-            if preset == "smoke"
-            else credit_research_config()
-        )
-        return replace(credit_config, seed=seed)
-    if name == "scalar":
-        return scalar_paper_config()
-    choices = ", ".join(sorted(SCENARIO_DESCRIPTIONS))
-    raise ValueError(f"unknown scenario {name!r}; choose from: {choices}")
 
 
 @overload
@@ -173,8 +108,7 @@ def make(
     """Configure a named laboratory or assemble Han's declarative world specification."""
 
     declares_world = any(
-        item is not None
-        for item in (agents, environment, coevolution, alignment, evaluation)
+        item is not None for item in (agents, environment, coevolution, alignment, evaluation)
     )
     if declares_world:
         if agents is None or environment is None:
@@ -190,9 +124,9 @@ def make(
             evaluation=evaluation,
         )
 
-    config = _preset(name, preset, seed)
-    if overrides:
-        config = replace(config, **overrides)
+    if preset not in ("smoke", "research"):
+        raise ValueError("preset must be 'smoke' or 'research'")
+    config = SCENARIO_REGISTRY.scenario(name).configure(preset, seed, overrides)
     return ScenarioHandle(name=name, preset=preset, seed=seed, config=config)
 
 
@@ -206,21 +140,12 @@ def rollout(
 
     if periods is not None and periods < 1:
         raise ValueError("periods must be positive")
-    if isinstance(scenario.config, ForecastingConfig):
-        forecasting_config = (
-            replace(scenario.config, sample_size=periods)
-            if periods is not None
-            else scenario.config
-        )
-        return simulate_series(theta, forecasting_config, seed=scenario.seed)
-    if isinstance(scenario.config, FXSimulationConfig):
-        fx_config = (
-            replace(scenario.config, periods=periods)
-            if periods is not None
-            else scenario.config
-        )
-        return run_fx_simulation(fx_config, seed=scenario.seed)
-    raise ValueError(f"scenario {scenario.name!r} does not define a temporal rollout")
+    return SCENARIO_REGISTRY.scenario(scenario.name).run_rollout(
+        scenario.config,
+        scenario.seed,
+        periods,
+        theta,
+    )
 
 
 def list_scenarios() -> tuple[str, ...]:

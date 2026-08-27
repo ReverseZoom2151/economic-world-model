@@ -19,7 +19,16 @@ from .credit import (
 from .evaluation import LAYER_METRICS, MetricEvidence, evaluate_layered
 from .fx import replicated_fx_comparisons
 from .production import solve_production_equilibrium
-from .registry import EXPERIMENTS, SCENARIO_DESCRIPTIONS, experiment_spec
+from .registry import (
+    EXPERIMENTS,
+    SCENARIO_DESCRIPTIONS,
+    SCENARIO_REGISTRY,
+    RolloutResult,
+    ScenarioConfig,
+    ScenarioPlugin,
+    ScenarioRegistry,
+    experiment_spec,
+)
 from .runner import ExperimentRun, run_experiment
 from .statistics import PairedEstimate, paired_estimate
 
@@ -27,6 +36,7 @@ __all__ = [
     "EXPERIMENTS",
     "LAYER_METRICS",
     "SCENARIO_DESCRIPTIONS",
+    "SCENARIO_REGISTRY",
     "ClaimAuthorization",
     "ClaimEvidence",
     "ClaimKind",
@@ -37,6 +47,10 @@ __all__ = [
     "ExperimentRun",
     "MetricEvidence",
     "PairedEstimate",
+    "RolloutResult",
+    "ScenarioConfig",
+    "ScenarioPlugin",
+    "ScenarioRegistry",
     "UnsupportedClaimError",
     "authorize_claims",
     "credit_oracle_report",

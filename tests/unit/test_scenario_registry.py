@@ -29,11 +29,10 @@ def test_default_registry_is_the_single_immutable_scenario_and_experiment_catalo
     )
     assert isinstance(SCENARIO_REGISTRY.scenarios, MappingProxyType)
     assert isinstance(SCENARIO_REGISTRY.experiments, MappingProxyType)
-    assert SCENARIO_DESCRIPTIONS == {
-        name: plugin.description
-        for name, plugin in SCENARIO_REGISTRY.scenarios.items()
-    }
-    assert EXPERIMENTS == SCENARIO_REGISTRY.experiments
+    assert {
+        name: plugin.description for name, plugin in SCENARIO_REGISTRY.scenarios.items()
+    } == SCENARIO_DESCRIPTIONS
+    assert SCENARIO_REGISTRY.experiments == EXPERIMENTS
 
     with pytest.raises(TypeError):
         SCENARIO_DESCRIPTIONS["new"] = "mutable"  # type: ignore[index]
@@ -54,7 +53,7 @@ def test_plugins_own_all_and_only_their_scenario_experiments() -> None:
         "scalar": (),
     }
     assert all(
-        experiment.scenario == plugin.name
+        plugin.name == experiment.scenario
         for plugin in SCENARIO_REGISTRY.scenarios.values()
         for experiment in plugin.experiments
     )
