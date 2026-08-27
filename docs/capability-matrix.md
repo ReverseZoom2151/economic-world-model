@@ -86,6 +86,7 @@ a small mathematical laboratory can solve a DDGE without being an L3 to L6 world
 
 - [Mathematical contract](mathematical-contract.md)
 - [Experiment and artifact guide](experiments.md)
+- [Local product-validation report](product-validation.md)
 - [Approved design](plans/2026-08-27-ewm-prototype-design.md)
 - [Audited dependency map](architecture/ewm_foundations_dependency_map.md)
 - [`tests/`](../tests)

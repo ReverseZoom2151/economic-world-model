@@ -107,17 +107,18 @@ Each run is written to `<output>/<run_hash>/` with schema `ewm.run.v1`:
 
 | File | Contract |
 |---|---|
-| `manifest.json` | Schema, package version, experiment, scenario, preset, seed, and run hash |
+| `manifest.json` | Schema, package version, source fingerprint, numerical runtime versions, experiment, scenario, preset, seed, and run hash |
 | `config.json` | Full experiment identity and scenario parameters |
 | `metrics.json` | Flat, finite scalar metrics for machines |
 | `summary.csv` | The same scalar metrics in a two-column research table |
 | `trace.npz` | Named numerical arrays such as roots, prices, profits, or residuals |
 | `events.jsonl` | Deterministically ordered fixed-point, clearing, or regime records |
 
-The run hash covers artifact schema, experiment, package version, scenario parameters, preset, and
-seed. Wall-clock time and output path are deliberately excluded. Repeating identical inputs with the
-same installed version produces the same hash and byte-identical scientific artifacts. Integration
-tests enforce this property.
+The run hash covers artifact schema, experiment, package version, executed EWM source fingerprint,
+Python and numerical-library versions, scenario parameters, preset, and seed. Wall-clock time and
+output path are deliberately excluded. Repeating identical inputs with the same code and numerical
+runtime produces the same hash and byte-identical scientific artifacts. Integration tests enforce
+this property.
 
 ## Interpreting forecasting output
 
@@ -148,14 +149,16 @@ observed exchange rate.
 Metrics are prefixed by regime: `no_genai`, `frozen`, `selective_ddge`,
 `full_information_ddge`, and `omniscient_oracle`. Each regime reports profit, predicted profit,
 approval, adoption, observed-label share, AUC, classification errors, coefficient movement, and
-residual diagnostics.
+residual diagnostics. The adaptive regimes also report `converged` and `iterations` as flat metrics.
+The regime name describes the DDGE target; inspect the convergence flag and residual before calling
+one run an achieved fixed point.
 
 The named paper-like preset is a configuration-specific qualitative test. The sensitivity report is
 the evidence against treating its sign pattern as universal.
 
 ## Reproducibility checklist
 
-1. Record the package commit and installed version.
+1. Record the package commit and retain the manifest's source and runtime fingerprints.
 2. Retain the complete run directory, especially `manifest.json` and `config.json`.
 3. Compare run hashes before comparing metrics.
 4. Use paired seeds or common random numbers for intervention comparisons.
@@ -173,6 +176,8 @@ python -m build
 python examples/forecasting.py
 python examples/fx.py
 python examples/credit.py
+python examples/extensions/cobweb.py
+python scripts/scientific_stress.py --quick
 ```
 
 CI executes this contract on Python 3.11 and 3.12.

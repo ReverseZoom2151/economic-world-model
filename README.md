@@ -101,8 +101,8 @@ reproducible artifact layer, public Python facade, and non-interactive CLI are i
 | Equilibrium and DDGE numerics | Implemented | Root solving, damping, multistart multiplicity discovery, residual/Jacobian/stability diagnostics |
 | Self-fulfilling forecasting laboratory | Implemented | Population and finite-sample maps, multiplicity, basin/stability tests, independent oracle report |
 | Multi-agent FX laboratory | Implemented | Symbolic households/firms/bank, aggregate balance reservation, uniform-price pro-rata clearing, adaptive beliefs, conservation properties, replicated paired comparisons |
-| AI-mediated credit laboratory | Implemented | Endogenous decision-flip adoption, common potential outcomes, selective/full-information DDGE, frozen and omniscient counterfactuals, sensitivity boundaries |
-| Experiment artifacts and stable facade | Implemented | Reproducible manifests, tables, traces, `ewm` Python entry points, and CLI |
+| AI-mediated credit laboratory | Implemented | Endogenous decision-flip adoption, common potential outcomes, residual-qualified selective/full-information DDGE solvers, frozen and omniscient counterfactuals, sensitivity boundaries |
+| Experiment artifacts and stable facade | Implemented | Reproducible manifests with source/runtime identity, tables, traces, `ewm` Python entry points, and CLI |
 
 No dashboard, web application, database, distributed runtime, external economic dataset, or LLM
 dependency is part of the initial model package.
@@ -191,8 +191,9 @@ trajectory = ewm.rollout(world, periods=24)
 print(trajectory.metrics)
 ```
 
-Complete programs for [forecasting](examples/forecasting.py), [FX](examples/fx.py), and
-[AI-mediated credit](examples/credit.py) execute in CI. See the
+Complete programs for [forecasting](examples/forecasting.py), [FX](examples/fx.py),
+[AI-mediated credit](examples/credit.py), and an external-style
+[cobweb extension](examples/extensions/cobweb.py) execute in CI. See the
 [experiment guide](docs/experiments.md) for presets, commands, metrics, and artifact schemas.
 
 ## Core extension examples
@@ -206,8 +207,13 @@ from typing import Any
 
 import numpy as np
 
-from ewm.core import Action, ConstraintSet, FunctionalAgent, FunctionalMechanism
-from ewm.core.world import World
+from ewm.core import (
+    Action,
+    ConstraintSet,
+    FunctionalAgent,
+    FunctionalMechanism,
+    World,
+)
 
 
 def consume(_state: Any, _rng: np.random.Generator) -> Action:
@@ -306,17 +312,17 @@ misrepresented as exact convergence.
 
 Reproducibility and claim discipline are part of the architecture:
 
-- Every stochastic run owns its RNG and records its seed and configuration.
+- Every stochastic run owns its RNG and records its seed, configuration, source fingerprint, and numerical runtime versions.
 - Inner-equilibrium and outer-DDGE residuals remain separate.
 - Multiplicity includes distinct roots, failed starts, and basin provenance.
 - Damping is a numerical choice, not proof of economic stability.
 - Accounting and market-clearing errors are explicit diagnostics.
 - Mathematical claims require analytical or special-case checks plus numerical or property checks.
-- Stochastic comparisons use common random numbers, effect magnitudes, and uncertainty intervals.
+- Replicated FX comparisons use common random numbers, effect magnitudes, and uncertainty intervals.
 - Failed hypotheses and sensitivity regions are retained rather than optimized away.
 
-Synthetic replication establishes internal validity for the implemented mechanism. It does not, by
-itself, establish external or policy validity.
+Synthetic tests verify the implemented mechanism against its declared contracts. They do not, by
+themselves, validate its behavioral assumptions or establish external or policy validity.
 
 ## Why there is no agent SDK dependency
 
@@ -341,6 +347,7 @@ src/ewm/equilibrium/   equilibrium and DDGE solvers, damping, diagnostics
 src/ewm/experiments/   registry, orchestration, metrics, statistics, and artifacts
 src/ewm/scenarios/     forecasting, heterogeneous FX, and AI-credit laboratories
 examples/              executable public API examples
+scripts/               local scientific stress and performance protocols
 tests/unit/            deterministic unit and mathematical tests
 tests/integration/     facade, CLI, and artifact reproducibility tests
 docs/plans/            approved design and implementation plan
@@ -349,6 +356,8 @@ docs/architecture/     audited dependency map
 
 Start with the [mathematical contract](docs/mathematical-contract.md),
 [experiment guide](docs/experiments.md), and [capability matrix](docs/capability-matrix.md). The
+[local product-validation report](docs/product-validation.md) records clean-room, extension, stress,
+performance, and claims-audit evidence. The
 [approved design](docs/plans/2026-08-27-ewm-prototype-design.md) records the full model contract,
 claim boundaries, economic primitives, and adversarial review. The staged build sequence is in the
 [implementation plan](docs/plans/2026-08-27-ewm-prototype-implementation.md).
@@ -366,6 +375,8 @@ python -m build
 python examples/forecasting.py
 python examples/fx.py
 python examples/credit.py
+python examples/extensions/cobweb.py
+python scripts/scientific_stress.py --quick
 ```
 
 Focused issues and contributions on economic semantics, numerical correctness, reproducibility, or
