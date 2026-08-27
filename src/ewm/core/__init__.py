@@ -22,6 +22,10 @@ from .protocols import (
     DDGEProblem,
     EconomicWorld,
     EquilibriumProblem,
+    InstitutionalEvolution,
+    InstitutionChangeProposal,
+    InstitutionChangeReport,
+    InstitutionManifestRecord,
     Mechanism,
 )
 from .randomness import make_rng, spawn_rngs
@@ -102,6 +106,10 @@ __all__ = [
     "FunctionalConstraint",
     "FunctionalMechanism",
     "GeneratedDataset",
+    "InstitutionChangeProposal",
+    "InstitutionChangeReport",
+    "InstitutionManifestRecord",
+    "InstitutionalEvolution",
     "InterventionSemantics",
     "KernelDefinition",
     "Mechanism",

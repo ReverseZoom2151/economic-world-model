@@ -11,7 +11,13 @@ from .coevolution import ControlledCoevolution
 from .constraints import ConstraintSet
 from .evaluation import EvaluationReport, evaluate_event_log
 from .events import Event, EventLog
-from .protocols import AgentPolicy, Mechanism
+from .protocols import (
+    AgentPolicy,
+    InstitutionalEvolution,
+    InstitutionChangeProposal,
+    InstitutionChangeReport,
+    Mechanism,
+)
 from .randomness import make_rng
 from .records import (
     Action,
@@ -35,6 +41,7 @@ class World:
         constraints: ConstraintSet | None = None,
         observation: Callable[[Any, str], Any] | None = None,
         coevolution: ControlledCoevolution | None = None,
+        institutional_evolution: InstitutionalEvolution | None = None,
     ) -> None:
         ordered_agents = tuple(sorted(agents, key=lambda agent: agent.agent_id))
         identifiers = [agent.agent_id for agent in ordered_agents]
@@ -46,6 +53,7 @@ class World:
         self._constraints = constraints or ConstraintSet()
         self._observation = observation or (lambda state, _agent_id: state)
         self._coevolution = coevolution
+        self._institutional_evolution = institutional_evolution
         if coevolution is not None:
             unknown_agents = set(coevolution.agent_ids).difference(identifiers)
             if unknown_agents:
@@ -87,6 +95,14 @@ class World:
         if self._coevolution is None:
             raise RuntimeError("coevolution is not configured")
         return self._coevolution.snapshot
+
+    @property
+    def institution_version(self) -> int:
+        """Return the active institutional regime version."""
+
+        if self._institutional_evolution is None:
+            raise RuntimeError("institutional evolution is not configured")
+        return self._institutional_evolution.version
 
     def _ensure_open(self) -> None:
         if self._closed:
@@ -225,6 +241,55 @@ class World:
             state_version=self._state_version if self._state_version >= 0 else None,
         )
         return report
+
+    def evolve_institutions(
+        self,
+        proposal: InstitutionChangeProposal,
+    ) -> InstitutionChangeReport:
+        """Apply a governed institutional proposal and log its regime identity."""
+
+        self._ensure_open()
+        if self._institutional_evolution is None:
+            raise RuntimeError("institutional evolution is not configured")
+        report = self._institutional_evolution.evolve(proposal)
+        self._record_institution_report(report)
+        return report
+
+    def rollback_institution(
+        self,
+        institution_id: str,
+        *,
+        target_version: int,
+        authority: str,
+    ) -> InstitutionChangeReport:
+        """Roll back to an approved institution version and log the regime change."""
+
+        self._ensure_open()
+        if self._institutional_evolution is None:
+            raise RuntimeError("institutional evolution is not configured")
+        report = self._institutional_evolution.rollback(
+            institution_id,
+            target_version=target_version,
+            authority=authority,
+        )
+        self._record_institution_report(report)
+        return report
+
+    def _record_institution_report(self, report: InstitutionChangeReport) -> None:
+        self._events.append(
+            "institution_evolve",
+            {
+                "accepted": report.accepted,
+                "after_institution_version": report.after_institution_version,
+                "after_regime_version": report.after_regime_version,
+                "before_institution_version": report.before_institution_version,
+                "before_regime_version": report.before_regime_version,
+                "institution_id": report.institution_id,
+                "proposal_id": report.proposal_id,
+                "reasons": report.reasons,
+            },
+            state_version=self._state_version if self._state_version >= 0 else None,
+        )
 
     def log(self) -> tuple[Event, ...]:
         """Return an immutable event snapshot after recording the instrumentation call."""

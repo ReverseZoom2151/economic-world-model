@@ -42,6 +42,86 @@ class Mechanism(Protocol):
     ) -> tuple[Any, Mapping[str, Any]]: ...
 
 
+class InstitutionManifestRecord(Protocol):
+    """Read-only institutional artifact identity exposed to the core runtime."""
+
+    @property
+    def institution_id(self) -> str: ...
+
+    @property
+    def kind(self) -> str: ...
+
+    @property
+    def version(self) -> int: ...
+
+    @property
+    def content_hash(self) -> str: ...
+
+
+class InstitutionChangeProposal(Protocol):
+    """Minimal proposal interface consumed by a governed institution engine."""
+
+    @property
+    def proposal_id(self) -> str: ...
+
+    @property
+    def proposer_id(self) -> str: ...
+
+    @property
+    def authority(self) -> str: ...
+
+    @property
+    def parent_version(self) -> int | None: ...
+
+    @property
+    def candidate(self) -> InstitutionManifestRecord: ...
+
+
+class InstitutionChangeReport(Protocol):
+    """Versioned institutional transition fields recorded by the runtime."""
+
+    @property
+    def proposal_id(self) -> str: ...
+
+    @property
+    def institution_id(self) -> str: ...
+
+    @property
+    def accepted(self) -> bool: ...
+
+    @property
+    def reasons(self) -> tuple[str, ...]: ...
+
+    @property
+    def before_regime_version(self) -> int: ...
+
+    @property
+    def after_regime_version(self) -> int: ...
+
+    @property
+    def before_institution_version(self) -> int | None: ...
+
+    @property
+    def after_institution_version(self) -> int | None: ...
+
+
+class InstitutionalEvolution(Protocol):
+    """Governed transition boundary kept independent of runtime implementation."""
+
+    @property
+    def version(self) -> int: ...
+
+    def evolve(self, proposal: InstitutionChangeProposal) -> InstitutionChangeReport: ...
+
+    def rollback(
+        self,
+        institution_id: str,
+        *,
+        target_version: int,
+        authority: str,
+    ) -> InstitutionChangeReport: ...
+
+
 class EconomicWorld(Protocol):
     """Minimal executable-world boundary."""
 

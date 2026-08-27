@@ -24,6 +24,17 @@ from .evolution import (
     PromotionReport,
     RollbackReport,
 )
+from .institutions import (
+    GovernedInstitutions,
+    InstitutionCheck,
+    InstitutionKind,
+    InstitutionManifest,
+    InstitutionPolicy,
+    InstitutionProposal,
+    InstitutionSnapshot,
+    InstitutionTransitionReport,
+    InstitutionValidator,
+)
 
 __all__ = [
     "EVOLUTION_SCHEMA_VERSION",
@@ -39,6 +50,15 @@ __all__ = [
     "EvolutionRegistry",
     "FunctionalCognitiveTool",
     "GateEvidence",
+    "GovernedInstitutions",
+    "InstitutionCheck",
+    "InstitutionKind",
+    "InstitutionManifest",
+    "InstitutionPolicy",
+    "InstitutionProposal",
+    "InstitutionSnapshot",
+    "InstitutionTransitionReport",
+    "InstitutionValidator",
     "LanguageModelBackend",
     "MemoryEntry",
     "ModelRequest",

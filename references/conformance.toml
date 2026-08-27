@@ -351,9 +351,9 @@ pages = "4"
 summary = "Institutions may update endogenously from world and agent states."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/coevolution.py", "src/ewm/core/world.py"]
-evidence = ["tests/unit/test_coevolution.py"]
-limitation = "Controlled mechanism-parameter updates are implemented; governed rule and institution changes are deferred to the institutional-evolution task."
+implementation = ["src/ewm/core/coevolution.py", "src/ewm/capabilities/institutions.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_coevolution.py", "tests/unit/test_institutions.py"]
+limitation = "Controlled parameters and governed institutional transitions are implemented, but no endogenous agent-driven institutional experiment has established the paper's L5 behavior."
 
 [[item]]
 id = "han-component-agents"
@@ -585,9 +585,11 @@ source = "han-et-al-2026"
 section = "Section 3.1, L5"
 pages = "8"
 summary = "Policies, rules, contracts, governance, and constraints evolve endogenously."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "No governed institutional transition exists."
+implementation = ["src/ewm/capabilities/institutions.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_institutions.py"]
+limitation = "The runtime enforces authority, feasibility, accounting, safety, acceptance, audit, and rollback boundaries, but deterministic conformance tests do not demonstrate endogenous institutional emergence or award L5."
 
 [[item]]
 id = "han-level-l6"
