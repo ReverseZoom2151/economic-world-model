@@ -248,7 +248,14 @@ class ProductionEconomy:
             wage=wage,
         )
         firm = self.firm_decision(rental_rate=rental_rate, wage=wage)
-        assets = sum(item.weight * item.next_assets for item in households)
+        assets = sum(
+            weight * asset
+            for asset, weight in zip(
+                self._distribution.assets,
+                self._distribution.weights,
+                strict=True,
+            )
+        )
         labor = sum(item.weight * item.labor for item in households)
         return np.array([firm.capital - assets, firm.labor - labor], dtype=float)
 
@@ -285,7 +292,12 @@ class ProductionEconomy:
         )
         firm = self.firm_decision(rental_rate=rental_rate, wage=wage)
         aggregate_assets = sum(
-            item.weight * item.next_assets for item in households
+            weight * asset
+            for asset, weight in zip(
+                self._distribution.assets,
+                self._distribution.weights,
+                strict=True,
+            )
         )
         aggregate_labor = sum(item.weight * item.labor for item in households)
         return ProductionEquilibrium(

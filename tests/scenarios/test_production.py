@@ -59,7 +59,14 @@ def test_prices_match_an_independent_log_utility_root_system() -> None:
 
     def independent_household_supply(rental_rate: float, wage: float) -> tuple[float, float]:
         savings_ratio = primitives.continuation_weight
-        assets = 0.0
+        assets = sum(
+            weight * asset
+            for asset, weight in zip(
+                distribution.assets,
+                distribution.weights,
+                strict=True,
+            )
+        )
         labor = 0.0
         for asset, shock, weight in zip(
             distribution.assets,
@@ -78,11 +85,6 @@ def test_prices_match_an_independent_log_utility_root_system() -> None:
                 -coefficient_b
                 + sqrt(coefficient_b**2 - 4.0 * coefficient_a * coefficient_c)
             ) / (2.0 * coefficient_a)
-            consumption = (
-                wage * supplied_labor + nonlabor_resources
-            ) / (1.0 + savings_ratio)
-            next_assets = primitives.borrowing_bound + savings_ratio * consumption
-            assets += weight * next_assets
             labor += weight * supplied_labor
         return assets, labor
 
