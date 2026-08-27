@@ -1,0 +1,122 @@
+schema_version = "ewm.local-scientific-protocol.v1"
+protocol_id = "credit-mechanism"
+protocol_version = 1
+lock_status = "prospectively locked locally"
+experiment = "credit.qualitative_reconstruction.local"
+confidence = 0.95
+alpha = 0.05
+sample_size_rationale = "The 4/12 replication counts are engineering quick/research budgets, not a powered empirical design."
+
+[sample_sizes]
+quick_replications = 4
+full_replications = 12
+quick_population = 300
+full_population = 1200
+
+[stopping]
+rule = "fixed_sample"
+interim_looks = 0
+stop_on_failure = false
+
+[multiplicity]
+method = "holm"
+family = [
+  "frozen_profit_difference",
+  "selective_profit_difference",
+  "full_information_profit_difference",
+]
+
+[seed_manifest]
+method = "numpy.random.SeedSequence.spawn"
+entropy = 260806020
+spawn_count = 12
+seeds = [
+  4634151411735334228,
+  9609146241510126290,
+  13113865875779171417,
+  13561250051540582239,
+  10580921050443226643,
+  14457083928551573623,
+  15202919462474685449,
+  3702362391065054458,
+  1334175674710115365,
+  16247012723870878174,
+  2849395158603928122,
+  2864287666345542779,
+]
+
+[bootstrap]
+method = "paired_percentile"
+quick_resamples = 499
+full_resamples = 1999
+seed_method = "numpy.random.SeedSequence.spawn"
+seed_entropy = 260806021
+seeds = [
+  9112618413624036062,
+  785934478787619176,
+  4900392539716410394,
+]
+
+[[outcomes]]
+name = "frozen_profit_difference"
+kind = "paired_continuous"
+baseline_metric = "no_genai.profit_per_applicant"
+intervention_metric = "frozen.profit_per_applicant"
+method = "paired_student_t_two_sided"
+robustness = "paired_percentile_bootstrap"
+direction = "frozen minus no-GenAI"
+unit = "synthetic profit per applicant"
+null = "mean paired difference equals zero"
+interpretation = "Package-authored synthetic mechanism effect; not an empirical credit-market effect."
+
+[[outcomes]]
+name = "selective_profit_difference"
+kind = "paired_continuous"
+baseline_metric = "no_genai.profit_per_applicant"
+intervention_metric = "selective_ddge.profit_per_applicant"
+method = "paired_student_t_two_sided"
+robustness = "paired_percentile_bootstrap"
+direction = "selective DDGE minus no-GenAI"
+unit = "synthetic profit per applicant"
+null = "mean paired difference equals zero"
+interpretation = "Package-authored synthetic mechanism effect; not an empirical credit-market effect."
+
+[[outcomes]]
+name = "full_information_profit_difference"
+kind = "paired_continuous"
+baseline_metric = "no_genai.profit_per_applicant"
+intervention_metric = "full_information_ddge.profit_per_applicant"
+method = "paired_student_t_two_sided"
+robustness = "paired_percentile_bootstrap"
+direction = "full-information DDGE minus no-GenAI"
+unit = "synthetic profit per applicant"
+null = "mean paired difference equals zero"
+interpretation = "Package-authored synthetic mechanism effect; not an empirical credit-market effect."
+
+[[outcomes]]
+name = "selective_repair_rate"
+kind = "binary"
+success_definition = "selective_ddge.profit_per_applicant + comparison_slack >= frozen.profit_per_applicant"
+method = "wilson"
+direction = "selective DDGE at least frozen"
+unit = "synthetic replication proportion"
+null = "descriptive interval; no null-hypothesis test"
+interpretation = "Frequency within locked synthetic seeds; not a universal repair probability."
+
+[[outcomes]]
+name = "full_information_repair_rate"
+kind = "binary"
+success_definition = "full_information_ddge.profit_per_applicant + comparison_slack >= frozen.profit_per_applicant"
+method = "wilson"
+direction = "full-information DDGE at least frozen"
+unit = "synthetic replication proportion"
+null = "descriptive interval; no null-hypothesis test"
+interpretation = "Frequency within locked synthetic seeds; not a universal repair probability."
+
+[[tolerances]]
+name = "solver_residual"
+maximum = 0.001
+
+[[tolerances]]
+name = "comparison_slack"
+maximum = 1e-12

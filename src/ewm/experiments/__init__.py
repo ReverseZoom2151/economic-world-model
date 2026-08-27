@@ -32,7 +32,16 @@ from .registry import (
     experiment_spec,
 )
 from .runner import ExperimentRun, run_experiment
-from .statistics import PairedEstimate, paired_estimate
+from .statistics import (
+    BinomialEstimate,
+    HolmCorrection,
+    PairedEstimate,
+    RobustPairedEstimate,
+    holm_correction,
+    paired_estimate,
+    robust_paired_estimate,
+    wilson_interval,
+)
 from .verification import ArtifactVerificationError, VerificationReport, verify_run
 
 __all__ = [
@@ -41,6 +50,7 @@ __all__ = [
     "SCENARIO_DESCRIPTIONS",
     "SCENARIO_REGISTRY",
     "ArtifactVerificationError",
+    "BinomialEstimate",
     "ClaimAuthorization",
     "ClaimEvidence",
     "ClaimKind",
@@ -49,8 +59,10 @@ __all__ = [
     "CreditPaperTargetReport",
     "CreditTargetComparison",
     "ExperimentRun",
+    "HolmCorrection",
     "MetricEvidence",
     "PairedEstimate",
+    "RobustPairedEstimate",
     "RolloutResult",
     "ScenarioConfig",
     "ScenarioPlugin",
@@ -64,10 +76,13 @@ __all__ = [
     "credit_paper_target_report",
     "evaluate_layered",
     "experiment_spec",
+    "holm_correction",
     "paired_estimate",
     "replicated_fx_comparisons",
+    "robust_paired_estimate",
     "run_credit_regimes",
     "run_experiment",
     "solve_production_equilibrium",
     "verify_run",
+    "wilson_interval",
 ]

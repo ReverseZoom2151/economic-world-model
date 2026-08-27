@@ -29,6 +29,7 @@ dependencies = [
 
 [project.scripts]
 ewm = "ewm.cli:main"
+ewm-run-protocol = "ewm.experiments.protocol_cli:main"
 
 [project.optional-dependencies]
 dev = [
