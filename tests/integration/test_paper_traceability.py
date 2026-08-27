@@ -148,11 +148,112 @@ def test_forecasting_population_targets_are_separate_from_authored_damping() -> 
     population = items["cong-lab-iii-population"]
     finite_sample = items["cong-lab-iii-finite-sample"]
 
+    assert population["status"] == "implemented"
     assert population["claim"] == "exact-replication"
     assert "{-0.795, 0, +0.795}" in population["summary"]
-    assert "code-independent" in population["limitation"]
+    assert "tests/oracles/forecasting_oracle.py" in population["evidence"]
+    assert "tests/integration/test_independent_numerical_oracles.py" in population[
+        "evidence"
+    ]
+    assert "limitation" not in population
     assert finite_sample["claim"] == "paper-inspired"
     assert "package-authored damping" in finite_sample["summary"]
+
+
+def test_executable_economic_primitives_are_registered_at_their_source_scope() -> None:
+    registry = _load("conformance.toml")
+    items = {item["id"]: item for item in registry["item"]}
+    expected = {
+        "cong-def-2.1": (
+            "src/ewm/core/coherence.py",
+            "tests/unit/test_coherence.py",
+        ),
+        "cong-eq-2.1-2.2": (
+            "src/ewm/core/kernels.py",
+            "tests/unit/test_kernels.py",
+        ),
+        "cong-def-2.4": (
+            "src/ewm/core/interventions.py",
+            "tests/unit/test_interventions.py",
+        ),
+    }
+
+    for item_id, (implementation, evidence) in expected.items():
+        item = items[item_id]
+        assert item["status"] == "implemented"
+        assert implementation in item["implementation"]
+        assert evidence in item["evidence"]
+
+
+def test_restricted_theorem_certificates_do_not_overclaim_general_kakutani() -> None:
+    registry = _load("conformance.toml")
+    items = {item["id"]: item for item in registry["item"]}
+    assumption = items["cong-assumption-3.2"]
+    proposition = items["cong-prop-3.3"]
+
+    assert assumption["status"] == "blocked-external"
+    assert proposition["status"] == "partial"
+    assert "src/ewm/equilibrium/certificates.py" in proposition["implementation"]
+    assert "tests/unit/test_theorem_certificates.py" in proposition["evidence"]
+    assert "affine" in proposition["limitation"]
+    assert "Kakutani" in proposition["limitation"]
+
+
+def test_independent_production_oracle_preserves_the_paper_authored_boundary() -> None:
+    registry = _load("conformance.toml")
+    items = {item["id"]: item for item in registry["item"]}
+    production = items["cong-prop-d.1"]
+
+    assert production["status"] == "partial"
+    assert "tests/oracles/production_oracle.py" in production["evidence"]
+    assert "tests/integration/test_independent_numerical_oracles.py" in production[
+        "evidence"
+    ]
+    assert "package-authored" in production["limitation"]
+    assert "proof" in production["limitation"]
+
+
+def test_locked_credit_failure_and_synthetic_han_validation_are_explicit() -> None:
+    registry = _load("conformance.toml")
+    items = {item["id"]: item for item in registry["item"]}
+    credit = items["cong-lab-i"]
+    l2 = items["han-level-l2"]
+
+    assert credit["status"] == "blocked-external"
+    assert "src/ewm/protocols/credit-mechanism-v1.toml" in credit["implementation"]
+    assert "tests/integration/test_locked_protocol_smoke.py" in credit["evidence"]
+    assert "fails" in credit["limitation"]
+    assert "authorizes no claim" in credit["limitation"]
+
+    assert l2["status"] == "implemented"
+    assert "src/ewm/scenarios/fx/validation.py" in l2["implementation"]
+    assert "tests/conformance/test_han_l1_l2_validation.py" in l2["evidence"]
+    assert "synthetic" in l2["limitation"]
+    assert "empirical" in l2["limitation"]
+
+
+def test_compiled_fx_runtime_is_bound_to_han_runtime_claims() -> None:
+    registry = _load("conformance.toml")
+    items = {item["id"]: item for item in registry["item"]}
+
+    for item_id in (
+        "han-component-environment",
+        "han-runtime-reset",
+        "han-runtime-run-agents",
+        "han-runtime-step",
+        "han-runtime-log",
+    ):
+        item = items[item_id]
+        assert "src/ewm/scenarios/fx/runtime.py" in item["implementation"]
+        assert "tests/scenarios/test_fx_world.py" in item["evidence"]
+
+
+def test_traceability_guide_separates_replay_engineering_from_paper_claims() -> None:
+    guide = (ROOT / "docs" / "paper-traceability.md").read_text(encoding="utf-8")
+
+    assert "Artifact v2 verification and deterministic replay" in guide
+    assert "package engineering" in guide
+    assert "not paper correspondence" in guide
 
 
 def test_traceability_guide_is_linked_from_readme() -> None:
