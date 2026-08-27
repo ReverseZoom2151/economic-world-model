@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from ewm.equilibrium import damped_update
+from ewm.core import convex_update
 
 
 class ScalarLearner(StrEnum):
@@ -146,7 +146,7 @@ def retraining_path(
     for _round in range(rounds):
         raw = outer_update(theta, config)
         theta = float(
-            damped_update(np.array([theta]), np.array([raw]), damping)[0]
+            convex_update(np.array([theta]), np.array([raw]), damping)[0]
         )
         path.append(theta)
     return tuple(path)

@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
-from ewm.equilibrium import damped_update
+from ewm.core import convex_update
 
 
 @dataclass(frozen=True, slots=True)
@@ -130,7 +130,7 @@ def finite_sample_retraining_path(
         round_seed = int(rng.integers(0, np.iinfo(np.uint32).max))
         raw = finite_sample_update(theta, replace(config, seed=round_seed))
         theta = float(
-            damped_update(np.array([theta]), np.array([raw]), damping)[0]
+            convex_update(np.array([theta]), np.array([raw]), damping)[0]
         )
         path.append(theta)
     return tuple(path)

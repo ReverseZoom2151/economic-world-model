@@ -7,6 +7,8 @@ from dataclasses import dataclass
 import numpy as np
 from numpy.typing import NDArray
 
+from ewm.core import convex_update
+
 
 @dataclass(frozen=True, slots=True)
 class DampingStabilityCertificate:
@@ -26,13 +28,7 @@ def damped_update(
 ) -> NDArray[np.float64]:
     """Return ``(1-eta) theta + eta F(theta)``."""
 
-    if not 0.0 < damping <= 1.0:
-        raise ValueError("damping must lie in (0, 1]")
-    current = np.asarray(theta, dtype=float)
-    candidate = np.asarray(raw_update, dtype=float)
-    if current.shape != candidate.shape:
-        raise ValueError("theta and raw_update must have equal shape")
-    return np.asarray((1.0 - damping) * current + damping * candidate, dtype=float)
+    return convex_update(theta, raw_update, damping)
 
 
 def damped_eigenvalue(eigenvalue: complex, damping: float) -> complex:

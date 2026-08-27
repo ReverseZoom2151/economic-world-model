@@ -178,9 +178,21 @@ def test_bracketing_and_iteration_independently_agree_on_all_roots() -> None:
     config = _config(phi=0.5, learning_gain=0.8)
 
     report = scalar_verification_report(config)
+    iterative = solve_ddge(
+        ScalarProblem(config),
+        tuple(np.array([value]) for value in (-1.0, 0.0, 1.0)),
+        FixedPointConfig(
+            tolerance=1e-12,
+            max_iterations=10_000,
+            deduplication_tolerance=1e-9,
+        ),
+    )
+    iterative_roots = tuple(
+        sorted(float(point.theta[0]) for point in iterative.fixed_points)
+    )
 
-    assert len(report.bracketing_roots) == len(report.iterative_roots) == 3
-    assert np.allclose(report.bracketing_roots, report.iterative_roots, atol=1e-9)
+    assert len(report.bracketing_roots) == len(iterative_roots) == 3
+    assert np.allclose(report.bracketing_roots, iterative_roots, atol=1e-9)
     assert report.stable == (True, False, True)
     assert max(report.fixed_point_residuals) < 1e-10
 

@@ -37,6 +37,7 @@ from .records import (
     RunMetadata,
     Transition,
 )
+from .updates import convex_update
 from .world import World
 
 __all__ = [
@@ -73,6 +74,7 @@ __all__ = [
     "Transition",
     "World",
     "WorldComponent",
+    "convex_update",
     "make_rng",
     "spawn_rngs",
 ]

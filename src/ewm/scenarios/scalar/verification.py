@@ -7,12 +7,9 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.optimize import brentq
 
-from ewm.equilibrium import FixedPointConfig, solve_ddge
-
 from .model import (
     ScalarConfig,
     ScalarLearner,
-    ScalarProblem,
     outer_derivative,
     outer_update,
 )
@@ -61,39 +58,23 @@ def bracketed_fixed_points(
 
 @dataclass(frozen=True, slots=True)
 class ScalarVerificationReport:
-    """Closed-form facts checked by independent root-finding and iteration."""
+    """Closed-form facts checked by an independent bracketing oracle."""
 
     bracketing_roots: tuple[float, ...]
-    iterative_roots: tuple[float, ...]
     derivatives: tuple[float, ...]
     stable: tuple[bool, ...]
     fixed_point_residuals: tuple[float, ...]
 
 
 def scalar_verification_report(config: ScalarConfig) -> ScalarVerificationReport:
-    """Cross-check the zero-intervention saturating DDGE set by two numerical routes."""
+    """Verify the zero-intervention saturating DDGE set by sign bracketing."""
 
     if config.learner is not ScalarLearner.TANH or config.intervention != 0.0:
         raise ValueError("verification report requires a zero-intervention saturating model")
     bracketed = bracketed_fixed_points(config)
-    bound = max(abs(config.learning_gain), 1.0)
-    starts = tuple(np.array([value]) for value in (-bound, 0.0, bound))
-    iterative = solve_ddge(
-        ScalarProblem(config),
-        starts,
-        FixedPointConfig(
-            tolerance=1e-12,
-            max_iterations=10_000,
-            deduplication_tolerance=1e-9,
-        ),
-    )
-    iterative_roots = tuple(
-        sorted(float(point.theta[0]) for point in iterative.fixed_points)
-    )
     derivatives = tuple(outer_derivative(root, config) for root in bracketed)
     return ScalarVerificationReport(
         bracketing_roots=bracketed,
-        iterative_roots=iterative_roots,
         derivatives=derivatives,
         stable=tuple(abs(value) < 1.0 for value in derivatives),
         fixed_point_residuals=tuple(
