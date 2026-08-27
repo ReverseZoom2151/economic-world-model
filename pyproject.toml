@@ -40,7 +40,8 @@ dev = [
   "pytest-cov>=5.0",
   "ruff>=0.6",
   "scikit-learn-stubs>=0.0.3",
-  "scipy-stubs>=1.18.1.0",
+  "scipy-stubs>=1.17.1.5,<1.18; python_version < '3.12'",
+  "scipy-stubs>=1.18.1.0; python_version >= '3.12'",
 ]
 
 [project.urls]
