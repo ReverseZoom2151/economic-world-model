@@ -53,6 +53,15 @@ jobs:
       - name: Build distributions
         run: python -m build
 
+      - name: Run paper-level conformance report
+        run: python scripts/run_conformance.py
+
+      - name: Run quick scientific stress protocol
+        run: python scripts/scientific_stress.py --quick
+
+      - name: Run scalar example
+        run: python examples/scalar.py
+
       - name: Run forecasting example
         run: python examples/forecasting.py
 
@@ -61,6 +70,15 @@ jobs:
 
       - name: Run credit example
         run: python examples/credit.py
+
+      - name: Run production example
+        run: python examples/production.py
+
+      - name: Run cognitive-agent protocol example
+        run: python examples/cognitive_agent.py
+
+      - name: Run offline-alignment protocol example
+        run: python examples/offline_alignment.py
 
       - name: Run public-interface extension example
         run: python examples/extensions/cobweb.py
