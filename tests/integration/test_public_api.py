@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -46,3 +49,26 @@ def test_cli_lists_and_describes_scenarios(capsys: pytest.CaptureFixture[str]) -
 
     assert main(["describe", "credit"]) == 0
     assert "selective" in capsys.readouterr().out.lower()
+
+
+def test_cli_run_writes_and_reports_reproducible_artifacts(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    status = main(
+        [
+            "run",
+            "forecasting.ddge",
+            "--preset",
+            "smoke",
+            "--seed",
+            "42",
+            "--output",
+            str(tmp_path),
+        ]
+    )
+    output = json.loads(capsys.readouterr().out)
+
+    assert status == 0
+    assert output["run_hash"]
+    assert Path(output["run_dir"]).is_dir()
+    assert (Path(output["run_dir"]) / "manifest.json").is_file()

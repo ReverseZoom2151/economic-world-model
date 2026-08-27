@@ -2,6 +2,7 @@
   <h1>Economic World Model</h1>
   <p><strong>Behavior changes data. Data changes the models that shape behavior.</strong></p>
   <p>
+    <a href="https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/ReverseZoom2151/economic-world-model/actions/workflows/ci.yml/badge.svg"></a>
     <a href="https://www.python.org/"><img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-3776AB.svg"></a>
     <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green.svg"></a>
     <a href="#project-status"><img alt="Status: research alpha" src="https://img.shields.io/badge/status-research%20alpha-orange.svg"></a>
@@ -90,9 +91,8 @@ and full DDGE solution distinct.
 
 ## Project status
 
-The repository is under active development toward `0.1.0`. The numerical kernel and all three
-initial laboratories are implemented. Reproducible experiment artifacts and the stable top-level API
-are the next vertical slice.
+Version `0.1.0` is a research alpha. The shared numerical kernel, all three laboratories,
+reproducible artifact layer, public Python facade, and non-interactive CLI are implemented.
 
 | Capability | Status | What is available |
 |---|---|---|
@@ -102,7 +102,7 @@ are the next vertical slice.
 | Self-fulfilling forecasting laboratory | Implemented | Population and finite-sample maps, multiplicity, basin/stability tests, independent oracle report |
 | Multi-agent FX laboratory | Implemented | Symbolic households/firms/bank, aggregate balance reservation, uniform-price pro-rata clearing, adaptive beliefs, conservation properties |
 | AI-mediated credit laboratory | Implemented | Endogenous decision-flip adoption, common potential outcomes, selective/full-information DDGE, frozen and omniscient counterfactuals, sensitivity boundaries |
-| Experiment artifacts and stable facade | Planned for `0.1.0` | Reproducible manifests, tables, traces, documented `ewm` entry points |
+| Experiment artifacts and stable facade | Implemented | Reproducible manifests, tables, traces, `ewm` Python entry points, and CLI |
 
 No dashboard, web application, database, distributed runtime, external economic dataset, or LLM
 dependency is part of the initial model package.
@@ -170,7 +170,32 @@ python -m pip install -e ".[dev]"
 
 On Windows PowerShell, activate the environment with `.venv\Scripts\Activate.ps1`.
 
-## Minimal examples
+## Quick start
+
+Discover and run the three registered experiments:
+
+```bash
+ewm list
+ewm describe forecasting.ddge
+ewm run forecasting.ddge --preset smoke --seed 42 --output runs
+```
+
+Use the stable Python facade for a rollout:
+
+```python
+import ewm
+
+world = ewm.make("fx", preset="smoke", seed=42)
+trajectory = ewm.rollout(world, periods=24)
+
+print(trajectory.metrics)
+```
+
+Complete programs for [forecasting](examples/forecasting.py), [FX](examples/fx.py), and
+[AI-mediated credit](examples/credit.py) execute in CI. See the
+[experiment guide](docs/experiments.md) for presets, commands, metrics, and artifact schemas.
+
+## Core extension examples
 
 ### Run an economic-world transition
 
@@ -311,29 +336,38 @@ economy remains reproducible and usable without an LLM or orchestration service.
 ```text
 src/ewm/core/          typed records, protocols, runtime, agents, constraints, mechanisms
 src/ewm/equilibrium/   equilibrium and DDGE solvers, damping, diagnostics
+src/ewm/experiments/   registry, orchestration, metrics, statistics, and artifacts
 src/ewm/scenarios/     forecasting, heterogeneous FX, and AI-credit laboratories
+examples/              executable public API examples
 tests/unit/            deterministic unit and mathematical tests
+tests/integration/     facade, CLI, and artifact reproducibility tests
 docs/plans/            approved design and implementation plan
 docs/architecture/     audited dependency map
 ```
 
-Read the [approved design](docs/plans/2026-08-27-ewm-prototype-design.md) for the full model
-contract, claim boundaries, economic primitives, and adversarial review. The staged build sequence is
-in the [implementation plan](docs/plans/2026-08-27-ewm-prototype-implementation.md).
+Start with the [mathematical contract](docs/mathematical-contract.md),
+[experiment guide](docs/experiments.md), and [capability matrix](docs/capability-matrix.md). The
+[approved design](docs/plans/2026-08-27-ewm-prototype-design.md) records the full model contract,
+claim boundaries, economic primitives, and adversarial review. The staged build sequence is in the
+[implementation plan](docs/plans/2026-08-27-ewm-prototype-implementation.md).
 
 ## Development
 
 Run the verification suite with:
 
 ```bash
-python -m pytest -q
-ruff check src tests
+ruff check .
 mypy src
+coverage run -m pytest -q
+coverage report
+python -m build
+python examples/forecasting.py
+python examples/fx.py
+python examples/credit.py
 ```
 
-Contributions are welcome once the initial vertical slices stabilize. Until then, focused issues on
-economic semantics, numerical correctness, reproducibility, or testable scenario design are
-especially useful. Please do not describe synthetic results as empirical evidence.
+Focused issues and contributions on economic semantics, numerical correctness, reproducibility, or
+testable scenario design are welcome. Please do not describe synthetic results as empirical evidence.
 
 ## References
 
@@ -344,10 +378,6 @@ especially useful. Please do not describe synthetic results as empirical evidenc
 
 This software is an independent open-source implementation and is not an official release by the
 papers' authors.
-
-## License
-
-Released under the [MIT License](LICENSE).
 
 ---
 
