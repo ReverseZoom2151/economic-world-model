@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from dataclasses import replace
 
 import numpy as np
 import pytest
@@ -9,7 +10,18 @@ import pytest
 import ewm
 from ewm.cli import main
 from ewm.equilibrium import FixedPointConfig
+from ewm.scenarios.credit import (
+    CreditDDGEProblem,
+    cong_qualitative_reconstruction,
+)
+from ewm.scenarios.forecasting import (
+    ForecastingProblem,
+    simulate_series,
+    smoke_config as forecasting_smoke_config,
+)
+from ewm.scenarios.fx import run_fx_simulation, smoke_config as fx_smoke_config
 from ewm.scenarios.fx import FXSimulationResult
+from ewm.scenarios.scalar import ScalarProblem, paper_config as scalar_paper_config
 
 
 def test_make_rollout_and_ddge_use_the_public_facade() -> None:
@@ -28,6 +40,34 @@ def test_make_rollout_and_ddge_use_the_public_facade() -> None:
     )
 
     assert len(result.fixed_points) == 3
+
+
+def test_named_scenario_plugins_preserve_configuration_and_problem_factories() -> None:
+    assert ewm.make("forecasting", preset="smoke", seed=17).config == replace(
+        forecasting_smoke_config(), seed=17
+    )
+    assert ewm.make("fx", preset="smoke", seed=17).config == fx_smoke_config()
+    assert ewm.make("credit", preset="smoke", seed=17).config == replace(
+        cong_qualitative_reconstruction(population_size=800), seed=17
+    )
+    assert ewm.make("scalar", preset="research", seed=17).config == scalar_paper_config()
+
+    assert isinstance(ewm.make("forecasting").ddge_problem(), ForecastingProblem)
+    assert isinstance(ewm.make("credit").ddge_problem(), CreditDDGEProblem)
+    assert isinstance(ewm.make("scalar").ddge_problem(), ScalarProblem)
+
+
+def test_named_scenario_plugins_preserve_direct_rollout_results() -> None:
+    forecasting = ewm.make("forecasting", preset="smoke", seed=23)
+    configured_forecasting = replace(forecasting.config, sample_size=8)
+    assert np.array_equal(
+        ewm.rollout(forecasting, periods=8, theta=0.4),
+        simulate_series(0.4, configured_forecasting, seed=23),
+    )
+
+    fx = ewm.make("fx", preset="smoke", seed=23)
+    configured_fx = replace(fx.config, periods=5)
+    assert ewm.rollout(fx, periods=5) == run_fx_simulation(configured_fx, seed=23)
 
 
 def test_registry_descriptions_and_errors_are_helpful() -> None:
