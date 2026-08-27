@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+from copy import deepcopy
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Any, Mapping
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -26,6 +28,20 @@ def freeze_value(value: Any) -> Any:
     if isinstance(value, set | frozenset):
         return frozenset(freeze_value(item) for item in value)
     return value
+
+
+def thaw_value(value: Any) -> Any:
+    """Return an owned mutable copy suitable for a transition implementation."""
+
+    if isinstance(value, np.ndarray):
+        return np.array(value, copy=True)
+    if isinstance(value, Mapping):
+        return {key: thaw_value(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return tuple(thaw_value(item) for item in value)
+    if isinstance(value, frozenset):
+        return {thaw_value(item) for item in value}
+    return deepcopy(value)
 
 
 @dataclass(frozen=True, slots=True)
@@ -163,4 +179,3 @@ class ExperimentResult:
         object.__setattr__(self, "metrics", freeze_value(self.metrics))
         object.__setattr__(self, "records", tuple(freeze_value(row) for row in self.records))
         object.__setattr__(self, "metadata", freeze_value(self.metadata))
-

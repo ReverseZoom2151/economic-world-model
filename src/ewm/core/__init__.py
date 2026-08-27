@@ -1,6 +1,9 @@
 """Shared records and protocols for Economic World Models."""
 
+from .agents import FunctionalAgent
+from .constraints import ConstraintSet, FunctionalConstraint
 from .events import Event, EventLog
+from .mechanisms import FunctionalMechanism
 from .protocols import (
     AgentPolicy,
     Constraint,
@@ -26,6 +29,7 @@ __all__ = [
     "Action",
     "AgentPolicy",
     "Constraint",
+    "ConstraintSet",
     "ConstraintViolation",
     "DDGEProblem",
     "DDGEResult",
@@ -36,6 +40,9 @@ __all__ = [
     "EventLog",
     "ExperimentResult",
     "FixedPoint",
+    "FunctionalAgent",
+    "FunctionalConstraint",
+    "FunctionalMechanism",
     "GeneratedDataset",
     "Mechanism",
     "RunMetadata",
