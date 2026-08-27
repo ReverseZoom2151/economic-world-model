@@ -1,0 +1,143 @@
+schema_version = "ewm.han-l1-l2.protocol.v1"
+protocol_version = 1
+protocol_filename = "han-l1-l2-validation-v1.toml"
+report_schema = "ewm.han-l1-l2.report.v1"
+classification = "synthetic_systems_conformance"
+excluded_claims = ["empirical_validation", "prospective_behavioral_study"]
+scenario = "fx"
+seeds = [17, 42]
+periods = 6
+arms = ["adaptive", "fixed_beliefs"]
+source_files = [
+  "agents.py",
+  "mechanism.py",
+  "model.py",
+  "runtime.py",
+  "simulation.py",
+  "validation.py",
+]
+
+[[requirement]]
+requirement = "agent_world_execution"
+level = "L1"
+evidence_kind = "synthetic_test"
+minimum_observations = 1
+
+[[requirement.criteria]]
+metric = "compiled_run_count"
+operator = "eq"
+value = 4
+
+[[requirement.criteria]]
+metric = "completed_step_count"
+operator = "eq"
+value = 24
+
+[[requirement.criteria]]
+metric = "canonical_event_chain_count"
+operator = "eq"
+value = 4
+
+[[requirement]]
+requirement = "endogenous_environment"
+level = "L1"
+evidence_kind = "synthetic_test"
+minimum_observations = 1
+
+[[requirement.criteria]]
+metric = "state_transition_count"
+operator = "eq"
+value = 24
+
+[[requirement.criteria]]
+metric = "period_advance_count"
+operator = "eq"
+value = 24
+
+[[requirement.criteria]]
+metric = "distinct_state_digest_count"
+operator = "gte"
+value = 7
+
+[[requirement]]
+requirement = "economic_invariants"
+level = "L1"
+evidence_kind = "synthetic_test"
+minimum_observations = 1
+
+[[requirement.criteria]]
+metric = "max_cash_residual"
+operator = "lte"
+value = 1e-10
+
+[[requirement.criteria]]
+metric = "max_foreign_residual"
+operator = "lte"
+value = 1e-10
+
+[[requirement.criteria]]
+metric = "max_clearing_residual"
+operator = "lte"
+value = 1e-12
+
+[[requirement.criteria]]
+metric = "rejected_order_count"
+operator = "eq"
+value = 0
+
+[[requirement]]
+requirement = "adaptive_agent_state"
+level = "L2"
+evidence_kind = "controlled_experiment"
+minimum_observations = 2
+
+[[requirement.criteria]]
+metric = "adaptive_arm_state_observation_count"
+operator = "gte"
+value = 2
+
+[[requirement.criteria]]
+metric = "adaptive_arm_adapted_household_observation_count"
+operator = "gte"
+value = 12
+
+[[requirement.criteria]]
+metric = "fixed_arm_adapted_household_observation_count"
+operator = "eq"
+value = 0
+
+[[requirement.criteria]]
+metric = "adaptation_observation_contrast"
+operator = "gte"
+value = 12
+
+[[requirement.criteria]]
+metric = "paired_seed_count"
+operator = "eq"
+value = 2
+
+[[requirement.criteria]]
+metric = "max_belief_observations"
+operator = "lte"
+value = 4
+
+[[requirement]]
+requirement = "longitudinal_persistence"
+level = "L2"
+evidence_kind = "controlled_experiment"
+minimum_observations = 2
+
+[[requirement.criteria]]
+metric = "minimum_run_observations"
+operator = "gte"
+value = 2
+
+[[requirement.criteria]]
+metric = "longitudinal_observation_count"
+operator = "gte"
+value = 28
+
+[[requirement.criteria]]
+metric = "persistent_agent_run_count"
+operator = "eq"
+value = 4

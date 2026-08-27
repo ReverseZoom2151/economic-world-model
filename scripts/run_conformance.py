@@ -16,15 +16,24 @@ from typing import Any
 
 from ewm import __version__
 from ewm.capabilities import (
+    CapabilityEvidence,
+    EvidenceKind,
+    LevelRequirement,
     ValidatedCapabilityEvidence,
     assess_validated_capability,
-    documented_prototype_evidence,
 )
 from ewm.core.evidence import EvidenceStatus, ValidatedEvidenceArtifact
 from ewm.experiments.source_verification import (
     SourceVerification,
     verification_failed,
     verify_sources,
+)
+from ewm.scenarios.fx.validation import (
+    DEFAULT_HAN_L1_L2_PROTOCOL,
+    HanValidationReport,
+    han_l1_l2_artifacts,
+    load_han_l1_l2_protocol,
+    run_han_l1_l2_validation,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +50,7 @@ def _source_fingerprint(root: Path = ROOT) -> str:
     paths: set[Path] = set()
     for pattern in (
         "src/ewm/**/*.py",
+        "src/ewm/**/*.toml",
         "references/*.toml",
         "protocols/**/*",
         "tests/conformance/**/*.py",
@@ -57,30 +67,83 @@ def _source_fingerprint(root: Path = ROOT) -> str:
     return digest.hexdigest()
 
 
-def _validated_capability_evidence(
-    test_outcome: dict[str, Any],
+def validated_han_l1_l2_evidence(
+    report: HanValidationReport,
+    *,
+    protocol_path: Path = DEFAULT_HAN_L1_L2_PROTOCOL,
 ) -> tuple[ValidatedCapabilityEvidence, ...]:
+    """Bind each observed FX requirement result to its own validation artifact."""
+
+    artifacts = {
+        artifact.subject: artifact
+        for artifact in han_l1_l2_artifacts(report, protocol_path=protocol_path)
+    }
+    if len(artifacts) != len(report.requirements):
+        raise ValueError("Han validation artifact subjects must be unique")
+    return tuple(
+        ValidatedCapabilityEvidence(
+            assertion=CapabilityEvidence(
+                requirement=LevelRequirement(requirement.requirement),
+                passed=requirement.passed,
+                kind=EvidenceKind(requirement.evidence_kind),
+                provenance=artifacts[f"capability:{requirement.requirement}"].provenance,
+                observations=requirement.observations,
+            ),
+            artifact=artifacts[f"capability:{requirement.requirement}"],
+        )
+        for requirement in report.requirements
+    )
+
+
+def _artifact_record(artifact: ValidatedEvidenceArtifact) -> dict[str, Any]:
+    return {
+        "observations": artifact.observations,
+        "payload_sha256": artifact.payload_sha256,
+        "provenance": artifact.provenance,
+        "status": artifact.status.value,
+        "subject": artifact.subject,
+    }
+
+
+def _han_validation_outcome(
+    test_outcome: dict[str, Any],
+) -> tuple[dict[str, Any], tuple[ValidatedCapabilityEvidence, ...]]:
+    protocol = load_han_l1_l2_protocol()
     if test_outcome["status"] != EvidenceStatus.PASS.value:
-        return ()
-    validated: list[ValidatedCapabilityEvidence] = []
-    for assertion in documented_prototype_evidence():
-        source_reference = assertion.provenance.split(":", maxsplit=1)[0]
-        if source_reference not in CAPABILITY_EVIDENCE_PATHS:
-            continue
-        artifact = ValidatedEvidenceArtifact.from_observation(
-            subject=f"capability:{assertion.requirement.value}",
-            status=EvidenceStatus.PASS,
-            provenance=str(test_outcome["command"]),
-            payload={
-                "asserted_evidence": assertion.provenance,
-                "test_outcome": test_outcome,
+        return (
+            {
+                "artifacts": [],
+                "arms": list(protocol.arms),
+                "classification": protocol.classification,
+                "excluded_claims": list(protocol.excluded_claims),
+                "protocol_filename": protocol.protocol_filename,
+                "protocol_schema": protocol.schema_version,
+                "protocol_sha256": protocol.protocol_sha256,
+                "protocol_version": protocol.protocol_version,
+                "report_schema": protocol.report_schema,
+                "source_sha256": protocol.source_sha256,
+                "status": EvidenceStatus.NOT_RUN.value,
+                "test_gate_status": test_outcome["status"],
             },
-            observations=assertion.observations,
+            (),
         )
-        validated.append(
-            ValidatedCapabilityEvidence(assertion=assertion, artifact=artifact)
-        )
-    return tuple(validated)
+
+    validation_report = run_han_l1_l2_validation()
+    evidence = validated_han_l1_l2_evidence(validation_report)
+    artifacts = tuple(item.artifact for item in evidence)
+    payload = validation_report.as_dict()
+    payload.update(
+        {
+            "artifacts": [_artifact_record(artifact) for artifact in artifacts],
+            "status": (
+                EvidenceStatus.PASS.value
+                if all(item.status is EvidenceStatus.PASS for item in artifacts)
+                else EvidenceStatus.FAIL.value
+            ),
+            "test_gate_status": test_outcome["status"],
+        }
+    )
+    return payload, evidence
 
 
 def _ddge_assessments(test_outcome: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -165,9 +228,8 @@ def _build_report(
     source_results = verify_sources(PAPER_REGISTRY, source_dir=source_dir)
 
     test_outcome = _test_outcome(skip_tests=skip_tests)
-    assessment = assess_validated_capability(
-        _validated_capability_evidence(test_outcome)
-    )
+    han_validation, capability_evidence = _han_validation_outcome(test_outcome)
+    assessment = assess_validated_capability(capability_evidence)
     report = {
         "schema_version": SCHEMA_VERSION,
         "paper_sources": _paper_hashes(),
@@ -185,12 +247,13 @@ def _build_report(
             "scipy": version("scipy"),
         },
         "test_outcomes": test_outcome,
+        "han_l1_l2_validation": han_validation,
         "ddge_assessments": _ddge_assessments(test_outcome),
         "stochastic_seed_sets": {
             "credit_smoke": [42],
             "forecasting_smoke": [42],
             "fx_comparative_statics_smoke": list(range(1_000, 1_008)),
-            "fx_rollout_smoke": [42],
+            "fx_rollout_smoke": list(load_han_l1_l2_protocol().seeds),
         },
         "capability_assessment": {
             "achieved_level": assessment.achieved_level.name,
@@ -198,8 +261,14 @@ def _build_report(
             "missing_requirements": [item.value for item in assessment.missing_requirements],
             "warnings": list(assessment.warnings),
             "evidence_basis": "validated_conformance_artifacts",
-            "validation_status": test_outcome["status"],
+            "validation_status": han_validation["status"],
             "empirical_validity": assessment.empirical_validity.status.value,
+            "blocked_levels": {
+                "L3": "missing controlled language-model behavioral evidence",
+                "L4": "missing persistent capability-improvement evidence",
+                "L5": "missing endogenous institutional-outcome evidence",
+                "L6": "missing external repeated out-of-sample evidence",
+            },
         },
         "unresolved_external_dependencies": [
             "controlled language-model behavioral evaluation",
@@ -263,11 +332,12 @@ def main(argv: list[str] | None = None) -> int:
         args.output.write_text(encoded, encoding="utf-8")
     print(encoded, end="")
     failed_tests = report["test_outcomes"]["passed"] is False
+    failed_han_validation = report["han_l1_l2_validation"]["status"] == "fail"
     failed_sources = verification_failed(
         source_results,
         require_sources=args.require_sources,
     )
-    return 1 if failed_tests or failed_sources else 0
+    return 1 if failed_tests or failed_han_validation or failed_sources else 0
 
 
 if __name__ == "__main__":
