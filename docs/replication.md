@@ -1,7 +1,7 @@
 # Replication guide
 
-**Document version:** 1.1
-**Last reviewed:** 2026-08-27
+**Document version:** 1.2
+**Last reviewed:** 2026-08-28
 **Scope:** Reproduce the package's paper claims, protocol checks, and disclosed numerical examples
 
 ## Claim vocabulary
@@ -123,8 +123,10 @@ The exact obligations are:
 - Equation (A.1) agrees with its closed-form inner solution;
 - the linear intervention fixed point agrees with the closed form within $10^{-11}$;
 - the saturating model has one DDGE when composite gain $g\leq1$ and three when $g>1$;
-- internal sign bracketing and fixed-point iteration agree within $10^{-9}$; these methods share
-  package model primitives and are not an external code-independent oracle;
+- package-import-free direct-equation bracketing and package fixed-point iteration agree within
+  $10^{-9}$;
+- the independent analytical argument gives one root for $g\leq1$ and three for $g>1$ from oddness,
+  the derivative at zero, and strict concavity on the positive axis;
 - every fixed-point residual is below $10^{-10}$;
 - the Figure 3 near-onset relative error stays below `0.0265` through $g=1.045$ and is
   $0.029\pm0.0002$ at $g=1.05$;
@@ -141,7 +143,8 @@ Run:
 ```bash
 python -m pytest \
   tests/scenarios/test_forecasting.py \
-  tests/scenarios/test_forecasting_replication.py -q
+  tests/scenarios/test_forecasting_replication.py \
+  tests/integration/test_independent_numerical_oracles.py -q
 python examples/forecasting.py
 ```
 
@@ -166,10 +169,11 @@ Expected acceptance conditions:
 The current public report prints `paper_outer_root=0.79532610`, `momentum_acf=0.797495`, and
 `zero_acf=0.017492` for seed 42.
 
-The population target match and the finite-sample path are separate claims. The population roots
-match the locked source targets, but the current analytical and bracketing checks share package
-model primitives and are internal cross-checks, not an external code-independent oracle. The
-finite-sample path is `paper-inspired` because its damping coefficient is package-authored.
+The population target match and the finite-sample path are separate claims. A package-import-free
+oracle discretizes the stationary Markov kernel, solves its invariant law, computes the
+zero-intercept OLS map, and brackets the roots. It agrees with the package population roots within
+`0.004`. Its declared scope excludes finite-sample paths. Those paths remain `paper-inspired`
+because damping is package-authored.
 
 ## Cong Laboratory I: qualitative credit reconstruction
 
@@ -195,6 +199,18 @@ those differences into replication claims.
 Exact numerical replication remains blocked until the omitted author primitives or code are public
 and their identity can be locked.
 
+Run the shipped prospectively locked local quick protocol with:
+
+```bash
+ewm-run-protocol --quick
+```
+
+The command is expected to exit 1. All four fixed seeds complete, and all four breach the locked
+`solver_residual <= 0.001` tolerance. The report preserves every outcome and seed but sets
+`status=fail`, `analysis_valid=false`, `claim_authorized=false`, and
+`evidence_status=diagnostic_only`. Do not treat its Student-t, paired-bootstrap, Wilson, or Holm
+summaries as authorized inference.
+
 ## Cong Appendix D: paper-inspired production instance
 
 Run:
@@ -202,7 +218,8 @@ Run:
 ```bash
 python -m pytest \
   tests/scenarios/test_production.py \
-  tests/integration/test_production_example.py -q
+  tests/integration/test_production_example.py \
+  tests/integration/test_independent_numerical_oracles.py -q
 python examples/production.py
 ```
 
@@ -219,8 +236,8 @@ Accept the result when:
 - household first-order residuals are below $10^{-9}$ for the default instance;
 - capital and labor clearing residuals are below $10^{-9}$;
 - firm first-order residuals are below $10^{-10}$;
-- an independently written log-utility root system agrees on both prices to relative tolerance
-  $10^{-9}$.
+- a package-import-free objective optimizer and market-clearing solve agree on both prices within
+  $2\times10^{-5}$ and satisfy their separate residual budgets.
 
 Cong supplies the household budget and borrowing bound, the firm problem, and current-asset and labor
 market clearing. The package supplies CRRA preferences, a continuation approximation, a finite
@@ -236,6 +253,8 @@ python -m pytest \
   tests/integration/test_han_runtime_protocol.py \
   tests/integration/test_layered_evaluation.py \
   tests/conformance/test_han_conformance.py \
+  tests/conformance/test_han_l1_l2_validation.py \
+  tests/conformance/test_han_l3_l6_readiness.py \
   tests/unit/test_capability_levels.py -q
 python examples/cognitive_agent.py
 python examples/offline_alignment.py
@@ -250,9 +269,24 @@ reset -> run_agents -> step -> coevolve -> align -> evaluate
 `log` is the event ledger that records all six stateful calls. The layered evaluator then reads the
 immutable event snapshot. Metrics without evidence remain `not_measured` and `None`.
 
-The offline examples prove protocol wiring only. The cognitive example uses a deterministic fake
-backend, and the alignment example uses a timestamped fixture. The evidence evaluator must award L2
-and reject L3, L4, L5, and L6 until the missing controlled or external studies exist.
+The compiled FX protocol uses adaptive and fixed-belief arms under seeds 17 and 42. It emits one
+validated artifact for each L1/L2 requirement and awards L2 as synthetic systems conformance. The
+L3 to L6 readiness protocol emits 16 blocked `readiness:` artifacts and zero higher awards. Offline
+cognition, promotion, governance, and alignment fixtures remain below the official evidence gates.
+
+## Artifact verification and replay
+
+Create, verify, and replay a sealed FX artifact:
+
+```bash
+ewm run fx.rollout --preset smoke --seed 42 --output runs
+ewm verify-run runs/<run_hash>
+ewm replay-run runs/<run_hash>
+```
+
+Current runs use `ewm.run.v2`, which seals all five payloads and the canonical run identity. Legacy
+`ewm.run.v1` bundles receive read-only structural verification and remain unsealed. Deterministic
+replay currently supports sealed v2 `fx.rollout` bundles only.
 
 ## Full local verification
 

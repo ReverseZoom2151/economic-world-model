@@ -90,10 +90,14 @@ Cong's Definition 2.6 groups an Economic World Model into named blocks:
 | Block | Paper objects | Package role |
 |---|---|---|
 | Economic spaces | $\mathcal{S},\mathcal{A},\mathcal{Y},\mathcal{I}$ | States, actions, outcomes, and regimes |
-| Agent population | $N$ and $\lbrace(\mathcal{I}_t^n,\Pi^n,\mu_t^n)\rbrace_{n=1}^{N}$ | Information, admissible policies, and beliefs for each agent |
+| Agent population | N agents; notation below | Information, admissible policies, and beliefs for each agent |
 | Economic coherence | $\mathcal{C}$ | Hard equalities, hard inequalities, and soft diagnostics |
 | Learned system | $T_\theta,O_\theta$ | Transition and observation kernels |
 | Intervention semantics | $\Psi$ | Declared component changes under each regime |
+
+```math
+\lbrace(\mathcal{I}_{t}^{n},\Pi^{n},\mu_{t}^{n})\rbrace_{n=1}^{N}.
+```
 
 For learned components $\theta$ and regime $i$, the inner correspondence holds the learned system
 fixed:
@@ -145,7 +149,7 @@ result.
 | Cong Laboratory III finite sample | Source-specified 4,000 observations with package-authored damping | Paper-inspired path, with no claim of exact path replication |
 | Cong Laboratory I credit | Mechanism reconstruction plus a prospectively locked local quick protocol | Exact replication is blocked by missing author primitives. All four quick seeds breach the locked solver tolerance, so `analysis_valid=false` and the result is diagnostic only |
 | Cong Appendix D | A package-import-free objective optimizer and direct market-clearing solve cross-check the disclosed finite instance | Paper-inspired package instance, not a paper target or general existence proof |
-| Compiled FX world | Compiled execution matches the direct FX simulation and preserves canonical events, accounting, conservation, and deterministic replay | Synthetic runtime and mechanism conformance |
+| Compiled FX world | Compiled execution preserves the characterized pre-compiler outputs and adds canonical events, accounting checks, and deterministic replay | Synthetic runtime migration and mechanism conformance |
 | Han L1 and L2 | A hashed two-arm, two-seed compiled FX protocol observes execution, endogenous outcomes, invariants, adaptive state, and persistence | L2 awarded as synthetic systems conformance, not behavioral or empirical validation |
 | Han L3 through L6 | A versioned harness records one local readiness result for each of 16 official requirements | All 16 remain blocked readiness observations; zero higher-level awards |
 | Run artifacts | Canonical v2 identity, checksums for every payload, collision checks, and fail-closed verification | Package engineering evidence, not paper correspondence |

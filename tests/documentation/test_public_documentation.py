@@ -30,7 +30,10 @@ def test_public_documentation_matches_the_current_release_contract() -> None:
     assert r"\begin{array}" not in readme
     assert r"F_i(\theta)" in readme
     assert r"\theta^{\star}=F_i(\theta^{\star})" in readme
-    assert r"\lbrace(\mathcal{I}_t^n,\Pi^n,\mu_t^n)\rbrace_{n=1}^{N}" in readme
+    population_notation = (
+        r"\lbrace(\mathcal{I}_{t}^{n},\Pi^{n},\mu_{t}^{n})\rbrace_{n=1}^{N}."
+    )
+    assert f"```math\n{population_notation}\n```" in readme
     assert "ewm.run.v2" in readme
     assert "ewm verify-run" in readme
     assert "ewm replay-run" in readme

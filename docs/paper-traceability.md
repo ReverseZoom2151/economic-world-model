@@ -1,6 +1,6 @@
 # Paper traceability
 
-**Document version:** 1.3
+**Document version:** 1.4
 **Last reviewed:** 2026-08-28
 
 This repository is an adaptation of two specific source versions, not a claim of author-endorsed
@@ -20,9 +20,10 @@ not contain them and cannot repeat that observation without separately supplied 
 
 The locked sources are:
 
-- Cong, *Economic World Models and Data-Driven Generative Equilibria*, current draft April 2026.
-- Han et al., *From Economic Agents to Agentic Economies: A Systems Blueprint for Economic World
-  Models*, arXiv:2608.06020v1, 6 August 2026.
+- Cong, [*Economic World Models and Data-Driven Generative Equilibria*](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940),
+  current draft April 2026.
+- Han et al., [*From Economic Agents to Agentic Economies: A Systems Blueprint for Economic World
+  Models*](https://arxiv.org/abs/2608.06020v1), arXiv:2608.06020v1, 6 August 2026.
 
 ## How claims are classified
 
@@ -68,6 +69,11 @@ Euclidean contraction separate from eigenvalue stability. Cong's general Assumpt
 general Kakutani existence argument still require model-specific mathematical proofs and remain
 blocked or partial in the registry.
 
+The scalar Laboratory II oracle also has a package import boundary. It evaluates the paper equation
+directly, uses an analytical concavity argument to prespecify one or three roots, and brackets the
+nonzero roots without importing `ewm`. This numerical route is separate from package fixed-point
+iteration.
+
 The Cong Laboratory III population target now has a package-import-free numerical oracle based on
 a separately implemented stationary-kernel OLS calculation. This closes the earlier independence
 gap for the registered population roots. The finite-sample path remains paper-inspired because its
@@ -112,14 +118,20 @@ event chains, and separate evidence for every L1/L2 requirement. Its declared cl
 synthetic systems conformance. It explicitly excludes empirical validation and a prospective
 behavioral study.
 
+A second versioned protocol exercises local L3 to L6 substrate readiness. It records one blocked
+result and one content-addressed `readiness:` artifact for each of the 16 official higher-level
+requirements. Fixture execution, promotion, governance, and offline alignment remain below their
+required evidence classes. The harness awards zero higher capabilities, and its artifacts cannot be
+used as official `capability:` evidence.
+
 ## Package engineering is not paper correspondence
 
-Artifact v2 verification and deterministic replay protect the identity, integrity, and
-reproducibility of run evidence. They are package engineering, not paper correspondence, because
-neither locked source specifies this checksum format, command-line interface, or replay bundle
-contract. The traceability registry maps the compiled FX execution and canonical event logging to
-Han's runtime interfaces, but it does not turn the repository's sealing and replay design into a new
-paper-derived claim.
+Sealed `ewm.run.v2` verification and deterministic replay protect the identity, integrity, and
+reproducibility of run evidence. Legacy `ewm.run.v1` inspection remains read-only and unsealed.
+These are package engineering contracts, not paper correspondence, because neither locked source
+specifies this checksum format, command-line interface, or replay bundle. The traceability registry
+maps compiled FX execution and canonical event logging to Han's runtime interfaces, but it does not
+turn sealing and replay into paper-derived claims.
 
 ## Automated integrity checks
 
@@ -163,7 +175,8 @@ python scripts/run_conformance.py --source-dir . --require-sources
 ```
 
 The strict form fails for missing sources and for every verification mismatch. The report also
-contains the package source fingerprint, runtime versions, fixed seed sets, conformance test
-outcomes, achieved capability evidence, DDGE status, empirical-validity status, and unresolved
-external dependencies. The [replication guide](replication.md) defines the expected values and
-tolerances; [limitations](limitations.md) records the non-goals.
+contains the package source fingerprint, runtime versions, fixed seed sets, conformance outcomes,
+L1/L2 validation artifacts, 16 non-awarding readiness results, per-scenario DDGE assessments,
+empirical-validity status, and unresolved external dependencies. A failed or unrun suite emits no
+supported evidence. The [replication guide](replication.md) defines expected values and tolerances;
+[limitations](limitations.md) records the non-goals.

@@ -1,14 +1,8 @@
 # Running EWM experiments
 
-**Document version:** 1.0  
-**Last reviewed:** 2026-08-27  
-**Audience:** Researchers reproducing or extending version `0.1.0`
-
-## Overview
-
-The experiment layer composes scenario economics, shared solvers, metrics, and deterministic local
-artifacts. It has no database, service, dashboard, or external model dependency. Every registered
-experiment has a fast `smoke` preset and a larger `research` preset.
+**Document version:** 1.1
+**Last reviewed:** 2026-08-28
+**Audience:** Researchers reproducing or extending release 0.2.0
 
 ## Install and discover
 
@@ -26,12 +20,12 @@ Windows PowerShell uses `.venv\Scripts\Activate.ps1` for activation.
 
 | Experiment | Scenario | Main result |
 |---|---|---|
-| `forecasting.ddge` | Self-fulfilling forecasting | Distinct fixed points, derivative agreement, stability, and simulated autocorrelation |
-| `fx.rollout` | Heterogeneous foreign exchange | Prices, volume, volatility, rejections, and accounting residuals |
-| `fx.comparative_statics` | Heterogeneous foreign exchange | Replicated paired intervention effects and normal-approximation intervals |
-| `credit.regimes` | AI-mediated credit | Economic, predictive, observation, and DDGE metrics for five regimes |
+| `forecasting.ddge` | Self-fulfilling forecasting | Population fixed points, derivative agreement, stability, and simulated autocorrelation |
+| `fx.rollout` | Heterogeneous foreign exchange | Compiled execution, prices, volume, rejections, accounting residuals, and canonical events |
+| `fx.comparative_statics` | Heterogeneous foreign exchange | Common-random-number paired intervention summaries |
+| `credit.regimes` | AI-mediated credit | Economic, predictive, observation, and residual diagnostics for five regimes |
 
-Run any smoke experiment with
+Run any smoke experiment with:
 
 ```bash
 ewm run forecasting.ddge --preset smoke --seed 42 --output runs
@@ -40,8 +34,8 @@ ewm run fx.comparative_statics --preset smoke --seed 42 --output runs
 ewm run credit.regimes --preset smoke --seed 42 --output runs
 ```
 
-Replace `smoke` with `research` for the larger named configuration. Research presets are still
-synthetic; they increase numerical scale, not empirical validity.
+Replace `smoke` with `research` for the larger named configuration. Research presets increase
+numerical scale and runtime, not empirical validity.
 
 ## Presets
 
@@ -49,15 +43,15 @@ synthetic; they increase numerical scale, not empirical validity.
 |---|---|---|
 | Forecasting | 4,096 stationary samples, 64 chains, 256 burn-in periods | 131,072 samples, 256 chains, 2,000 burn-in periods |
 | FX rollout | 24 periods, 6 households | 500 periods, 40 households, deeper bank liquidity |
-| FX comparative statics | 8 common-random-number replications | 50 common-random-number replications |
-| Credit | Cong qualitative-reconstruction mechanism with 800 package-generated applicants | 10,000 package-generated applicants and tighter DDGE tolerance |
+| FX comparative statics | 8 paired replications | 50 paired replications |
+| Credit | 800 package-generated applicants | 10,000 package-generated applicants and a tighter DDGE tolerance |
 
-The complete parameter set and claim metadata are serialized into `config.json`; code,
-documentation, and a remembered command are not substitutes for that manifest.
+Every run serializes its full parameters and claim metadata into `config.json`. A remembered command
+or documentation page is not a substitute for that manifest.
 
 ## Python facade
 
-Configure without executing:
+Configure and execute a temporal scenario:
 
 ```python
 import ewm
@@ -99,110 +93,135 @@ run = ewm.run_experiment(
 print(run.run_hash, run.run_dir)
 ```
 
-The corresponding executable programs are in [`examples/`](../examples).
+## Sealed artifact contract
+
+Each current run is written to `<output>/<run_hash>/` with schema `ewm.run.v2`:
+
+| File | Contract |
+|---|---|
+| `manifest.json` | Canonical identity, full identity digest, shortened run hash, payload digests and sizes, bundle digest, package and runtime versions, source fingerprint, and integrity level |
+| `config.json` | Complete experiment identity, scenario parameters, and claim metadata |
+| `metrics.json` | Flat finite scalar metrics |
+| `summary.csv` | The same metrics in a two-column table |
+| `trace.npz` | Deterministic non-object NumPy arrays |
+| `events.jsonl` | Contiguous, deterministically ordered event records |
+
+The writer stages the six files, seals every non-manifest payload with SHA-256, verifies the staged
+bundle, and publishes it atomically. Equal source, parameters, seed, and numerical runtime produce
+the same identity and bytes. An existing path with a different identity or payload is a collision and
+fails closed.
+
+Verify a run before reading it as evidence:
+
+```bash
+ewm verify-run runs/<run_hash>
+```
+
+The verifier rejects missing, extra, linked, malformed, non-finite, unsafe, or checksum-mismatched
+content. Legacy `ewm.run.v1` bundles remain available for structural inspection. They are reported
+as `legacy-unsealed`, are never modified by verification, and do not gain v2 integrity retroactively.
+
+Replay a supported sealed run with:
+
+```bash
+ewm replay-run runs/<run_hash>
+```
+
+Replay requires a checksummed v2 bundle and currently supports only `fx.rollout`. It snapshots the
+verified manifest, configuration, and events, rebuilds the compiled FX world, and compares the event
+chain, state digest, and step count. Forecasting, credit, and FX comparison artifacts can be verified
+but are not accepted by `replay-run`.
+
+## Compiled FX execution
+
+`fx.rollout` executes the compiled world declaration. Characterization tests lock the numerical
+outputs recorded before the runtime migration for declared configurations and seeds. The compiled
+path adds strict action ownership, declared scheduling, state encoding, atomic transition failure,
+canonical event hashes, and deterministic replay without changing those declared market results.
+
+FX output includes:
+
+- `mean_price`, `total_volume`, and `volatility` for the synthetic rollout;
+- `rejected_orders` for explicit feasibility failures;
+- `max_cash_residual` and `max_foreign_residual` for settlement conservation.
+
+`fx.comparative_statics` keeps the original compatibility summary: intervention-minus-baseline mean
+differences, standard errors, and normal-approximation Monte Carlo intervals. It makes no p-value
+claim. New prospectively locked protocols use the small-sample methods described below.
+
+## Forecasting interpretation
+
+- `root_count` is the number of distinct population fixed points retained after multistart
+  deduplication.
+- `stable_root_count` uses the local spectral radius for undamped iteration.
+- `max_root_gap` compares package iteration with internal package bracketing.
+- `derivative_error` compares the numerical derivative at zero with the analytical value.
+
+The package-import-free oracle under `tests/oracles/forecasting_oracle.py` supplies a stronger
+cross-check. It builds a stationary Markov kernel on an independent grid, computes the population
+zero-intercept OLS map, and brackets its roots. Its scope is
+`population_stationary_kernel_ols_only`; it does not reproduce a finite-sample path.
+
+## Credit interpretation
+
+Metrics are prefixed by `no_genai`, `frozen`, `selective_ddge`, `full_information_ddge`, or
+`omniscient_oracle`. Each regime reports profit, approval, adoption, observation coverage,
+classification diagnostics, coefficient movement, and residuals. Inspect `converged` and the
+residual before calling a run an achieved fixed point.
+
+The named configuration is a qualitative reconstruction. Cong's PDF omits numerical population and
+learner primitives needed for exact replication. The package's deterministic recent-iterate residual
+minimum is not Cong's finite-cohort sampling-noise floor.
+
+## Prospectively locked local credit protocol
+
+The installed protocol command is:
+
+```bash
+ewm-run-protocol --quick
+```
+
+The shipped v1 protocol fixes its full TOML content hash and semantic hash, exact seed manifests,
+sample sizes, stopping rule, outcomes, units, estimand directions, nulls, tolerances, bootstrap
+seeds, and Holm family. Its quick and full replication counts of 4 and 12 are engineering budgets,
+not a powered empirical design.
+
+Paired continuous outcomes use Student-t intervals, an owned-seed paired percentile bootstrap, a
+paired standardized effect, and two-sided p-values. Binary repair rates use Wilson intervals. Holm's
+method controls the prespecified three-outcome family.
+
+The current quick execution completes all four fixed-seed replications and breaches the locked
+`solver_residual <= 0.001` tolerance in every replication. It exits nonzero and reports:
+
+```text
+status=fail
+analysis_valid=false
+claim_authorized=false
+evidence_status=diagnostic_only
+```
+
+The outcomes remain recorded for diagnosis. The observed failure did not trigger a retuned protocol,
+and no inference or scientific claim is authorized.
 
 ## Five-layer evaluation
 
 `evaluate_layered` builds Han et al.'s agent, environment, co-evolution, alignment, and efficiency
-sections from an immutable event snapshot plus explicitly supplied measurements. Event-derived
-metrics include feasible-action rate, constraint-violation rate, adaptation stability, component
-drift, state discrepancy, and correction magnitude. Role consistency, accounting checks,
-adaptation gain, runtime, memory, and scaling measurements can be attached with provenance.
+sections from an immutable event snapshot plus supplied evidence. Event-derived metrics include
+feasible-action rate, constraint violations, adaptation stability, component drift, discrepancy, and
+correction magnitude. Supplied measurements carry units, provenance, and sample size.
 
-```python
-from ewm.experiments import MetricEvidence, evaluate_layered
-
-report = evaluate_layered(
-    world.events.snapshot(),
-    state_version=world.state_version,
-    evidence={
-        "efficiency": {
-            "runtime_seconds": MetricEvidence(
-                value=0.42,
-                unit="seconds",
-                provenance="benchmarks/run.json",
-                sample_size=3,
-            )
-        }
-    },
-)
-```
-
-The evaluator never fills an absent measurement with zero. Every missing item has status
-`not_measured`, value `None`, sample size zero, and no provenance. It also rejects unknown metrics,
-wrong units, and ambiguous attempts to override an event-derived value. Evaluation reads its
-inputs without changing the world, agents, mechanism, alignment components, or event snapshot.
-
-## Artifact contract
-
-Each run is written to `<output>/<run_hash>/` with schema `ewm.run.v1`:
-
-| File | Contract |
-|---|---|
-| `manifest.json` | Schema, package version, source fingerprint, numerical runtime versions, experiment, scenario, preset, seed, and run hash |
-| `config.json` | Full experiment identity and scenario parameters |
-| `metrics.json` | Flat, finite scalar metrics for machines |
-| `summary.csv` | The same scalar metrics in a two-column research table |
-| `trace.npz` | Named numerical arrays such as roots, prices, profits, or residuals |
-| `events.jsonl` | Deterministically ordered fixed-point, clearing, or regime records |
-
-The run hash covers artifact schema, experiment, package version, executed EWM source fingerprint,
-Python and numerical-library versions, scenario parameters, preset, and seed. Wall-clock time and
-output path are deliberately excluded. Repeating identical inputs with the same code and numerical
-runtime produces the same hash and byte-identical scientific artifacts. Integration tests enforce
-this property.
-
-## Interpreting forecasting output
-
-- `root_count` is the number of distinct fixed points retained after multistart deduplication.
-- `stable_root_count` uses the local spectral-radius diagnostic for the undamped update.
-- `max_root_gap` compares iterative roots with an independent Brent bracketing calculation.
-- `derivative_error` compares the numerical derivative at zero with the analytical value.
-
-Multiplicity is part of the result. A single selected root is not silently substituted for the full
-multistart result.
-
-## Interpreting FX output
-
-- `mean_price`, `total_volume`, and `volatility` summarize the rollout.
-- `rejected_orders` counts explicit feasibility failures.
-- `max_cash_residual` and `max_foreign_residual` audit settlement conservation.
-
-`fx.comparative_statics` reports `firm_demand_shock`, `trend_intensity`, and `fixed_beliefs`
-comparisons. Every effect is intervention minus the adaptive baseline. For each output metric it
-records the paired mean difference, standard error, interval endpoints, and replication count. The
-same seed is used for each baseline-intervention pair; consecutive seeds define the replications.
-
-The FX output describes the synthetic mechanism under its configuration. It is not a forecast of an
-observed exchange rate.
-
-## Interpreting credit output
-
-Metrics are prefixed by regime: `no_genai`, `frozen`, `selective_ddge`,
-`full_information_ddge`, and `omniscient_oracle`. Each regime reports profit, predicted profit,
-approval, adoption, observed-label share, AUC, classification errors, coefficient movement, and
-residual diagnostics. The adaptive regimes also report `converged` and `iterations` as flat metrics.
-The regime name describes the DDGE target; inspect the convergence flag and residual before calling
-one run an achieved fixed point.
-
-The smoke configuration is named `cong_qualitative_reconstruction` in run metadata. It is a
-configuration-specific mechanism test, not a numerical replication. `config.json` records the claim
-type, exact-replication flag, package-versus-paper target differences, qualitative-ordering results,
-and quantities that remain unmeasured. The sensitivity report is evidence against treating one sign
-pattern as universal.
-
-Cong reports a sampling noise floor for fresh 40,000-application cohorts. This package currently
-reports a minimum recent residual from a deterministic finite cohort. These are different objects.
-The run metadata leaves `sampling_noise_floor` null and records the missing source requirements.
+Absent measurements remain `not_measured` with value `None`, sample size zero, and no provenance.
+The evaluator rejects unknown metrics, wrong units, and attempts to override event-derived values.
 
 ## Reproducibility checklist
 
 1. Record the package commit and retain the manifest's source and runtime fingerprints.
-2. Retain the complete run directory, especially `manifest.json` and `config.json`.
-3. Compare run hashes before comparing metrics.
-4. Use paired seeds or common random numbers for intervention comparisons.
-5. Preserve failed starts, rejected actions, residuals, and failed hypotheses.
-6. Do not interpret more Monte Carlo precision as more external validity.
+2. Retain all six files, especially `manifest.json` and `config.json`.
+3. Run `ewm verify-run` before comparing metrics.
+4. Compare full identities and bundle hashes before numerical results.
+5. Use paired seeds or common random numbers for intervention comparisons.
+6. Preserve failed starts, rejected actions, residuals, protocol failures, and deviations.
+7. Do not interpret Monte Carlo precision as external validity.
 
 ## Verification commands
 
@@ -212,11 +231,9 @@ mypy src
 coverage run -m pytest -q
 coverage report
 python -m build
-python examples/forecasting.py
-python examples/fx.py
-python examples/credit.py
-python examples/extensions/cobweb.py
+python scripts/run_conformance.py
 python scripts/scientific_stress.py --quick
 ```
 
-CI executes this contract on Python 3.11 and 3.12.
+CI tests Python 3.11 and 3.12. The [replication guide](replication.md) defines paper-specific commands
+and tolerances.

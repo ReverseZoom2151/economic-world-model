@@ -1,11 +1,79 @@
 # Local product validation
 
-**Document version:** 1.3<br>
-**Last reviewed:** 2026-08-27<br>
-**Environment:** Python 3.12.3 on x86-64 WSL2, 64 logical CPUs<br>
-**Scope:** Version `0.1.0` software behavior and synthetic scientific evidence
+**Document version:** 1.4<br>
+**Last reviewed:** 2026-08-28<br>
+**Scope:** Current release 0.2.0 audit with the measured 0.1.0 baseline preserved below
 
-## Outcome
+## Current 0.2.0 audit
+
+Release 0.2.0 adds stricter runtime, numerical, artifact, and evidence boundaries without converting
+the synthetic laboratories into empirical models. This audit records the current executable surface
+separately from the measured 0.1.0 baseline. It does not reinterpret or overwrite the historical
+benchmark values.
+
+### Current evidence delta
+
+| Area | Current locally executable evidence | Boundary |
+|---|---|---|
+| Package release | `_version.py` is the version source; reproducible wheel and source builds validate metadata, contents, installed CLI discovery, and the shipped locked protocol | Installation checks do not validate economic assumptions |
+| Runtime compilation | Typed world declarations compile to a lifecycle with ownership, scheduling, constraint policy, rollback, codecs, and owned RNG restoration | Compiler correctness is established for declared finite mechanisms, not arbitrary economies |
+| FX migration | Compiled execution preserves characterized pre-compiler outputs for declared seeds and adds canonical event and replay contracts | This is software parity, not an independent economic oracle |
+| Numerical verification | Package-import-free scalar, forecasting-population, and production oracles use distinct equations or algorithms; a separate singular-direction oracle checks non-contraction | Forecasting finite-sample damping and the production calibration remain package-authored |
+| Theorem certificates | Restricted affine and polyhedral certificates record assumption provenance, invariant domains, solver residuals, total-variation domain checks, and Euclidean contraction diagnostics | General Assumption 3.2 and Kakutani obligations remain open |
+| Run artifacts | `ewm.run.v2` seals every payload and the canonical identity; `verify-run` fails closed; `replay-run` supports sealed FX rollouts | `ewm.run.v1` receives read-only structural verification and is not sealed |
+| Credit protocol | The shipped prospectively locked local quick protocol records all four seeds and outcomes | Every seed breaches the solver tolerance, so `analysis_valid=false` and evidence remains diagnostic only |
+| Han capability | A hashed compiled-FX protocol awards synthetic L1/L2; a versioned 16-item L3-L6 readiness harness emits blocked artifacts | No L3, L4, L5, or L6 capability is awarded |
+
+The independent oracle boundary is enforced by an AST import test: modules under `tests/oracles/`
+cannot import `ewm`. Agreement tolerances are declared per problem. Two numerical methods do not by
+themselves establish that an authored finite instance is a paper target or a real-economy model.
+
+### Current local release gates
+
+| Gate | Result on 28 August 2026 |
+|---|---|
+| Documentation contract | Pending final local rerun |
+| Ruff and strict mypy | Pending final local rerun |
+| Pytest with branch coverage | Pending final local rerun |
+| Distribution and installed-wheel checks | Pending final local rerun |
+| Paper source locks and conformance | Pending final local rerun |
+
+### Current claim audit
+
+| Claim | Current verdict |
+|---|---|
+| Registered scalar and forecasting-population targets | Supported by conformance plus package-import-free numerical routes |
+| Forecasting finite-sample path | Paper-inspired because the damping coefficient is package-authored |
+| Production prices | A verified package-authored finite instance, not a Cong target |
+| Credit DDGE evidence | Diagnostic only because the locked quick protocol fails its solver tolerance |
+| Compiled FX execution | Supported as characterized software migration and synthetic L1/L2 conformance |
+| L3 through L6 capability | Withheld; all 16 official readiness requirements remain blocked |
+| Empirical calibration, policy validity, or digital-twin status | Not supported |
+
+Reproduce the principal current checks with:
+
+```bash
+ewm list
+ewm run fx.rollout --preset smoke --seed 42 --output runs
+ewm verify-run runs/<run_hash>
+ewm replay-run runs/<run_hash>
+ewm-run-protocol --quick
+python scripts/verify_sources.py --source-dir . --require-all
+python scripts/run_conformance.py --source-dir . --require-sources
+python -m pytest tests/integration/test_independent_numerical_oracles.py -q
+python -m pytest tests/conformance/test_han_l1_l2_validation.py -q
+python -m pytest tests/conformance/test_han_l3_l6_readiness.py -q
+```
+
+The locked credit command is expected to exit nonzero and report the preserved tolerance breaches.
+That nonzero result is the correct fail-closed behavior, not a release-test failure.
+
+## Historical 0.1.0 audit
+
+The following sections preserve the environment, outputs, benchmark values, and remote links measured
+for release 0.1.0 on 27 August 2026.
+
+### Outcome
 
 The package passes the locally executable product tests: clean installation, public CLI and Python
 workflows, deterministic artifact reproduction, extension through public interfaces, paper-level
@@ -15,7 +83,7 @@ This does not test whether independent economic-AI researchers understand or val
 That requires external participants. It also does not provide empirical validation, policy validity,
 or evidence that the synthetic economies represent an observed economy.
 
-## Final local release audit
+### Final local release audit
 
 The 27 August 2026 release audit ran against the `main` lineage through `a0410bc`. Its results were
 recorded in commit `362e279`, then independently repeated by GitHub Actions as documented below.
@@ -39,7 +107,7 @@ The conformance report's source fingerprint was
 The clean-install import resolved to the temporary environment's `site-packages/ewm`, which rules out
 an accidental editable-source import during the wheel examples.
 
-## Remote release evidence
+### Remote release evidence
 
 The pushed audit commit is
 [`362e279ee2379e0e5690d4992651125200e6f2a6`](https://github.com/ReverseZoom2151/economic-world-model/commit/362e279ee2379e0e5690d4992651125200e6f2a6).
@@ -56,7 +124,7 @@ therefore validated the declared registry and executable claims; it did not inde
 rehash the local release-audit copies. The matching-byte statement in the table above is local audit
 evidence only.
 
-## Protocol
+### Protocol
 
 The local audit uses eight complementary tests.
 
@@ -83,7 +151,7 @@ No internal component in the registered laboratory runs was mocked. The cognitiv
 protocol checks use declared offline fixtures and do not award L3 or L6. Generated run bundles
 remained under ignored local directories and were not used as source code.
 
-## Clean-room and researcher workflow
+### Clean-room and researcher workflow
 
 The public repository at baseline commit `c226c18` installed into an empty virtual environment with
 no broken requirements. `ewm list`, `ewm run forecasting.ddge`, and `examples/forecasting.py`
@@ -115,7 +183,7 @@ $\theta^{\star}=p^{\star}=3$, $Q^{\star}=4$, and spectral radius $0.5$. A declar
 intervention with $A=13$ moves the solved price to $4$ and quantity to $5$. Both agree with the
 closed-form oracle.
 
-## End-to-end experiment results
+### End-to-end experiment results
 
 All smoke and research runs at seed 42 completed and produced the six-file `ewm.run.v1` bundle.
 Every metric and trace value was finite.
@@ -135,7 +203,7 @@ The artifact identity now also includes a SHA-256 fingerprint of the executed `e
 and the Python, NumPy, SciPy, pandas, and scikit-learn versions. This prevents two alpha commits with
 the same package version and parameters from silently sharing a run directory.
 
-## Paper conformance and capability evidence
+### Paper conformance and capability evidence
 
 `python scripts/run_conformance.py` runs ten end-to-end tests and emits an
 `ewm.conformance.v1` report. `paper_sources` records the expected hash map declared in
@@ -165,9 +233,9 @@ both price residuals. For the package-authored finite instance, an independently
 agrees with rental rate `0.147500` and wage `0.718658`; the shared solver reports clearing norm
 `3.764e-14`. Those numbers are package results, not Cong paper targets.
 
-## Prespecified scientific stress test
+### Prespecified scientific stress test
 
-### Forecasting
+#### Forecasting
 
 The full protocol evaluated 18 cases: feedback values $0.6$, $0.8$, $1.0$, $1.2$, $1.8$, and
 $2.2$ under seeds 11, 42, and 303.
@@ -189,7 +257,7 @@ $0.008$ at step $10^{-2}$ to $-4.31$ at step $10^{-5}$. The named 1.8 result is 
 stability classifications in this more extreme finite-sample regime are exploratory and should not
 be treated as well-supported economic conclusions.
 
-### Foreign exchange
+#### Foreign exchange
 
 The protocol evaluated 81 configurations from three bank depths, three spreads, three trend weights,
 and three seeds, each for 120 periods with 12 households.
@@ -211,7 +279,7 @@ Fifty paired replications on the stress baseline produced these total-volume eff
 These are Monte Carlo intervals for this synthetic configuration. They are not empirical confidence
 intervals for an observed FX market.
 
-### AI-mediated credit
+#### AI-mediated credit
 
 The protocol evaluated ten independently seeded synthetic populations of 1,200 applicants. The
 primary comparison was paired profit per applicant relative to the no-GenAI regime.
@@ -235,7 +303,7 @@ as residual-qualified approximate states, not exact converged DDGEs.
 The five-point polish sensitivity grid retained the zero-adoption boundary and all stronger
 interventions, including results that did and did not meet the strict sign-reversal definition.
 
-## Performance baseline
+### Performance baseline
 
 Each measurement ran in a fresh process. Elapsed time starts immediately before the public
 `run_experiment` call, so it excludes interpreter startup while peak RSS includes imported numerical
@@ -264,7 +332,7 @@ target if the research workload becomes interactive. No optimization was applied
 the measured baseline and deterministic tie-breaking semantics should be preserved before and after
 any change.
 
-## Claims audit
+### Claims audit
 
 | Public claim | Executable evidence | Verdict |
 |---|---|---|
@@ -284,7 +352,7 @@ Synthetic tests verify code against declared mathematical and accounting contrac
 themselves validate the behavioral assumptions, representativeness, or real-world relevance of those
 contracts.
 
-## Reproduce locally
+### Reproduce locally
 
 ```bash
 python examples/extensions/cobweb.py
@@ -302,7 +370,7 @@ python scripts/benchmark_experiments.py
 The full benchmark takes several minutes because it executes the 50-replication FX research workload
 three times in isolated processes, in addition to ten smoke samples.
 
-## Work that still requires external participants or data
+### Work that still requires external participants or data
 
 - Independent researchers must attempt installation, interpretation, modification, and extension
   without author assistance.

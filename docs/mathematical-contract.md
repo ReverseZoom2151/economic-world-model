@@ -1,12 +1,12 @@
 # Mathematical contract
 
-**Document version:** 1.2
-**Last reviewed:** 2026-08-27  
+**Document version:** 1.3
+**Last reviewed:** 2026-08-28
 **Audience:** Economic-AI researchers and contributors
 
 ## Purpose and claim boundary
 
-This document states the mathematical objects that version `0.1.0` makes executable. It separates
+This document states the mathematical objects that release 0.2.0 makes executable. It separates
 notation taken from the source papers from scenario equations introduced by this implementation.
 The package is a synthetic research laboratory. None of the equations below is an empirical model
 of an actual economy unless a future calibration explicitly establishes that claim.
@@ -44,12 +44,18 @@ Cong's Definition 2.6 defines an EWM as a structured tuple. Its exact blocks are
 | $T_{\theta}$, $O_{\theta}$ | Learned transition and observation kernels |
 | $\Psi$ | Intervention semantics |
 
-Version `0.1.0` realizes these ideas through typed records, agent policies, constraints, mechanisms,
+Release 0.2.0 realizes these ideas through typed records, agent policies, constraints, mechanisms,
 transitions, observations, and explicit scenario configurations. It does not claim that every block is
 learned or active in every laboratory.
 
-The public `EconomicWorldModelDefinition` record now encodes the complete tuple as named,
-immutable blocks. `AgentBlock` groups each agent's information, admissible policies, and beliefs.
+The public `EconomicWorldModelDefinition` record encodes the complete tuple as named, immutable
+blocks. `AgentBlock` groups each agent's information, admissible policies, and beliefs in the paper's
+population notation
+
+$$
+\left\{(\mathcal{I}_t^n,\Pi^n,\mu_t^n)\right\}_{n=1}^N.
+$$
+
 `CoherenceCondition` distinguishes hard equalities, inequalities, and soft diagnostics.
 `InterventionSemantics` names the parts of the world that each declared regime may change. This
 object is a validated model declaration. Runtime conformance still depends on the world and scenario
@@ -153,6 +159,12 @@ reports damping as capable of restoring local convergence only when every eigenv
 strictly below one. A real eigenvalue at or above one remains a repelling direction for every
 positive damping level.
 
+Constructive certificates are restricted to declared affine self-maps on nonempty compact
+polyhedra. They validate invariant-domain assumptions, supplied provenance, fixed-point residuals,
+and solver residuals. `local_linear_certificate` reports the maximum singular value and spectral
+radius separately: a map can be spectrally stable while failing Euclidean contraction. These
+routines do not prove Cong's general Assumption 3.2 or the general Kakutani existence result.
+
 ## Executable operations
 
 ```text
@@ -175,7 +187,7 @@ solve inner equilibrium -> generate data -> retrain once
 The four operations are not interchangeable. In particular, trajectory convergence does not prove
 economic equilibrium, and inner equilibrium does not prove learning consistency.
 
-## Version 0.1 numerical scope
+## Release 0.2.0 numerical scope
 
 The theory permits set-valued correspondences. For finite declared candidate sets,
 `EquilibriumCorrespondence` enumerates every inner behavior-belief equilibrium and refuses to select
@@ -294,9 +306,11 @@ $$
 
 The implementation checks the exact linear intervention displacement, the one-versus-three-root
 threshold at $g=1$, the near-onset expansion, stability of all branches, self-confirming versus
-contrarian damping, and the a posteriori distance bound. SciPy sign bracketing and the package's
-fixed-point iteration find the roots independently. The tests reproduce the error ranges reported for
-Figure 3, including the near-onset approximation and the first-order saturating displacement.
+contrarian damping, and the a posteriori distance bound. A package-import-free oracle evaluates the
+paper equation directly, proves the root count from oddness and strict concavity on the positive
+axis, and finds the nonzero roots by sign bracketing. Package fixed-point iteration is the second
+numerical route. The tests reproduce the error ranges reported for Figure 3, including the near-onset
+approximation and first-order saturating displacement.
 
 ## Cong Laboratory III: self-fulfilling forecasting
 
@@ -319,8 +333,9 @@ $$
 
 Antithetic common random numbers preserve $F(0)=0$ and the analytical derivative $F'(0)=c$ in the
 numerical population map. The named strong-feedback preset has three fixed points, with stable outer
-branches and an unstable origin. An independent Brent bracketing oracle verifies the roots found by
-iteration. A separate realized finite-sample update retains sampling noise and can leave the unstable
+branches and an unstable origin. A package-import-free oracle builds a discretized stationary Markov
+kernel, solves its stationary law, evaluates the zero-intercept OLS map, and brackets the population
+roots. A separate realized finite-sample update retains sampling noise and can leave the unstable
 origin.
 
 The named `paper_config` locks Figure 4's reported $c=1.8$ and $\sigma=0.5$. Its population
@@ -364,10 +379,13 @@ $$
 $$
 
 The tests cover example books and generated feasible books, including budget and inventory
-rejections, clearing equality, deterministic matching, and both conservation identities.
-Prespecified firm-demand, trend-intensity, and fixed-belief interventions are paired with the
-adaptive baseline by common random numbers. The experiment layer reports intervention-minus-baseline
-mean differences and normal-approximation Monte Carlo intervals across independent seeds.
+rejections, clearing equality, deterministic matching, and both conservation identities. The
+compiled runtime preserves characterized pre-compiler outputs for declared seeds and adds strict
+action contracts, state codecs, canonical event chains, and deterministic replay. Prespecified
+firm-demand, trend-intensity, and fixed-belief interventions are paired with the adaptive baseline by
+common random numbers. This compatibility experiment reports mean differences and
+normal-approximation Monte Carlo intervals without a p-value claim. New locked protocols use
+Student-t, paired bootstrap, Wilson, and Holm methods.
 
 ## AI-mediated credit laboratory
 
@@ -404,6 +422,11 @@ initialization details, seeds, and sampling-noise estimator. The provenance regi
 report retain these omissions and show package-versus-paper differences. A small deterministic
 discontinuity cycle can produce a recent-iterate residual floor in this implementation; that value is
 not relabeled as the paper's sampling noise floor.
+
+The shipped, prospectively locked local v1 protocol fixes seeds, sample sizes, outcomes, stopping,
+multiplicity, and solver tolerance before execution. Quick mode completes all four replications but
+breaches the solver tolerance for every seed. The report sets `analysis_valid=false`, retains
+summaries as `diagnostic_only`, and authorizes no claim.
 
 ## Cong Appendix D: competitive production template
 
@@ -480,27 +503,28 @@ x_1=\log(r+\delta),
 x_2=\log w,
 $$
 
-and solves both market residuals with the shared inner-equilibrium solver. Tests compare the result
-with an independently written SciPy root system and check household budgets, borrowing feasibility,
-household and firm first-order conditions, and both clearing equations. This is a paper-inspired
-instantiation of the Appendix D template, not an exact numerical replication and not a proof of the
-general existence proposition.
+and solves both market residuals with the shared inner-equilibrium solver. A package-import-free
+oracle solves household and firm objectives directly, then clears both markets with a separate
+least-squares route. Tests also check household budgets, borrowing feasibility, first-order
+conditions, and both clearing equations. This is a paper-inspired instantiation of the Appendix D
+template, not an exact numerical replication and not a proof of the general existence proposition.
 
 ## Evidence map
 
 | Claim or invariant | Implementation | Independent evidence |
 |---|---|---|
-| Fixed-point multiplicity and stability | `ewm.equilibrium` | `tests/unit/test_fixed_point.py`, `tests/unit/test_diagnostics.py` |
-| Forecasting roots and derivative | `ewm.scenarios.forecasting` | Analytical derivative plus Brent bracketing in `tests/scenarios/test_forecasting.py` |
+| Scalar fixed-point multiplicity and stability | `ewm.equilibrium`, `ewm.scenarios.scalar` | Analytical root count plus package-import-free direct equation and bracketing in `tests/integration/test_independent_numerical_oracles.py` |
+| Forecasting population roots and derivative | `ewm.scenarios.forecasting` | Package-import-free stationary-kernel OLS oracle plus package iteration in `tests/integration/test_independent_numerical_oracles.py` |
 | FX feasibility and conservation | `ewm.scenarios.fx` | Example and Hypothesis property tests in `tests/scenarios` and `tests/properties` |
 | FX comparative statics | `ewm.experiments.fx` | Replicated common-random-number effects and interval tests in `tests/integration/test_comparisons.py` |
 | Credit provenance, adoption, observation, and claim boundaries | `ewm.scenarios.credit`, `ewm.experiments.credit` | Source-target and economic-invariant tests in `tests/scenarios/test_credit_paper_targets.py` and `tests/scenarios/test_credit.py` |
-| Appendix D production instantiation | `ewm.scenarios.production`, `ewm.experiments.production` | Independent root solve, property tests, and public example in `tests/scenarios/test_production.py` and `tests/integration/test_production_example.py` |
+| Appendix D production instantiation | `ewm.scenarios.production`, `ewm.experiments.production` | Package-import-free objective optimization and market clearing in `tests/integration/test_independent_numerical_oracles.py` |
 | Han seven-call runtime protocol | `ewm.core.world`, `ewm.core.specs`, `ewm.core.events` | End-to-end event-order and version checks in `tests/integration/test_han_runtime_protocol.py` and `tests/conformance/test_han_conformance.py` |
 | Five-layer evaluation | `ewm.experiments.evaluation` | Provenance, missingness, and read-only tests in `tests/integration/test_layered_evaluation.py` |
-| L3 to L6 substrate boundaries | `ewm.capabilities`, `ewm.experiments.claims` | Adversarial evidence-gate and unsupported-claim tests in `tests/unit/test_capability_levels.py` and `tests/conformance/test_claim_boundaries.py` |
+| L3 to L6 substrate boundaries | `ewm.capabilities`, `ewm.experiments.claims` | Sixteen blocked readiness artifacts plus adversarial evidence gates in `tests/conformance/test_han_l3_l6_readiness.py` and `tests/unit/test_capability_levels.py` |
 | Constraint-preserving transitions | `ewm.core.reconciliation`, `ewm.core.world` | Induction and atomic-failure checks in `tests/unit/test_reconciliation.py` |
 | Paper source locks and observed local verification | `references/papers.toml`, `ewm.experiments.source_verification`, `scripts/verify_sources.py`, `scripts/run_conformance.py` | Registry, mismatch, absence, and conformance-report checks in `tests/unit/test_source_verification.py`, `tests/integration/test_paper_traceability.py`, and `tests/integration/test_conformance_source_verification.py` |
 | Audited replication targets | `references/replication-targets.toml` | Classification, symbol, evidence-path, and exact-claim coverage checks in `tests/integration/test_replication_targets.py` |
 | One-way dependencies | Package layer boundaries | AST enforcement in `tests/test_architecture.py` |
 | Reproducible public runs | `ewm.api`, `ewm.experiments`, `ewm.cli` | Integration tests for identical artifacts and public flows |
+| Sealed artifact verification and FX replay | `ewm.experiments.verification`, `ewm.experiments.replay`, `ewm.core.replay` | Tamper, collision, installed-wheel, and deterministic replay tests in `tests/integration/test_artifact_integrity.py`, `tests/integration/test_run_cli.py`, and `tests/integration/test_run_replay.py` |
