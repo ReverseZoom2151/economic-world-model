@@ -43,6 +43,20 @@ class Mechanism(Protocol):
     ) -> tuple[Any, Mapping[str, Any]]: ...
 
 
+class StateReconciler(Protocol):
+    """Project a candidate transition into its declared feasible-state set."""
+
+    def reconcile(
+        self,
+        state: Any,
+        actions: tuple[Action, ...],
+        intervention: Any,
+        candidate_state: Any,
+    ) -> Any: ...
+
+    def is_feasible(self, state: Any) -> bool: ...
+
+
 class InstitutionManifestRecord(Protocol):
     """Read-only institutional artifact identity exposed to the core runtime."""
 

@@ -37,8 +37,14 @@ from .protocols import (
     InstitutionManifestRecord,
     Mechanism,
     RealWorldAlignment,
+    StateReconciler,
 )
 from .randomness import make_rng, spawn_rngs
+from .reconciliation import (
+    FunctionalStateReconciler,
+    ReconciliationRule,
+    StateFeasibilityRule,
+)
 from .records import (
     Action,
     CoevolutionProposal,
@@ -118,6 +124,7 @@ __all__ = [
     "FunctionalAgent",
     "FunctionalConstraint",
     "FunctionalMechanism",
+    "FunctionalStateReconciler",
     "GeneratedDataset",
     "InstitutionChangeProposal",
     "InstitutionChangeReport",
@@ -132,9 +139,12 @@ __all__ = [
     "MetricMeasurement",
     "ProposalRule",
     "RealWorldAlignment",
+    "ReconciliationRule",
     "RunMetadata",
     "SchedulerSpecification",
     "SpaceDefinition",
+    "StateFeasibilityRule",
+    "StateReconciler",
     "StateSpecification",
     "Transition",
     "UpdateSpecification",

@@ -75,9 +75,9 @@ source = "cong-2026"
 section = "Assumption 3.2"
 pages = "26"
 summary = "Compactness, convexity, upper hemicontinuity, and continuity support DDGE existence."
-status = "planned"
+status = "blocked-external"
 claim = "source-definition"
-limitation = "General topological assumptions cannot be inferred from a numerical callable; finite certificates will expose explicit checks."
+limitation = "Compactness, convexity, continuity, and upper-hemicontinuity proofs are model-author obligations that cannot be inferred from arbitrary numerical callables. The package verifies finite declared candidates but requires external mathematical certificates for the general correspondence."
 
 [[item]]
 id = "cong-prop-3.3"
@@ -150,9 +150,10 @@ source = "cong-2026"
 section = "Proposition A.3"
 pages = "46, 48"
 summary = "Projection of candidate next states into the feasible correspondence preserves feasibility inductively."
-status = "planned"
+status = "implemented"
 claim = "conformance"
-limitation = "Action rejection exists, but a transition-level feasible-state reconciliation operator is not yet represented."
+implementation = ["src/ewm/core/protocols.py", "src/ewm/core/reconciliation.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_reconciliation.py"]
 
 [[item]]
 id = "cong-prop-a.4"

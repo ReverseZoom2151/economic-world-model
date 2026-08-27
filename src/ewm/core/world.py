@@ -21,6 +21,7 @@ from .protocols import (
     InstitutionChangeReport,
     Mechanism,
     RealWorldAlignment,
+    StateReconciler,
 )
 from .randomness import make_rng
 from .records import (
@@ -47,6 +48,8 @@ class World:
         coevolution: ControlledCoevolution | None = None,
         institutional_evolution: InstitutionalEvolution | None = None,
         alignment: RealWorldAlignment | None = None,
+        state_reconciler: StateReconciler | None = None,
+        intervention: Any = None,
     ) -> None:
         ordered_agents = tuple(sorted(agents, key=lambda agent: agent.agent_id))
         identifiers = [agent.agent_id for agent in ordered_agents]
@@ -60,6 +63,8 @@ class World:
         self._coevolution = coevolution
         self._institutional_evolution = institutional_evolution
         self._alignment = alignment
+        self._state_reconciler = state_reconciler
+        self._intervention = intervention
         if coevolution is not None:
             unknown_agents = set(coevolution.agent_ids).difference(identifiers)
             if unknown_agents:
@@ -132,6 +137,10 @@ class World:
         self._rng = make_rng(seed)
         self._events = EventLog()
         state = freeze_value(self._initial_state(self._rng))
+        if self._state_reconciler is not None and not self._state_reconciler.is_feasible(
+            state
+        ):
+            raise ValueError("initial world state is outside the feasible-state set")
         self._state = state
         self._state_version = 0
         self._events.append(
@@ -192,7 +201,20 @@ class World:
         working_state = thaw_value(state)
         accepted, violations = self._constraints.validate(working_state, submitted)
         scheduled = tuple(sorted(accepted, key=lambda action: (action.agent_id, action.kind)))
-        next_state, outcomes = self._mechanism.clear(working_state, scheduled, self._rng)
+        candidate_state, outcomes = self._mechanism.clear(
+            working_state, scheduled, self._rng
+        )
+        next_state = candidate_state
+        reconciled = self._state_reconciler is not None
+        if self._state_reconciler is not None:
+            next_state = self._state_reconciler.reconcile(
+                state,
+                scheduled,
+                self._intervention,
+                candidate_state,
+            )
+            if not self._state_reconciler.is_feasible(next_state):
+                raise RuntimeError("state reconciliation returned an infeasible next state")
         transition = Transition(
             state=next_state,
             outcomes=outcomes,
@@ -202,6 +224,7 @@ class World:
                 "submitted_count": len(submitted),
                 "accepted_count": len(scheduled),
                 "violation_count": len(violations),
+                "state_reconciled": reconciled,
             },
         )
         self._state = transition.state
@@ -212,6 +235,7 @@ class World:
                 "submitted_count": len(submitted),
                 "accepted_count": len(scheduled),
                 "violation_count": len(violations),
+                "state_reconciled": reconciled,
             },
             state_version=self._state_version,
         )
