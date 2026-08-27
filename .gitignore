@@ -1,0 +1,29 @@
+# Local source papers (not redistributed by this repository)
+/Economic World Models and Data-Driven Generative Equilibria.pdf
+/From Economic Agents to Agentic Economies - A Systems Blueprint for Economic World Models.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# Tests and tooling
+.coverage
+htmlcov/
+.pytest_cache/
+.hypothesis/
+.mypy_cache/
+.ruff_cache/
+
+# Generated research runs
+runs/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+
