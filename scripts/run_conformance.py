@@ -22,6 +22,11 @@ from ewm.capabilities import (
     ValidatedCapabilityEvidence,
     assess_validated_capability,
 )
+from ewm.capabilities.readiness import (
+    han_l3_l6_artifacts,
+    load_han_l3_l6_protocol,
+    run_han_l3_l6_readiness,
+)
 from ewm.core.evidence import EvidenceStatus, ValidatedEvidenceArtifact
 from ewm.experiments.source_verification import (
     SourceVerification,
@@ -146,6 +151,42 @@ def _han_validation_outcome(
     return payload, evidence
 
 
+def _han_readiness_outcome(test_outcome: dict[str, Any]) -> dict[str, Any]:
+    protocol = load_han_l3_l6_protocol()
+    if test_outcome["status"] != EvidenceStatus.PASS.value:
+        return {
+            "artifacts": [],
+            "classification": protocol.classification,
+            "official_awards": 0,
+            "protocol_filename": protocol.protocol_filename,
+            "protocol_schema": protocol.schema_version,
+            "protocol_sha256": protocol.protocol_sha256,
+            "protocol_version": protocol.protocol_version,
+            "report_schema": protocol.report_schema,
+            "results": [],
+            "source_sha256": protocol.source_sha256,
+            "status": EvidenceStatus.NOT_RUN.value,
+            "test_gate_status": test_outcome["status"],
+        }
+
+    readiness_report = run_han_l3_l6_readiness()
+    artifacts = han_l3_l6_artifacts(readiness_report)
+    payload = readiness_report.as_dict()
+    payload.update(
+        {
+            "artifacts": [_artifact_record(artifact) for artifact in artifacts],
+            "official_awards": sum(item.officially_awarded for item in readiness_report.results),
+            "status": (
+                EvidenceStatus.PASS.value
+                if all(item.status is EvidenceStatus.PASS for item in artifacts)
+                else EvidenceStatus.FAIL.value
+            ),
+            "test_gate_status": test_outcome["status"],
+        }
+    )
+    return payload
+
+
 def _ddge_assessments(test_outcome: dict[str, Any]) -> dict[str, dict[str, Any]]:
     suite_status = str(test_outcome["status"])
     scalar_status = {
@@ -229,6 +270,7 @@ def _build_report(
 
     test_outcome = _test_outcome(skip_tests=skip_tests)
     han_validation, capability_evidence = _han_validation_outcome(test_outcome)
+    han_readiness = _han_readiness_outcome(test_outcome)
     assessment = assess_validated_capability(capability_evidence)
     report = {
         "schema_version": SCHEMA_VERSION,
@@ -248,6 +290,7 @@ def _build_report(
         },
         "test_outcomes": test_outcome,
         "han_l1_l2_validation": han_validation,
+        "han_l3_l6_readiness": han_readiness,
         "ddge_assessments": _ddge_assessments(test_outcome),
         "stochastic_seed_sets": {
             "credit_smoke": [42],
@@ -333,11 +376,14 @@ def main(argv: list[str] | None = None) -> int:
     print(encoded, end="")
     failed_tests = report["test_outcomes"]["passed"] is False
     failed_han_validation = report["han_l1_l2_validation"]["status"] == "fail"
+    failed_han_readiness = report["han_l3_l6_readiness"]["status"] == "fail"
     failed_sources = verification_failed(
         source_results,
         require_sources=args.require_sources,
     )
-    return 1 if failed_tests or failed_han_validation or failed_sources else 0
+    return (
+        1 if failed_tests or failed_han_validation or failed_han_readiness or failed_sources else 0
+    )
 
 
 if __name__ == "__main__":

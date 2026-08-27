@@ -61,10 +61,12 @@ from .levels import (
     CapabilityLevel,
     EvidenceKind,
     LevelRequirement,
+    RequirementGate,
     ValidatedCapabilityEvidence,
     assess_capability,
     assess_validated_capability,
     documented_prototype_evidence,
+    requirement_gate,
 )
 
 __all__ = [
@@ -119,9 +121,11 @@ __all__ = [
     "ModelResponse",
     "PromotionPolicy",
     "PromotionReport",
+    "RequirementGate",
     "RollbackReport",
     "ValidatedCapabilityEvidence",
     "assess_capability",
     "assess_validated_capability",
     "documented_prototype_evidence",
+    "requirement_gate",
 ]

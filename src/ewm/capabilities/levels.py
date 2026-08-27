@@ -142,9 +142,15 @@ class CapabilityAssessment:
 
 
 @dataclass(frozen=True, slots=True)
-class _RequirementGate:
+class RequirementGate:
+    """Authoritative evidence class and observation floor for one requirement."""
+
     minimum_kind: EvidenceKind
     minimum_observations: int = 1
+
+    def __post_init__(self) -> None:
+        if self.minimum_observations < 1:
+            raise ValueError("requirement gate observations must be positive")
 
 
 _EVIDENCE_RANK = {
@@ -193,79 +199,65 @@ LEVEL_REQUIREMENTS: Mapping[CapabilityLevel, tuple[LevelRequirement, ...]] = Map
     }
 )
 
-_GATES: Mapping[LevelRequirement, _RequirementGate] = MappingProxyType(
+_GATES: Mapping[LevelRequirement, RequirementGate] = MappingProxyType(
     {
-        LevelRequirement.AGENT_WORLD_EXECUTION: _RequirementGate(
-            EvidenceKind.SYNTHETIC_TEST
-        ),
-        LevelRequirement.ENDOGENOUS_ENVIRONMENT: _RequirementGate(
-            EvidenceKind.SYNTHETIC_TEST
-        ),
-        LevelRequirement.ECONOMIC_INVARIANTS: _RequirementGate(
-            EvidenceKind.SYNTHETIC_TEST
-        ),
-        LevelRequirement.ADAPTIVE_AGENT_STATE: _RequirementGate(
+        LevelRequirement.AGENT_WORLD_EXECUTION: RequirementGate(EvidenceKind.SYNTHETIC_TEST),
+        LevelRequirement.ENDOGENOUS_ENVIRONMENT: RequirementGate(EvidenceKind.SYNTHETIC_TEST),
+        LevelRequirement.ECONOMIC_INVARIANTS: RequirementGate(EvidenceKind.SYNTHETIC_TEST),
+        LevelRequirement.ADAPTIVE_AGENT_STATE: RequirementGate(EvidenceKind.CONTROLLED_EXPERIMENT),
+        LevelRequirement.LONGITUDINAL_PERSISTENCE: RequirementGate(
             EvidenceKind.CONTROLLED_EXPERIMENT
         ),
-        LevelRequirement.LONGITUDINAL_PERSISTENCE: _RequirementGate(
+        LevelRequirement.LANGUAGE_MODEL_EXECUTION: RequirementGate(
             EvidenceKind.CONTROLLED_EXPERIMENT
         ),
-        LevelRequirement.LANGUAGE_MODEL_EXECUTION: _RequirementGate(
-            EvidenceKind.CONTROLLED_EXPERIMENT
-        ),
-        LevelRequirement.EXPLICIT_COGNITIVE_STATE: _RequirementGate(
-            EvidenceKind.SYNTHETIC_TEST
-        ),
-        LevelRequirement.MEMORY_AND_TOOLS: _RequirementGate(
-            EvidenceKind.SYNTHETIC_TEST
-        ),
-        LevelRequirement.COGNITIVE_BEHAVIOR_EVALUATION: _RequirementGate(
+        LevelRequirement.EXPLICIT_COGNITIVE_STATE: RequirementGate(EvidenceKind.SYNTHETIC_TEST),
+        LevelRequirement.MEMORY_AND_TOOLS: RequirementGate(EvidenceKind.SYNTHETIC_TEST),
+        LevelRequirement.COGNITIVE_BEHAVIOR_EVALUATION: RequirementGate(
             EvidenceKind.CONTROLLED_EXPERIMENT,
             minimum_observations=2,
         ),
-        LevelRequirement.CAPABILITY_PROPOSAL: _RequirementGate(
-            EvidenceKind.CONTROLLED_EXPERIMENT
-        ),
-        LevelRequirement.GATED_CAPABILITY_PROMOTION: _RequirementGate(
-            EvidenceKind.SYNTHETIC_TEST
-        ),
-        LevelRequirement.PERSISTENT_CAPABILITY_IMPROVEMENT: _RequirementGate(
+        LevelRequirement.CAPABILITY_PROPOSAL: RequirementGate(EvidenceKind.CONTROLLED_EXPERIMENT),
+        LevelRequirement.GATED_CAPABILITY_PROMOTION: RequirementGate(EvidenceKind.SYNTHETIC_TEST),
+        LevelRequirement.PERSISTENT_CAPABILITY_IMPROVEMENT: RequirementGate(
             EvidenceKind.CONTROLLED_EXPERIMENT,
             minimum_observations=2,
         ),
-        LevelRequirement.CAPABILITY_ROLLBACK: _RequirementGate(
-            EvidenceKind.SYNTHETIC_TEST
-        ),
-        LevelRequirement.ENDOGENOUS_INSTITUTION_PROPOSAL: _RequirementGate(
+        LevelRequirement.CAPABILITY_ROLLBACK: RequirementGate(EvidenceKind.SYNTHETIC_TEST),
+        LevelRequirement.ENDOGENOUS_INSTITUTION_PROPOSAL: RequirementGate(
             EvidenceKind.CONTROLLED_EXPERIMENT
         ),
-        LevelRequirement.CONSTITUTIONAL_INSTITUTION_GATE: _RequirementGate(
+        LevelRequirement.CONSTITUTIONAL_INSTITUTION_GATE: RequirementGate(
             EvidenceKind.SYNTHETIC_TEST
         ),
-        LevelRequirement.ACCEPTED_INSTITUTION_CHANGE: _RequirementGate(
+        LevelRequirement.ACCEPTED_INSTITUTION_CHANGE: RequirementGate(
             EvidenceKind.CONTROLLED_EXPERIMENT
         ),
-        LevelRequirement.INSTITUTIONAL_OUTCOME_EVALUATION: _RequirementGate(
+        LevelRequirement.INSTITUTIONAL_OUTCOME_EVALUATION: RequirementGate(
             EvidenceKind.CONTROLLED_EXPERIMENT,
             minimum_observations=2,
         ),
-        LevelRequirement.EXTERNAL_DATA_CONTRACT: _RequirementGate(
-            EvidenceKind.EXTERNAL_VALIDATION
-        ),
-        LevelRequirement.REPEATED_OUT_OF_SAMPLE_ALIGNMENT: _RequirementGate(
+        LevelRequirement.EXTERNAL_DATA_CONTRACT: RequirementGate(EvidenceKind.EXTERNAL_VALIDATION),
+        LevelRequirement.REPEATED_OUT_OF_SAMPLE_ALIGNMENT: RequirementGate(
             EvidenceKind.EXTERNAL_VALIDATION,
             minimum_observations=2,
         ),
-        LevelRequirement.DRIFT_MONITORING: _RequirementGate(
+        LevelRequirement.DRIFT_MONITORING: RequirementGate(
             EvidenceKind.EXTERNAL_VALIDATION,
             minimum_observations=2,
         ),
-        LevelRequirement.CORRECTION_PERFORMANCE: _RequirementGate(
+        LevelRequirement.CORRECTION_PERFORMANCE: RequirementGate(
             EvidenceKind.EXTERNAL_VALIDATION,
             minimum_observations=2,
         ),
     }
 )
+
+
+def requirement_gate(requirement: LevelRequirement) -> RequirementGate:
+    """Return the immutable official evidence gate for ``requirement``."""
+
+    return _GATES[requirement]
 
 
 def assess_capability(
@@ -291,9 +283,7 @@ def assess_capability(
         qualifying: list[CapabilityEvidence] = []
         for item in by_requirement[requirement]:
             if not item.passed:
-                warnings.append(
-                    f"{requirement.value}: failed evidence at {item.provenance}"
-                )
+                warnings.append(f"{requirement.value}: failed evidence at {item.provenance}")
                 continue
             if _EVIDENCE_RANK[item.kind] < _EVIDENCE_RANK[gate.minimum_kind]:
                 warnings.append(
@@ -311,9 +301,7 @@ def assess_capability(
             qualifying.append(item)
         if qualifying:
             satisfied.append(requirement)
-            provenance[requirement] = tuple(
-                sorted({item.provenance for item in qualifying})
-            )
+            provenance[requirement] = tuple(sorted({item.provenance for item in qualifying}))
         else:
             missing.append(requirement)
 
@@ -373,9 +361,7 @@ def assess_validated_capability(
         validated.append(
             CapabilityEvidence(
                 requirement=assertion.requirement,
-                passed=(
-                    assertion.passed and item.artifact.status is EvidenceStatus.PASS
-                ),
+                passed=(assertion.passed and item.artifact.status is EvidenceStatus.PASS),
                 kind=assertion.kind,
                 provenance=assertion.provenance,
                 observations=min(assertion.observations, item.artifact.observations),
@@ -485,9 +471,7 @@ def _assess_axis(
     warnings: list[str] = []
     for item in evidence:
         if _EVIDENCE_RANK[item.kind] < _EVIDENCE_RANK[minimum_kind]:
-            warnings.append(
-                f"{label}: ignored {item.kind.value} evidence at {item.provenance}"
-            )
+            warnings.append(f"{label}: ignored {item.kind.value} evidence at {item.provenance}")
         else:
             qualified.append(item)
     if not qualified:

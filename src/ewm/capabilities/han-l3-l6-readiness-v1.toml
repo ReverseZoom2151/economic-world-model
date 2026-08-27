@@ -1,0 +1,206 @@
+schema_version = "ewm.han-l3-l6-readiness.protocol.v1"
+protocol_version = 1
+protocol_filename = "han-l3-l6-readiness-v1.toml"
+report_schema = "ewm.han-l3-l6-readiness.report.v1"
+classification = "evidence_readiness_only"
+seed = 73
+source_files = [
+  "alignment.py",
+  "cognition.py",
+  "evolution.py",
+  "institutions.py",
+  "levels.py",
+  "readiness.py",
+]
+
+[[requirement]]
+requirement = "language_model_execution"
+level = "L3"
+probe = "cognition"
+classification = "fixture_only"
+blocker = "only an in-process deterministic fixture backend is exercised; controlled language-model execution is absent"
+
+[[requirement.criterion]]
+metric = "cognition_fixture_backend_call_count"
+operator = "eq"
+value = 2
+
+[[requirement]]
+requirement = "explicit_cognitive_state"
+level = "L3"
+probe = "cognition"
+classification = "synthetic_substrate"
+blocker = "local state plumbing is observed only as readiness evidence and is not a capability validation artifact"
+
+[[requirement.criterion]]
+metric = "cognition_belief_state_observation_count"
+operator = "eq"
+value = 2
+
+[[requirement]]
+requirement = "memory_and_tools"
+level = "L3"
+probe = "cognition"
+classification = "synthetic_substrate"
+blocker = "local memory and tool plumbing is observed only as readiness evidence and is not a capability validation artifact"
+
+[[requirement.criterion]]
+metric = "cognition_memory_and_tool_observation_count"
+operator = "eq"
+value = 2
+
+[[requirement]]
+requirement = "cognitive_behavior_evaluation"
+level = "L3"
+probe = "cognition"
+classification = "fixture_only"
+blocker = "the deterministic fixture has no controlled comparison or behavioral outcome evaluation"
+
+[[requirement.criterion]]
+metric = "cognition_fixture_behavior_observation_count"
+operator = "eq"
+value = 2
+
+[[requirement]]
+requirement = "capability_proposal"
+level = "L4"
+probe = "evolution"
+classification = "fixture_only"
+blocker = "capability proposals are authored fixtures rather than controlled endogenous proposals"
+
+[[requirement.criterion]]
+metric = "evolution_fixture_proposal_count"
+operator = "eq"
+value = 2
+
+[[requirement]]
+requirement = "gated_capability_promotion"
+level = "L4"
+probe = "evolution"
+classification = "synthetic_substrate"
+blocker = "promotion gate mechanics are observed only as local readiness evidence"
+
+[[requirement.criterion]]
+metric = "evolution_promoted_version_count"
+operator = "eq"
+value = 2
+
+[[requirement]]
+requirement = "persistent_capability_improvement"
+level = "L4"
+probe = "evolution"
+classification = "fixture_only"
+blocker = "serialization persistence is observed but no controlled repeated performance improvement is measured"
+
+[[requirement.criterion]]
+metric = "evolution_persisted_version_count"
+operator = "eq"
+value = 2
+
+[[requirement]]
+requirement = "capability_rollback"
+level = "L4"
+probe = "evolution"
+classification = "synthetic_substrate"
+blocker = "rollback mechanics are observed only as local readiness evidence"
+
+[[requirement.criterion]]
+metric = "evolution_rollback_count"
+operator = "eq"
+value = 1
+
+[[requirement]]
+requirement = "endogenous_institution_proposal"
+level = "L5"
+probe = "institution"
+classification = "fixture_only"
+blocker = "institution proposals are authored fixtures rather than endogenous agent outputs"
+
+[[requirement.criterion]]
+metric = "institution_fixture_proposal_count"
+operator = "eq"
+value = 2
+
+[[requirement]]
+requirement = "constitutional_institution_gate"
+level = "L5"
+probe = "institution"
+classification = "synthetic_substrate"
+blocker = "constitutional gate mechanics are observed only as local readiness evidence"
+
+[[requirement.criterion]]
+metric = "institution_constitutional_check_count"
+operator = "eq"
+value = 10
+
+[[requirement]]
+requirement = "accepted_institution_change"
+level = "L5"
+probe = "institution"
+classification = "fixture_only"
+blocker = "accepted changes originate from authored fixtures and lack a controlled endogenous proposal process"
+
+[[requirement.criterion]]
+metric = "institution_accepted_fixture_change_count"
+operator = "eq"
+value = 2
+
+[[requirement]]
+requirement = "institutional_outcome_evaluation"
+level = "L5"
+probe = "institution"
+classification = "not_observed"
+blocker = "no controlled post-change institutional outcome observations are available"
+
+[[requirement.criterion]]
+metric = "institution_outcome_observation_count"
+operator = "eq"
+value = 0
+
+[[requirement]]
+requirement = "external_data_contract"
+level = "L6"
+probe = "alignment"
+classification = "fixture_only"
+blocker = "only an offline in-process fixture record is used; no live external data contract is validated"
+
+[[requirement.criterion]]
+metric = "alignment_external_fixture_count"
+operator = "eq"
+value = 1
+
+[[requirement]]
+requirement = "repeated_out_of_sample_alignment"
+level = "L6"
+probe = "alignment"
+classification = "fixture_only"
+blocker = "one offline fixture is not repeated out-of-sample external validation"
+
+[[requirement.criterion]]
+metric = "alignment_fixture_observation_count"
+operator = "eq"
+value = 1
+
+[[requirement]]
+requirement = "drift_monitoring"
+level = "L6"
+probe = "alignment"
+classification = "fixture_only"
+blocker = "one offline discrepancy is not longitudinal external drift monitoring"
+
+[[requirement.criterion]]
+metric = "alignment_fixture_discrepancy_count"
+operator = "eq"
+value = 1
+
+[[requirement]]
+requirement = "correction_performance"
+level = "L6"
+probe = "alignment"
+classification = "fixture_only"
+blocker = "one offline bounded correction has no repeated external performance evaluation"
+
+[[requirement.criterion]]
+metric = "alignment_fixture_correction_count"
+operator = "eq"
+value = 1
