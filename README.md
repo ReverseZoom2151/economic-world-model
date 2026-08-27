@@ -43,49 +43,53 @@ The substantive mathematical loop is
 
 $$
 \theta
-\xrightarrow{\ E_i\ }
+\xrightarrow{E_i}
 (\pi,\mu)
-\xrightarrow{\ D_i(\,\cdot\,,\theta)\ }
+\xrightarrow{D_i(\cdot,\theta)}
 \mathcal{D}_i
-\xrightarrow{\ L_i\ }
+\xrightarrow{L_i}
 \theta',
 $$
 
 where $\theta$ is the currently deployed model, $(\pi,\mu)$ is an economic equilibrium, $\mathcal{D}_i$
 is the data generated under that equilibrium, and $\theta'$ is the retrained model.
 
-Holding the learned parameter $\theta$ fixed gives the inner economic equilibrium correspondence
+Holding $\theta$ fixed defines an inner economic problem. Its solution set is $E_i(\theta)$. The
+implementation selects an equilibrium pair
 
 $$
-E_i(\theta)
-=
-\left\{
-(\pi,\mu)\;\middle|\;
-(\pi,\mu)\text{ satisfies behavior, beliefs, feasibility, and market conditions under }\theta
-\right\}.
+e_i(\theta)=(\pi_i(\theta),\mu_i(\theta))\in E_i(\theta),
 $$
 
-The economy generates data and the learner maps those data into the next deployed parameter:
+where $\pi_i(\theta)$ is the agents' policy profile and $\mu_i(\theta)$ is the associated equilibrium
+distribution. Membership in $E_i(\theta)$ means that behavior, beliefs, feasibility, and market
+conditions all hold under the deployed model.
+
+That equilibrium produces a dataset, and the learner produces the next deployed model:
 
 $$
+\begin{aligned}
+\mathcal{D}_i(\theta)
+  &=D_i(e_i(\theta),\theta),\\
 F_i(\theta)
-=
-L_i\!\left(D_i\!\left(E_i(\theta),\theta\right)\right).
+  &=L_i(\mathcal{D}_i(\theta))
+   =\theta'.
+\end{aligned}
 $$
 
 A Data-Driven Generative Equilibrium is a self-consistent learned state. In the general,
 set-valued formulation,
 
 $$
-\theta^{\star}\in F_i\!\left(\theta^{\star}\right).
+\theta^{\star}\in F_i(\theta^{\star}).
 $$
 
 Version `0.1` implements a single-valued update and searches for
 
 $$
-\theta^{\star}=F_i\!\left(\theta^{\star}\right),
+\theta^{\star}=F_i(\theta^{\star}),
 \qquad
-r_i(\theta)=d_{\Theta}\!\left(\theta,F_i(\theta)\right).
+r_i(\theta)=d_{\Theta}(\theta,F_i(\theta)).
 $$
 
 The reported residual $r_i(\theta)$ measures model-environment inconsistency. It does not become a
