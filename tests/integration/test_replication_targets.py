@@ -107,7 +107,7 @@ def test_target_identifiers_and_facts_are_unique(
     assert len(facts) == len(set(facts))
 
 
-def test_targets_cover_only_every_exact_replication_claim(
+def test_targets_cover_every_exact_claim_and_the_disclosed_finite_sample_choice(
     targets: list[dict[str, Any]], conformance: dict[str, Any]
 ) -> None:
     items = {item["id"]: item for item in conformance["item"]}
@@ -122,9 +122,9 @@ def test_targets_cover_only_every_exact_replication_claim(
         "cong-eq-a.1",
         "cong-prop-a.5",
         "cong-lab-ii",
-        "cong-lab-iii",
+        "cong-lab-iii-population",
     }
-    assert linked_claims == exact_claims
+    assert linked_claims == exact_claims | {"cong-lab-iii-finite-sample"}
 
     credit_lab = items["cong-lab-i"]
     assert credit_lab["status"] == "blocked-external"
@@ -277,6 +277,6 @@ def test_forecasting_damping_is_never_classified_as_source_stated(
 
     assert damping["classification"] == "package-authored"
     assert damping["value"] == 0.5
-    assert damping["conformance_ids"] == ["cong-lab-iii"]
+    assert damping["conformance_ids"] == ["cong-lab-iii-finite-sample"]
     assert damping.get("source_note")
     assert "omit" in damping["source_note"].lower()

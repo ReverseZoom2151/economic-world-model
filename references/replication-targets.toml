@@ -55,7 +55,7 @@ evidence = ["tests/scenarios/test_scalar.py"]
 id = "cong-forecasting-figure-4-feedback"
 fact = "forecasting.figure-4.feedback"
 source_id = "cong-2026"
-conformance_ids = ["cong-lab-iii"]
+conformance_ids = ["cong-lab-iii-population"]
 classification = "source-stated"
 value = 1.8
 locator = { pages = "65-66, 72", section = "Appendix C.4, Laboratory III", figure = "Figure 4" }
@@ -67,7 +67,7 @@ evidence = ["tests/scenarios/test_forecasting_replication.py"]
 id = "cong-forecasting-figure-4-noise-std"
 fact = "forecasting.figure-4.noise-std"
 source_id = "cong-2026"
-conformance_ids = ["cong-lab-iii"]
+conformance_ids = ["cong-lab-iii-population"]
 classification = "source-stated"
 value = 0.5
 locator = { pages = "65-66, 72", section = "Appendix C.4, Laboratory III", figure = "Figure 4" }
@@ -79,7 +79,7 @@ evidence = ["tests/scenarios/test_forecasting_replication.py"]
 id = "cong-forecasting-figure-4-finite-sample-size"
 fact = "forecasting.figure-4.finite-sample-size"
 source_id = "cong-2026"
-conformance_ids = ["cong-lab-iii"]
+conformance_ids = ["cong-lab-iii-finite-sample"]
 classification = "source-stated"
 value = 4000
 locator = { pages = "65-66, 72", section = "Appendix C.4, Laboratory III", figure = "Figure 4(c)" }
@@ -91,7 +91,7 @@ evidence = ["tests/scenarios/test_forecasting_replication.py"]
 id = "cong-forecasting-figure-4-outer-slopes"
 fact = "forecasting.figure-4.outer-slopes"
 source_id = "cong-2026"
-conformance_ids = ["cong-lab-iii"]
+conformance_ids = ["cong-lab-iii-population"]
 classification = "source-stated"
 value = [-0.795, 0.0, 0.795]
 locator = { pages = "65-66, 72", section = "Appendix C.4, Laboratory III", figure = "Figure 4" }
@@ -103,7 +103,7 @@ evidence = ["tests/scenarios/test_forecasting_replication.py"]
 id = "cong-forecasting-figure-4-finite-sample-damping"
 fact = "forecasting.figure-4.finite-sample-damping"
 source_id = "cong-2026"
-conformance_ids = ["cong-lab-iii"]
+conformance_ids = ["cong-lab-iii-finite-sample"]
 classification = "package-authored"
 value = 0.5
 locator = { pages = "65-66, 72", section = "Appendix C.4, Laboratory III", figure = "Figure 4(c)" }
