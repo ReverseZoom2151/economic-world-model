@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-Build executable economies where deployed models reshape decisions, markets, generated data, and the models trained next.
+Build and solve economic worlds where agents, markets, data, and learned models co-evolve.
 </p>
 
 <p align="center">
