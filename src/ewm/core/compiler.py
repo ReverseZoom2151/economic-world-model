@@ -23,7 +23,7 @@ from .protocols import (
 from .records import freeze_value
 from .serialization import CanonicalStateCodec, StateCodec
 from .specs import AgentSpecification, WorldSpecification
-from .world import World
+from .world import ProvenanceMode, World
 
 MechanismKey = tuple[str, str, str]
 InitialStateFactory = Callable[[np.random.Generator], Any]
@@ -181,6 +181,7 @@ def compile_world(
     *,
     bindings: WorldBindings,
     adapters: RuntimeAdapterRegistry,
+    provenance_mode: ProvenanceMode = "full",
 ) -> World:
     """Compile a validated declaration and explicit bindings into an executable world."""
 
@@ -236,4 +237,5 @@ def compile_world(
         intervention=bindings.intervention,
         runtime_contract=runtime_contract,
         state_codec=bindings.state_codec,
+        provenance_mode=provenance_mode,
     )

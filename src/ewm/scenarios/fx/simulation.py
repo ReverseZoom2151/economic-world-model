@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ewm.core import Event
+from ewm.core import Event, ProvenanceMode
 
 from .model import FXSimulationResult, FXState
 from .presets import FXSimulationConfig
@@ -19,10 +19,15 @@ class FXWorldRun:
     events: tuple[Event, ...]
 
 
-def run_fx_world(config: FXSimulationConfig, *, seed: int) -> FXWorldRun:
-    """Run the FX scenario through its strict compiled-world lifecycle."""
+def _run_fx_world(
+    config: FXSimulationConfig,
+    *,
+    seed: int,
+    provenance_mode: ProvenanceMode,
+) -> FXWorldRun:
+    """Run the FX scenario through one compiled-world provenance mode."""
 
-    world = fx_world_blueprint(config).compile()
+    world = fx_world_blueprint(config).compile(provenance_mode=provenance_mode)
     state = world.reset(seed=seed)
     volumes: list[float] = []
     rejected: list[int] = []
@@ -51,7 +56,13 @@ def run_fx_world(config: FXSimulationConfig, *, seed: int) -> FXWorldRun:
     )
 
 
-def run_fx_simulation(config: FXSimulationConfig, *, seed: int) -> FXSimulationResult:
-    """Return the established compact result from the compiled FX world."""
+def run_fx_world(config: FXSimulationConfig, *, seed: int) -> FXWorldRun:
+    """Run FX with the full replay-complete compiled-world event chain."""
 
-    return run_fx_world(config, seed=seed).result
+    return _run_fx_world(config, seed=seed, provenance_mode="full")
+
+
+def run_fx_simulation(config: FXSimulationConfig, *, seed: int) -> FXSimulationResult:
+    """Return compact results from the compiled FX world without replay payloads."""
+
+    return _run_fx_world(config, seed=seed, provenance_mode="summary").result

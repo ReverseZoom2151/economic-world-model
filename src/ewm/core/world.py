@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, Mapping
 from copy import deepcopy
 from datetime import datetime
-from typing import Any, overload
+from typing import Any, Literal, overload
 
 import numpy as np
 
@@ -41,6 +41,8 @@ from .serialization import (
     violation_to_data,
 )
 
+ProvenanceMode = Literal["full", "summary"]
+
 
 class World:
     """Execute typed agent actions through constraints and an economic mechanism."""
@@ -60,6 +62,7 @@ class World:
         intervention: Any = None,
         runtime_contract: RuntimeContract | None = None,
         state_codec: StateCodec | None = None,
+        provenance_mode: ProvenanceMode = "full",
     ) -> None:
         ordered_agents = tuple(sorted(agents, key=lambda agent: agent.agent_id))
         identifiers = [agent.agent_id for agent in ordered_agents]
@@ -79,6 +82,11 @@ class World:
         self._state_codec = state_codec
         if runtime_contract is not None and state_codec is None:
             raise ValueError("compiled runtime contract requires a state codec")
+        if provenance_mode not in ("full", "summary"):
+            raise ValueError("provenance_mode must be 'full' or 'summary'")
+        if runtime_contract is None and provenance_mode != "full":
+            raise ValueError("summary provenance requires a compiled runtime contract")
+        self._provenance_mode = provenance_mode
         if runtime_contract is not None and set(runtime_contract.agent_roles) != set(
             identifiers
         ):
@@ -114,6 +122,12 @@ class World:
         """Return the codec attached to a replayable compiled world."""
 
         return self._state_codec
+
+    @property
+    def provenance_mode(self) -> ProvenanceMode:
+        """Return whether events carry replay-complete or summary provenance."""
+
+        return self._provenance_mode
 
     @property
     def current_state(self) -> Any:
@@ -180,7 +194,7 @@ class World:
         ):
             raise ValueError("initial world state is outside the feasible-state set")
         payload: dict[str, Any] = {"seed": seed, "agent_ids": self.agent_ids}
-        if self._state_codec is not None:
+        if self._state_codec is not None and self._provenance_mode == "full":
             payload.update(
                 {
                     "state": self._state_codec.encode(state),
@@ -238,7 +252,7 @@ class World:
                 "parallel_requested": parallel,
                 "parallel_executed": False,
             }
-            if self._runtime_contract is not None:
+            if self._runtime_contract is not None and self._provenance_mode == "full":
                 payload["actions"] = tuple(action_to_data(action) for action in actions)
             self._events.append(
                 "run_agents",
@@ -333,7 +347,7 @@ class World:
                 "violation_count": len(violations),
                 "state_reconciled": reconciled,
             }
-            if self._runtime_contract is not None:
+            if self._runtime_contract is not None and self._provenance_mode == "full":
                 if self._state_codec is None:
                     raise RuntimeError("compiled world is missing its state codec")
                 event_payload.update(

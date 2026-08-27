@@ -88,6 +88,8 @@ def _contract_digest(world: World) -> str:
 
 
 def _replay_components(world: World) -> tuple[RuntimeContract, StateCodec]:
+    if world.provenance_mode != "full":
+        raise RuntimeError("replay operations require full provenance")
     contract = world.runtime_contract
     codec = world.state_codec
     if contract is None or codec is None:

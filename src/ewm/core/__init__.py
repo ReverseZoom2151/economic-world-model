@@ -145,7 +145,7 @@ from .specs import (
     WorldSpecification,
 )
 from .updates import convex_update
-from .world import World
+from .world import ProvenanceMode, World
 
 __all__ = [
     "CANONICAL_STATE_CODEC_ID",
@@ -226,6 +226,7 @@ __all__ = [
     "MetricMeasurement",
     "ObservationFactory",
     "ProposalRule",
+    "ProvenanceMode",
     "RNGProvenance",
     "RealWorldAlignment",
     "ReconciliationRule",
