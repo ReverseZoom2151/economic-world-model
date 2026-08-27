@@ -46,9 +46,9 @@ economic equilibrium, retraining, and full DDGE solution.
 
 ## Project status
 
-The repository is under active development toward `0.1.0`. The numerical kernel and first
-mathematical laboratory are implemented; the two agent-economy laboratories and stable top-level
-API are the next vertical slices.
+The repository is under active development toward `0.1.0`. The numerical kernel, forecasting
+laboratory, and heterogeneous FX economy are implemented; the credit laboratory and stable
+top-level API are the next vertical slices.
 
 | Capability | Status | What is available |
 |---|---|---|
@@ -56,7 +56,7 @@ API are the next vertical slices.
 | Economic-world runtime | Implemented | Deterministic agent order, owned RNGs, constraints before mechanisms, immutable transitions, events |
 | Equilibrium and DDGE numerics | Implemented | Root solving, damping, multistart multiplicity discovery, residual/Jacobian/stability diagnostics |
 | Self-fulfilling forecasting laboratory | Implemented | Population and finite-sample maps, multiplicity, basin/stability tests, independent oracle report |
-| Multi-agent FX laboratory | Planned for `0.1.0` | Heterogeneous agents, balance constraints, batch clearing, conservation diagnostics |
+| Multi-agent FX laboratory | Implemented | Symbolic households/firms/bank, aggregate balance reservation, uniform-price pro-rata clearing, adaptive beliefs, conservation properties |
 | AI-mediated credit laboratory | Planned for `0.1.0` | Endogenous adoption, selective labels, frozen and retrained counterfactuals |
 | Experiment artifacts and stable facade | Planned for `0.1.0` | Reproducible manifests, tables, traces, documented `ewm` entry points |
 
@@ -213,7 +213,7 @@ It is the mathematical acceptance test for the generic DDGE solver.
 
 Households trade speculatively under bounded-memory beliefs, firms meet external-currency needs,
 and banks supply liquidity subject to inventory and exposure limits. A uniform-price batch mechanism
-will validate orders, clear compatible demand and supply, and settle cash against foreign currency.
+validates orders, clears compatible demand and supply, and settles cash against foreign currency.
 
 The scientific focus is feasibility, accounting conservation, clearing residuals, endogenous belief
 adaptation, and prespecified comparative statics—not empirical exchange-rate forecasting.
@@ -265,6 +265,7 @@ economy remains reproducible and usable without an LLM or orchestration service.
 ```text
 src/ewm/core/          typed records, protocols, runtime, agents, constraints, mechanisms
 src/ewm/equilibrium/   equilibrium and DDGE solvers, damping, diagnostics
+src/ewm/scenarios/     forecasting and heterogeneous FX laboratories
 tests/unit/            deterministic unit and mathematical tests
 docs/plans/            approved design and implementation plan
 docs/architecture/     audited dependency map
