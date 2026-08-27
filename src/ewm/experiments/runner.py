@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import platform
 from dataclasses import dataclass
 from functools import cache
@@ -14,8 +13,8 @@ from time import perf_counter
 from ewm._version import __version__
 from ewm.core import ExperimentResult
 
-from .artifacts import ARTIFACT_SCHEMA, write_artifacts
-from .metrics import jsonable
+from .artifacts import write_artifacts
+from .identity import build_run_identity, identity_sha256
 from .registry import experiment_spec
 
 
@@ -30,10 +29,7 @@ class ExperimentRun:
 
 
 def _run_hash(value: object) -> str:
-    encoded = json.dumps(
-        jsonable(value), separators=(",", ":"), sort_keys=True, ensure_ascii=False
-    ).encode()
-    return hashlib.sha256(encoded).hexdigest()[:20]
+    return identity_sha256(value)[:20]
 
 
 @cache
@@ -77,17 +73,16 @@ def run_experiment(
     payload = spec.execute(preset, seed)
     source_fingerprint = _source_fingerprint()
     runtime_environment = _runtime_environment()
-    identity = {
-        "artifact_schema": ARTIFACT_SCHEMA,
-        "experiment": spec.name,
-        "package_version": __version__,
-        "parameters": payload.parameters,
-        "preset": preset,
-        "runtime_environment": runtime_environment,
-        "scenario": spec.scenario,
-        "seed": seed,
-        "source_fingerprint": source_fingerprint,
-    }
+    identity = build_run_identity(
+        experiment=spec.name,
+        package_version=__version__,
+        parameters=payload.parameters,
+        preset=preset,
+        runtime_environment=runtime_environment,
+        scenario=spec.scenario,
+        seed=seed,
+        source_fingerprint=source_fingerprint,
+    )
     run_hash = _run_hash(identity)
     run_dir = write_artifacts(
         output_root=Path(output_root),
@@ -103,6 +98,7 @@ def run_experiment(
         package_version=__version__,
         runtime_environment=runtime_environment,
         source_fingerprint=source_fingerprint,
+        identity=identity,
     )
     return ExperimentRun(
         result=payload.result,

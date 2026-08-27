@@ -33,12 +33,14 @@ from .registry import (
 )
 from .runner import ExperimentRun, run_experiment
 from .statistics import PairedEstimate, paired_estimate
+from .verification import ArtifactVerificationError, VerificationReport, verify_run
 
 __all__ = [
     "EXPERIMENTS",
     "LAYER_METRICS",
     "SCENARIO_DESCRIPTIONS",
     "SCENARIO_REGISTRY",
+    "ArtifactVerificationError",
     "ClaimAuthorization",
     "ClaimEvidence",
     "ClaimKind",
@@ -55,6 +57,7 @@ __all__ = [
     "ScenarioRegistry",
     "UnsupportedClaimError",
     "ValidatedClaimEvidence",
+    "VerificationReport",
     "authorize_claims",
     "authorize_validated_claims",
     "credit_oracle_report",
@@ -66,4 +69,5 @@ __all__ = [
     "run_credit_regimes",
     "run_experiment",
     "solve_production_equilibrium",
+    "verify_run",
 ]
