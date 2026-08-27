@@ -28,22 +28,65 @@ Most predictive pipelines treat their data-generating process as external. Econo
 cannot: a deployed forecast changes decisions; those decisions change prices, allocations, and
 observations; retraining on those observations changes the next deployed forecast.
 
-For an intervention or regime `i`, let the fixed-environment economic solution under learned
-parameters `theta` be `E_i(theta)`. Let `D_i` generate observations from that economy and let `L_i`
-retrain the learned component. The outer update is
+For intervention or regime $i$, an economic world is represented by
 
-```text
-F_i(theta) = L_i(D_i(E_i(theta), theta)).
-```
+$$
+\mathcal{W}_i =
+\left(
+\mathcal{S},\mathcal{A},\mathcal{Y},\Theta,
+\mathcal{I}_i,\mathcal{B}_i,\mathcal{U}_i,
+\Gamma_i,\mathcal{K}_i,T_i,O_i,D_i,L_i
+\right).
+$$
 
-A Data-Driven Generative Equilibrium is a self-consistent learned state:
+| Symbol | Meaning |
+|---|---|
+| $\mathcal{S},\mathcal{A},\mathcal{Y}$ | States, feasible actions, and economic outcomes |
+| $\Theta$ | Parameters of the deployed learned component |
+| $\mathcal{I}_i$ | Intervention or institutional regime |
+| $\mathcal{B}_i,\mathcal{U}_i$ | Agent behavior and objectives |
+| $\Gamma_i,\mathcal{K}_i$ | Market or institutional mechanisms and constraints |
+| $T_i,O_i$ | State transition and observation operators |
+| $D_i,L_i$ | Endogenous data generation and learning operators |
 
-```text
-theta* = F_i(theta*).
-```
+Holding the learned parameter $\theta$ fixed gives the inner economic equilibrium correspondence
 
-The package makes this closure executable while preserving the distinction among simulation,
-economic equilibrium, retraining, and full DDGE solution.
+$$
+E_i(\theta)
+=
+\left\{
+(\pi,\mu)\;\middle|\;
+(\pi,\mu)\text{ satisfies behavior, beliefs, feasibility, and market conditions under }\theta
+\right\}.
+$$
+
+The economy generates data and the learner maps those data into the next deployed parameter:
+
+$$
+F_i(\theta)
+=
+L_i\!\left(D_i\!\left(E_i(\theta),\theta\right)\right).
+$$
+
+A Data-Driven Generative Equilibrium is a self-consistent learned state. In the general,
+set-valued formulation,
+
+$$
+\theta^{\star}\in F_i\!\left(\theta^{\star}\right).
+$$
+
+Version `0.1` implements a single-valued update and searches for
+
+$$
+\theta^{\star}=F_i\!\left(\theta^{\star}\right),
+\qquad
+r_i(\theta)=d_{\Theta}\!\left(\theta,F_i(\theta)\right).
+$$
+
+The reported residual $r_i(\theta)$ measures model-environment inconsistency. It does not become a
+welfare bound unless the required contraction and sensitivity conditions are also established. The
+package makes this closure executable while keeping simulation, economic equilibrium, retraining,
+and full DDGE solution distinct.
 
 ## Project status
 
