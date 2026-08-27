@@ -2,13 +2,37 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, replace
-from typing import Any
+from typing import Any, overload
 
 import numpy as np
 from numpy.typing import NDArray
 
-from ewm.core import DDGEProblem
+from ewm.core import (
+    AgentSpecification,
+    AlignmentSpecification,
+    CoevolutionSpecification,
+    DDGEProblem,
+    EnvironmentSpecification,
+    EvaluationSpecification,
+    WorldSpecification,
+)
+from ewm.core.specs import (
+    agent,
+    agent_updates,
+    alignment,
+    coevolution,
+    constraints,
+    correction,
+    data_sources,
+    environment,
+    environment_updates,
+    evaluation,
+    mechanism,
+    scheduler,
+    state,
+)
 from ewm.experiments import EXPERIMENTS, SCENARIO_DESCRIPTIONS
 from ewm.experiments.runner import ExperimentRun, run_experiment
 from ewm.scenarios.credit import (
@@ -104,14 +128,67 @@ def _preset(name: str, preset: str, seed: int) -> ScenarioConfig:
     raise ValueError(f"unknown scenario {name!r}; choose from: {choices}")
 
 
+@overload
 def make(
     name: str,
     *,
     preset: str = "smoke",
     seed: int = 42,
+    agents: None = None,
+    environment: None = None,
+    coevolution: None = None,
+    alignment: None = None,
+    evaluation: None = None,
     **overrides: Any,
-) -> ScenarioHandle:
-    """Configure a named economic laboratory without running it."""
+) -> ScenarioHandle: ...
+
+
+@overload
+def make(
+    name: str,
+    *,
+    agents: Sequence[AgentSpecification],
+    environment: EnvironmentSpecification,
+    coevolution: CoevolutionSpecification | None = None,
+    alignment: AlignmentSpecification | None = None,
+    evaluation: EvaluationSpecification | None = None,
+    preset: str = "smoke",
+    seed: int = 42,
+    **overrides: Any,
+) -> WorldSpecification: ...
+
+
+def make(
+    name: str,
+    *,
+    preset: str = "smoke",
+    seed: int = 42,
+    agents: Sequence[AgentSpecification] | None = None,
+    environment: EnvironmentSpecification | None = None,
+    coevolution: CoevolutionSpecification | None = None,
+    alignment: AlignmentSpecification | None = None,
+    evaluation: EvaluationSpecification | None = None,
+    **overrides: Any,
+) -> ScenarioHandle | WorldSpecification:
+    """Configure a named laboratory or assemble Han's declarative world specification."""
+
+    declares_world = any(
+        item is not None
+        for item in (agents, environment, coevolution, alignment, evaluation)
+    )
+    if declares_world:
+        if agents is None or environment is None:
+            raise ValueError("declarative make requires agents and environment")
+        if overrides:
+            raise ValueError("scenario overrides do not apply to declarative specifications")
+        return WorldSpecification(
+            name=name,
+            agents=tuple(agents),
+            environment=environment,
+            coevolution=coevolution,
+            alignment=alignment,
+            evaluation=evaluation,
+        )
 
     config = _preset(name, preset, seed)
     if overrides:
@@ -173,10 +250,23 @@ __all__ = [
     "ExperimentRun",
     "RolloutResult",
     "ScenarioHandle",
+    "agent",
+    "agent_updates",
+    "alignment",
+    "coevolution",
+    "constraints",
+    "correction",
+    "data_sources",
     "describe",
+    "environment",
+    "environment_updates",
+    "evaluation",
     "list_experiments",
     "list_scenarios",
     "make",
+    "mechanism",
     "rollout",
     "run_experiment",
+    "scheduler",
+    "state",
 ]

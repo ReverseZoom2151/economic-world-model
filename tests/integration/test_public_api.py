@@ -40,6 +40,25 @@ def test_registry_descriptions_and_errors_are_helpful() -> None:
         ewm.make("fx").ddge_problem()
 
 
+def test_han_specification_factories_are_public() -> None:
+    for name in (
+        "agent",
+        "state",
+        "constraints",
+        "scheduler",
+        "mechanism",
+        "environment",
+        "agent_updates",
+        "environment_updates",
+        "coevolution",
+        "data_sources",
+        "correction",
+        "alignment",
+        "evaluation",
+    ):
+        assert callable(getattr(ewm, name))
+
+
 def test_cli_lists_and_describes_scenarios(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["list"]) == 0
     listing = capsys.readouterr().out

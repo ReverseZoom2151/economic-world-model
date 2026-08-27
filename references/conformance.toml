@@ -404,9 +404,10 @@ source = "han-et-al-2026"
 section = "Section 4.2.1 and Figure 9"
 pages = "13"
 summary = "The agent specification declares role, objective, states, channels, actions, tools, constraints, and memory."
-status = "planned"
+status = "implemented"
 claim = "conformance"
-limitation = "Functional policies exist, but the paper's declarative agent factory is not implemented."
+implementation = ["src/ewm/core/specs.py", "src/ewm/api.py"]
+evidence = ["tests/unit/test_specs.py", "tests/integration/test_public_api.py"]
 
 [[item]]
 id = "han-spec-environment"
@@ -414,9 +415,10 @@ source = "han-et-al-2026"
 section = "Section 4.2.2 and Figure 11"
 pages = "14-15"
 summary = "The environment specification declares state, accounts, constraints, scheduler, mechanism, and settlement."
-status = "planned"
+status = "implemented"
 claim = "conformance"
-limitation = "Low-level pieces exist, but the paper-shaped declarative factory is not implemented."
+implementation = ["src/ewm/core/specs.py", "src/ewm/api.py"]
+evidence = ["tests/unit/test_specs.py", "tests/integration/test_public_api.py"]
 
 [[item]]
 id = "han-spec-coevolution"
@@ -424,9 +426,10 @@ source = "han-et-al-2026"
 section = "Section 4.2.3 and Figure 13"
 pages = "15-16"
 summary = "Co-evolution declares agent/environment targets and the feedback signals that may update them."
-status = "planned"
+status = "implemented"
 claim = "conformance"
-limitation = "No allow-listed co-evolution specification exists."
+implementation = ["src/ewm/core/specs.py", "src/ewm/api.py"]
+evidence = ["tests/unit/test_specs.py"]
 
 [[item]]
 id = "han-spec-alignment"
@@ -434,9 +437,10 @@ source = "han-et-al-2026"
 section = "Section 4.2.4 and Figure 15"
 pages = "16-17"
 summary = "Alignment declares evidence streams, targets, metrics, tolerances, and bounded correction."
-status = "planned"
+status = "implemented"
 claim = "conformance"
-limitation = "No external-evidence alignment specification exists."
+implementation = ["src/ewm/core/specs.py", "src/ewm/api.py"]
+evidence = ["tests/unit/test_specs.py"]
 
 [[item]]
 id = "han-spec-evaluation"
@@ -444,9 +448,11 @@ source = "han-et-al-2026"
 section = "Section 4.2.5"
 pages = "17-19"
 summary = "Evaluation declares trajectory-level metrics and structured reports."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "Experiment metrics exist but are not organized into Han's five-layer report."
+implementation = ["src/ewm/core/specs.py", "src/ewm/api.py"]
+evidence = ["tests/unit/test_specs.py"]
+limitation = "The five-layer metric declaration is implemented; the read-only structured runtime report is deferred to the evaluation task."
 
 [[item]]
 id = "han-runtime-reset"
