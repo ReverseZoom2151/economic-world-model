@@ -12,7 +12,8 @@ from .definition import (
     SpaceDefinition,
     WorldComponent,
 )
-from .events import Event, EventLog
+from .evaluation import EvaluationReport, evaluate_event_log
+from .events import EVENT_SCHEMA_VERSION, Event, EventLog
 from .mechanisms import FunctionalMechanism
 from .protocols import (
     AgentPolicy,
@@ -56,6 +57,7 @@ from .updates import convex_update
 from .world import World
 
 __all__ = [
+    "EVENT_SCHEMA_VERSION",
     "Action",
     "AgentBlock",
     "AgentPolicy",
@@ -80,6 +82,7 @@ __all__ = [
     "EnvironmentSpecification",
     "EquilibriumProblem",
     "EquilibriumResult",
+    "EvaluationReport",
     "EvaluationSpecification",
     "Event",
     "EventLog",
@@ -103,6 +106,7 @@ __all__ = [
     "WorldComponent",
     "WorldSpecification",
     "convex_update",
+    "evaluate_event_log",
     "make_rng",
     "spawn_rngs",
 ]

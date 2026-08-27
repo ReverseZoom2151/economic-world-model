@@ -285,7 +285,7 @@ summary = "The EWM transition maps state and joint action to predicted next stat
 status = "implemented"
 claim = "conformance"
 implementation = ["src/ewm/core/world.py"]
-evidence = ["tests/unit/test_world.py"]
+evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py"]
 
 [[item]]
 id = "han-eq-2"
@@ -471,11 +471,11 @@ source = "han-et-al-2026"
 section = "Figures 8 and 10"
 pages = "12-14"
 summary = "world.run_agents maps role-specific observations to typed actions."
-status = "partial"
+status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/world.py"]
-evidence = ["tests/unit/test_world.py"]
-limitation = "The stable call exists but does not accept the paper's parallel option."
+implementation = ["src/ewm/core/world.py", "src/ewm/core/protocols.py"]
+evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py"]
+limitation = "parallel=True is accepted and logged, but version 0.1 executes serially for deterministic identity and RNG ownership."
 
 [[item]]
 id = "han-runtime-step"
@@ -483,11 +483,10 @@ source = "han-et-al-2026"
 section = "Figures 8 and 12"
 pages = "12, 15"
 summary = "world.step checks feasibility, schedules, clears, settles, updates state, and logs."
-status = "partial"
+status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/world.py"]
-evidence = ["tests/unit/test_world.py"]
-limitation = "The implementation currently requires the prior state as an explicit argument."
+implementation = ["src/ewm/core/world.py", "src/ewm/core/protocols.py"]
+evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py"]
 
 [[item]]
 id = "han-runtime-coevolve"
@@ -515,9 +514,11 @@ source = "han-et-al-2026"
 section = "Figures 8 and 17"
 pages = "12, 19"
 summary = "world.evaluate reads trajectory logs and returns component-level diagnostics without mutation."
-status = "planned"
+status = "partial"
 claim = "conformance"
-limitation = "No world-level read-only evaluator exists."
+implementation = ["src/ewm/core/evaluation.py", "src/ewm/core/world.py"]
+evidence = ["tests/integration/test_han_runtime_protocol.py"]
+limitation = "A read-only protocol report exists; Han's five-layer component report is deferred to the layered evaluation task."
 
 [[item]]
 id = "han-runtime-log"
@@ -528,8 +529,8 @@ summary = "world.log records events from every runtime call."
 status = "partial"
 claim = "conformance"
 implementation = ["src/ewm/core/events.py", "src/ewm/core/world.py"]
-evidence = ["tests/unit/test_world.py"]
-limitation = "Reset, action, and transition events exist; future runtime calls need versioned events too."
+evidence = ["tests/unit/test_world.py", "tests/integration/test_han_runtime_protocol.py"]
+limitation = "All currently implemented runtime calls emit schema and state versions; coevolve and align remain to be added."
 
 [[item]]
 id = "han-level-l1"

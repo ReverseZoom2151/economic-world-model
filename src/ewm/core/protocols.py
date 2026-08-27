@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Protocol
+from typing import Any, Protocol, overload
 
 import numpy as np
 from numpy.typing import NDArray
 
+from .evaluation import EvaluationReport
+from .events import Event
 from .records import Action, Transition
 
 
@@ -47,9 +49,21 @@ class EconomicWorld(Protocol):
 
     def observe(self, state: Any, agent_id: str) -> Any: ...
 
-    def run_agents(self, state: Any) -> tuple[Action, ...]: ...
+    def run_agents(
+        self, state: Any, *, parallel: bool = False
+    ) -> tuple[Action, ...]: ...
 
-    def step(self, state: Any, actions: tuple[Action, ...]) -> Transition: ...
+    @overload
+    def step(self, actions: tuple[Action, ...], /) -> Transition: ...
+
+    @overload
+    def step(self, state: Any, actions: tuple[Action, ...], /) -> Transition: ...
+
+    def evaluate(self) -> EvaluationReport: ...
+
+    def log(self) -> tuple[Event, ...]: ...
+
+    def close(self) -> None: ...
 
 
 class EquilibriumProblem(Protocol):
@@ -65,4 +79,3 @@ class DDGEProblem(Protocol):
     def dimension(self) -> int: ...
 
     def update(self, theta: NDArray[np.floating[Any]]) -> NDArray[np.floating[Any]]: ...
-
