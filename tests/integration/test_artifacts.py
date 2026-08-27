@@ -49,6 +49,9 @@ def test_identical_experiment_inputs_produce_identical_artifacts(
     config = json.loads((first.run_dir / "config.json").read_text())
     metrics = json.loads((first.run_dir / "metrics.json").read_text())
     assert manifest["run_hash"] == first.run_hash
+    assert manifest["artifact_schema"] == "ewm.run.v2"
+    assert manifest["identity_sha256"].startswith(first.run_hash)
+    assert manifest["integrity_level"] == "checksummed"
     assert manifest["experiment"] == "forecasting.ddge"
     assert len(manifest["source_fingerprint"]) == 64
     assert set(manifest["runtime_environment"]) == {
