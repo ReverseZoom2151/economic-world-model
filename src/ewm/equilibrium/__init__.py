@@ -1,6 +1,8 @@
 """Inner-equilibrium and Data-Driven Generative Equilibrium solvers."""
 
-from .certificates import (
+from ewm._internal.imports import register_module_aliases
+
+from .analysis.certificates import (
     AffinePolyhedralCertificate,
     LocalLinearCertificate,
     ObligationStatus,
@@ -8,15 +10,8 @@ from .certificates import (
     affine_polyhedral_certificate,
     local_linear_certificate,
 )
-from .correspondence import EquilibriumCorrespondence
-from .damping import (
-    DampingStabilityCertificate,
-    damped_eigenvalue,
-    damped_update,
-    damping_stability_certificate,
-)
-from .ddge import solve_ddge
-from .diagnostics import (
+from .analysis.correspondence import EquilibriumCorrespondence
+from .analysis.diagnostics import (
     CenterDisplacementCertificate,
     FrozenCounterfactualBounds,
     OuterContractionCertificate,
@@ -34,8 +29,28 @@ from .diagnostics import (
     spectral_radius,
     transition_robustness_bounds,
 )
-from .fixed_point import FixedPointConfig, iterate_fixed_point, solve_multistart
-from .inner import solve_equilibrium
+from .solvers.damping import (
+    DampingStabilityCertificate,
+    damped_eigenvalue,
+    damped_update,
+    damping_stability_certificate,
+)
+from .solvers.ddge import solve_ddge
+from .solvers.fixed_point import FixedPointConfig, iterate_fixed_point, solve_multistart
+from .solvers.inner import solve_equilibrium
+
+register_module_aliases(
+    __name__,
+    {
+        "certificates": "analysis.certificates",
+        "correspondence": "analysis.correspondence",
+        "damping": "solvers.damping",
+        "ddge": "solvers.ddge",
+        "diagnostics": "analysis.diagnostics",
+        "fixed_point": "solvers.fixed_point",
+        "inner": "solvers.inner",
+    },
+)
 
 __all__ = [
     "AffinePolyhedralCertificate",

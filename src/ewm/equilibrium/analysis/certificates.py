@@ -1,4 +1,4 @@
-"""Restricted, constructive theorem certificates for affine maps on polyhedra."""
+"""Constructive theorem certificates for affine maps on polyhedra."""
 
 from __future__ import annotations
 

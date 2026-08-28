@@ -1,4 +1,4 @@
-"""Residual, Jacobian, contraction, and stability diagnostics."""
+"""Residual, Jacobian, contraction, and fixed-point stability diagnostics."""
 
 from __future__ import annotations
 

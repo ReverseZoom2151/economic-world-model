@@ -74,9 +74,10 @@ The design preserves these distinctions:
 - Laboratory I, Laboratory II, Laboratory III, and Appendix D keep their separate replication
   classifications.
 
-Evidence in the current repository includes `src/ewm/equilibrium/correspondence.py`,
-`src/ewm/equilibrium/ddge.py`, `src/ewm/equilibrium/diagnostics.py`,
-`src/ewm/equilibrium/certificates.py`, `src/ewm/core/domain/records.py`, and the Cong conformance tests.
+Evidence in the current repository includes `src/ewm/equilibrium/analysis/correspondence.py`,
+`src/ewm/equilibrium/solvers/ddge.py`, `src/ewm/equilibrium/analysis/diagnostics.py`,
+`src/ewm/equilibrium/analysis/certificates.py`, `src/ewm/core/domain/records.py`, and the Cong
+conformance tests.
 
 ### Han et al.
 

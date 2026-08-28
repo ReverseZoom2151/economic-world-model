@@ -78,7 +78,7 @@ pages = "24"
 summary = "DDGE jointly requires behavioral optimality, belief consistency, and learning consistency."
 status = "implemented"
 claim = "source-definition"
-implementation = ["src/ewm/equilibrium/correspondence.py", "src/ewm/core/domain/records.py"]
+implementation = ["src/ewm/equilibrium/analysis/correspondence.py", "src/ewm/core/domain/records.py"]
 evidence = ["tests/unit/test_correspondence.py"]
 
 [[item]]
@@ -89,7 +89,7 @@ pages = "26"
 summary = "Compactness, convexity, upper hemicontinuity, and continuity support DDGE existence."
 status = "blocked-external"
 claim = "source-definition"
-implementation = ["src/ewm/equilibrium/certificates.py"]
+implementation = ["src/ewm/equilibrium/analysis/certificates.py"]
 evidence = ["tests/unit/test_theorem_certificates.py"]
 limitation = "Compactness, convexity, continuity, and upper-hemicontinuity proofs are model-author obligations that cannot be inferred from arbitrary numerical callables. A restricted affine-map certificate checks a declared compact polyhedron, but the general correspondence still requires an external mathematical certificate."
 
@@ -101,7 +101,7 @@ pages = "26-27, 49"
 summary = "Kakutani gives existence; a contraction selector gives uniqueness and global outer convergence."
 status = "partial"
 claim = "theorem-diagnostic"
-implementation = ["src/ewm/equilibrium/certificates.py", "src/ewm/equilibrium/fixed_point.py", "src/ewm/equilibrium/diagnostics.py"]
+implementation = ["src/ewm/equilibrium/analysis/certificates.py", "src/ewm/equilibrium/solvers/fixed_point.py", "src/ewm/equilibrium/analysis/diagnostics.py"]
 evidence = ["tests/unit/test_theorem_certificates.py", "tests/unit/test_fixed_point.py", "tests/unit/test_diagnostics.py"]
 limitation = "Contraction iteration and constructive existence and uniqueness certificates for affine maps on declared compact polyhedra are implemented; no generic Kakutani correspondence solver is claimed."
 
@@ -113,7 +113,7 @@ pages = "28-29, 50-51"
 summary = "A frozen residual bounds DDGE displacement and, under sensitivity assumptions, welfare error."
 status = "implemented"
 claim = "theorem-diagnostic"
-implementation = ["src/ewm/equilibrium/diagnostics.py"]
+implementation = ["src/ewm/equilibrium/analysis/diagnostics.py"]
 evidence = ["tests/unit/test_cong_bounds.py", "tests/unit/test_diagnostics.py"]
 
 [[item]]
@@ -124,7 +124,7 @@ pages = "29, 50-51"
 summary = "The exact center displacement uses the averaged Jacobian resolvent."
 status = "implemented"
 claim = "theorem-diagnostic"
-implementation = ["src/ewm/equilibrium/diagnostics.py"]
+implementation = ["src/ewm/equilibrium/analysis/diagnostics.py"]
 evidence = ["tests/unit/test_cong_bounds.py"]
 
 [[item]]
@@ -135,7 +135,7 @@ pages = "30, 51-52"
 summary = "Sign crossings create multiple DDGEs and a singular value above one implies local non-contraction."
 status = "implemented"
 claim = "theorem-diagnostic"
-implementation = ["src/ewm/equilibrium/fixed_point.py", "src/ewm/equilibrium/diagnostics.py"]
+implementation = ["src/ewm/equilibrium/solvers/fixed_point.py", "src/ewm/equilibrium/analysis/diagnostics.py"]
 evidence = ["tests/unit/test_fixed_point.py", "tests/scenarios/test_forecasting.py"]
 
 [[item]]
@@ -146,7 +146,7 @@ pages = "40-41, 58-59"
 summary = "Transition misspecification and regime shift decompose in total variation and imply value and robust-regret bounds."
 status = "implemented"
 claim = "theorem-diagnostic"
-implementation = ["src/ewm/equilibrium/diagnostics.py"]
+implementation = ["src/ewm/equilibrium/analysis/diagnostics.py"]
 evidence = ["tests/unit/test_cong_bounds.py"]
 
 [[item]]
@@ -228,7 +228,7 @@ pages = "56-57"
 summary = "Equilibrium, data, and learner Lipschitz constants give a sufficient outer contraction modulus."
 status = "implemented"
 claim = "theorem-diagnostic"
-implementation = ["src/ewm/equilibrium/diagnostics.py"]
+implementation = ["src/ewm/equilibrium/analysis/diagnostics.py"]
 evidence = ["tests/unit/test_cong_bounds.py"]
 
 [[item]]
@@ -239,7 +239,7 @@ pages = "57-58"
 summary = "One observed contraction step bounds remaining parameter distance and welfare error."
 status = "implemented"
 claim = "theorem-diagnostic"
-implementation = ["src/ewm/equilibrium/diagnostics.py"]
+implementation = ["src/ewm/equilibrium/analysis/diagnostics.py"]
 evidence = ["tests/unit/test_cong_bounds.py", "tests/unit/test_diagnostics.py"]
 
 [[item]]
@@ -250,7 +250,7 @@ pages = "61"
 summary = "DDGE computation alternates inner solution, data generation, learning, and joint residual checks."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/equilibrium/ddge.py", "src/ewm/equilibrium/correspondence.py", "src/ewm/scenarios/credit/model.py"]
+implementation = ["src/ewm/equilibrium/solvers/ddge.py", "src/ewm/equilibrium/analysis/correspondence.py", "src/ewm/scenarios/credit/model.py"]
 evidence = ["tests/scenarios/test_credit.py", "tests/unit/test_fixed_point.py", "tests/unit/test_correspondence.py"]
 limitation = "Joint certificates are available for finite declared candidate sets; numerical search still covers single-valued outer maps."
 

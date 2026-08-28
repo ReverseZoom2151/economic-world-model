@@ -1,4 +1,4 @@
-"""DDGE-specific wrappers around the generic multistart solver."""
+"""DDGE wrappers around the generic multistart solver."""
 
 from __future__ import annotations
 
@@ -25,4 +25,3 @@ def solve_ddge(
     if any(start.shape != (problem.dimension,) for start in starts):
         raise ValueError("initialization dimension does not match problem.dimension")
     return solve_multistart(problem.update, starts, config)
-

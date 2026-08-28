@@ -1,4 +1,4 @@
-"""Finite verification tools for set-valued inner equilibria and DDGE candidates."""
+"""Verification tools for set-valued inner equilibria and DDGE candidates."""
 
 from __future__ import annotations
 

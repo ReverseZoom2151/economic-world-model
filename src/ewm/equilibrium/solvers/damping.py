@@ -1,4 +1,4 @@
-"""Damped fixed-point updates and their local eigenvalues."""
+"""Damped fixed-point updates and local eigenvalues."""
 
 from __future__ import annotations
 

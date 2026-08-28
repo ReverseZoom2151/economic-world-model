@@ -1,4 +1,4 @@
-"""Fixed-environment equilibrium solving."""
+"""Fixed-environment inner-equilibrium solving."""
 
 from __future__ import annotations
 

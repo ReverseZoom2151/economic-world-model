@@ -1,4 +1,4 @@
-"""Transparent fixed-point iteration with multistart multiplicity discovery."""
+"""Fixed-point iteration with multistart multiplicity discovery."""
 
 from __future__ import annotations
 
@@ -11,8 +11,8 @@ from numpy.typing import NDArray
 
 from ewm.core import DDGEResult, FixedPoint
 
+from ..analysis.diagnostics import finite_difference_jacobian, spectral_radius
 from .damping import damped_update
-from .diagnostics import finite_difference_jacobian, spectral_radius
 
 UpdateFunction = Callable[[NDArray[np.float64]], NDArray[np.floating]]
 

@@ -24,6 +24,9 @@ contracts, serialization, randomness, and replay. Historical direct module impor
 these single implementation modules. Type-only declarations keep the locked Han v1 sources
 byte-stable while making those legacy imports visible to static analysis.
 
+Within equilibrium, `equilibrium/solvers/` owns inner-equilibrium, fixed-point, damping, and DDGE
+execution. `equilibrium/analysis/` owns certificates, set-valued correspondences, and diagnostics.
+
 Within ontology, `ontology/bundles/` owns identity shared by publication and verification. This
 keeps the module import graph acyclic. `ontology/profiles/` retains stable adapter class paths because
 their module-qualified names contribute to projection identity.

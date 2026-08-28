@@ -201,7 +201,7 @@ def test_restricted_theorem_certificates_do_not_overclaim_general_kakutani() -> 
 
     assert assumption["status"] == "blocked-external"
     assert proposition["status"] == "partial"
-    assert "src/ewm/equilibrium/certificates.py" in proposition["implementation"]
+    assert "src/ewm/equilibrium/analysis/certificates.py" in proposition["implementation"]
     assert "tests/unit/test_theorem_certificates.py" in proposition["evidence"]
     assert "affine" in proposition["limitation"]
     assert "Kakutani" in proposition["limitation"]

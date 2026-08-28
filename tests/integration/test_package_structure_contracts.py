@@ -127,6 +127,11 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
     ("legacy_module", "canonical_module", "symbol"),
     (
         ("ewm.core.world", "ewm.core.runtime.world", "World"),
+        (
+            "ewm.equilibrium.fixed_point",
+            "ewm.equilibrium.solvers.fixed_point",
+            "FixedPointConfig",
+        ),
     ),
 )
 def test_legacy_modules_alias_the_single_canonical_implementation(
@@ -145,6 +150,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
     ("package_name", "expected"),
     (
         ("ewm.core", {"__init__.py"}),
+        ("ewm.equilibrium", {"__init__.py"}),
     ),
 )
 def test_large_packages_keep_only_true_entry_points_loose(
