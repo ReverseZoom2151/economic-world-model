@@ -115,6 +115,7 @@ def main() -> int:
     )
     parser.add_argument("--smoke-repeats", type=int, default=10)
     parser.add_argument("--research-repeats", type=int, default=3)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--worker-experiment", choices=ewm.list_experiments())
     parser.add_argument("--worker-preset", choices=("smoke", "research"))
     args = parser.parse_args()
@@ -151,7 +152,11 @@ def main() -> int:
         },
         "benchmarks": benchmarks,
     }
-    print(json.dumps(report, indent=2, sort_keys=True))
+    rendered = json.dumps(report, indent=2, sort_keys=True) + "\n"
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(rendered, encoding="utf-8")
+    print(rendered, end="")
     return 0
 
 

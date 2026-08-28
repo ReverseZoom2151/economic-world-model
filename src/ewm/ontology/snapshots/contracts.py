@@ -10,7 +10,7 @@ from typing import Any, cast
 
 from ewm._internal.canonical import canonical_json, content_digest
 
-from .graph.identity import (
+from ..graph.identity import (
     coverage_entry_from_data,
     coverage_entry_to_data,
     measurement_from_data,
@@ -20,7 +20,7 @@ from .graph.identity import (
     relation_assertion_from_data,
     relation_assertion_to_data,
 )
-from .graph.model import (
+from ..graph.model import (
     CoverageEntry,
     Measurement,
     OntologyObject,
@@ -61,7 +61,35 @@ def _require_text(value: str, name: str) -> None:
 
 
 def _canonical_data(value: Any) -> Any:
+    _validate_shape(value)
     return json.loads(canonical_json(value))
+
+
+def _validate_shape(value: Any, *, max_depth: int = 32, max_nodes: int = 1_000_000) -> None:
+    stack: list[tuple[Any, int]] = [(value, 0)]
+    seen: set[int] = set()
+    nodes = 0
+    while stack:
+        current, depth = stack.pop()
+        nodes += 1
+        if nodes > max_nodes:
+            raise ValueError("canonical data exceeds the node limit")
+        if depth > max_depth:
+            raise ValueError("canonical data exceeds the nesting limit")
+        if isinstance(current, Mapping):
+            identity = id(current)
+            if identity in seen:
+                raise ValueError("canonical data must not contain container cycles")
+            seen.add(identity)
+            stack.extend((item, depth + 1) for item in current.values())
+        elif isinstance(current, Sequence) and not isinstance(
+            current, str | bytes | bytearray
+        ):
+            identity = id(current)
+            if identity in seen:
+                raise ValueError("canonical data must not contain container cycles")
+            seen.add(identity)
+            stack.extend((item, depth + 1) for item in current)
 
 
 def _mapping(value: Any, name: str) -> Mapping[str, Any]:
@@ -98,6 +126,46 @@ def _finite_number(value: Any, name: str) -> float:
     if not math.isfinite(number):
         raise ValueError(f"{name} must be finite")
     return number
+
+
+def _validate_coordinates(value: Any) -> None:
+    coordinates = _sequence(value, "GeoJSON coordinates")
+    if (
+        len(coordinates) >= 2
+        and isinstance(coordinates[0], int | float)
+        and not isinstance(coordinates[0], bool)
+        and isinstance(coordinates[1], int | float)
+        and not isinstance(coordinates[1], bool)
+    ):
+        longitude = _finite_number(coordinates[0], "GeoJSON longitude")
+        latitude = _finite_number(coordinates[1], "GeoJSON latitude")
+        if not -180 <= longitude <= 180 or not -90 <= latitude <= 90:
+            raise ValueError("GeoJSON coordinate is outside EPSG:4326 bounds")
+        return
+    if not coordinates:
+        raise ValueError("GeoJSON coordinate arrays must not be empty")
+    for coordinate in coordinates:
+        _validate_coordinates(coordinate)
+
+
+def validate_globe_geometry(value: Mapping[str, Any]) -> Mapping[str, Any]:
+    """Validate the bounded Polygon/MultiPolygon geometry accepted by snapshots."""
+
+    data = _mapping(value, "globe geometry")
+    if data.get("type") != "FeatureCollection":
+        raise ValueError("globe geometry must be a GeoJSON FeatureCollection")
+    features = _sequence(data.get("features"), "globe geometry features")
+    if len(features) > 10_000:
+        raise ValueError("globe geometry exceeds the feature limit")
+    for raw_feature in features:
+        feature = _mapping(raw_feature, "GeoJSON feature")
+        if feature.get("type") != "Feature":
+            raise ValueError("globe geometry contains a non-Feature record")
+        geometry = _mapping(feature.get("geometry"), "GeoJSON feature geometry")
+        if geometry.get("type") not in {"Polygon", "MultiPolygon"}:
+            raise ValueError("globe geometry supports only Polygon and MultiPolygon features")
+        _validate_coordinates(geometry.get("coordinates"))
+    return cast(Mapping[str, Any], _canonical_data(data))
 
 
 @dataclass(frozen=True, slots=True)
@@ -446,7 +514,7 @@ def compile_investigation(
         raise SnapshotSizeError(counts, selected_limits)
     geometry = None
     if selection.lens == "globe" and globe_geometry is not None:
-        geometry = cast(Mapping[str, Any], _canonical_data(globe_geometry))
+        geometry = validate_globe_geometry(globe_geometry)
     provisional = InvestigationSnapshot(
         schema=INVESTIGATION_SCHEMA,
         source=source,
@@ -573,4 +641,5 @@ __all__ = [
     "compile_investigation",
     "investigation_from_bytes",
     "investigation_to_bytes",
+    "validate_globe_geometry",
 ]

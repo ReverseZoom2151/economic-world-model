@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ewm.ontology.snapshot import (
+from ewm.ontology.snapshots import (
     DEFAULT_MAX_HTML_BYTES,
     INVESTIGATION_SCHEMA,
     InvestigationSnapshot,
@@ -22,7 +22,7 @@ from ewm.ontology.snapshot import (
     investigation_to_bytes,
 )
 
-_STATIC_DIRECTORY = Path(__file__).parent / "static"
+_STATIC_DIRECTORY = Path(__file__).parents[1] / "static"
 _SNAPSHOT_TEMPLATE = re.compile(
     r'<template id="ewm-snapshot" data-sha256="([a-f0-9]{64})">([^<]+)</template>'
 )

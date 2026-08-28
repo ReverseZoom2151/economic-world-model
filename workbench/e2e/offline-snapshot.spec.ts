@@ -1,10 +1,12 @@
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
 import { expect, test } from "@playwright/test";
 
-const PYTHON = "../.venv/bin/python";
+const PYTHON =
+  process.env.EWM_TEST_PYTHON ??
+  (existsSync("../.venv/bin/python") ? "../.venv/bin/python" : "python3");
 const EXPORT_SCRIPT = [
   "import sys",
   "from pathlib import Path",

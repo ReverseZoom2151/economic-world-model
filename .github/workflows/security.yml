@@ -34,6 +34,13 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: workbench/package-lock.json
+
       - name: Install security tools
         run: |
           python -m pip install --upgrade pip
@@ -45,3 +52,9 @@ jobs:
 
       - name: Scan Python source
         run: bandit -q -r -ll src/ewm
+
+      - name: Audit locked workbench dependencies
+        working-directory: workbench
+        run: |
+          npm ci
+          npm audit --audit-level=high

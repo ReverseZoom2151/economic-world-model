@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "37 5 * * 6"
   workflow_dispatch:
 
 permissions:
@@ -32,6 +34,18 @@ jobs:
           cache: npm
           cache-dependency-path: workbench/package-lock.json
 
+      - name: Set up Python for offline snapshot E2E
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install workbench runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[workbench]"
+
       - name: Validate isolated frontend
         working-directory: workbench
         run: |
@@ -40,6 +54,19 @@ jobs:
           npm run typecheck
           npm test
           npm run build
+
+      - name: Install locked browser engines
+        working-directory: workbench
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Run browser, accessibility, security, and offline gates
+        working-directory: workbench
+        env:
+          EWM_TEST_PYTHON: python
+        run: npx playwright test
+
+      - name: Verify network boundary
+        run: python scripts/check_workbench_network.py
 
       - name: Verify reproducible packaged assets
         run: python3 scripts/check_frontend_build.py
@@ -157,7 +184,7 @@ jobs:
       - name: Install package and test dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e ".[dev]"
+          python -m pip install -e ".[dev,workbench]"
 
       - name: Run fail-closed evidence checks
         run: |
@@ -170,3 +197,10 @@ jobs:
 
       - name: Run exploratory quick stress checks
         run: python scripts/scientific_stress.py --quick
+
+      - name: Run bounded workbench benchmark
+        run: python scripts/benchmark_workbench.py --tier small --repeats 1
+
+      - name: Characterize medium workbench fixture
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: python scripts/benchmark_workbench.py --tier medium --repeats 3

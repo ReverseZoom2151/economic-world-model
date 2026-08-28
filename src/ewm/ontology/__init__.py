@@ -46,6 +46,7 @@ register_module_aliases(
         "identity": "graph.identity",
         "model": "graph.model",
         "schema": "graph.schema",
+        "snapshot": "snapshots.contracts",
         "verification": "projection.verification",
     },
 )

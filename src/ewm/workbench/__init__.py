@@ -7,6 +7,7 @@ register_module_aliases(
     {
         "api": "http.api",
         "contracts": "http.contracts",
+        "export": "snapshots.export",
         "openapi": "http.openapi",
         "security": "http.security",
         "server": "http.server",

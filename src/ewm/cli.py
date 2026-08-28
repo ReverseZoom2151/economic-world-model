@@ -32,13 +32,13 @@ from .ontology import (
     verify_projection_bundle,
     write_projection_bundle,
 )
-from .ontology.snapshot import (
+from .ontology.snapshots import (
     SnapshotSelection,
     SnapshotSizeError,
     SnapshotSource,
     compile_investigation,
 )
-from .workbench.export import (
+from .workbench.snapshots import (
     SnapshotExportError,
     SnapshotVerificationError,
     export_snapshot_html,
