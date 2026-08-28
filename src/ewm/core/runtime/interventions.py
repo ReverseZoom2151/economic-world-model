@@ -1,4 +1,4 @@
-"""Atomic typed interventions with canonical before-and-after provenance."""
+"""Atomic interventions with canonical before-and-after provenance."""
 
 from __future__ import annotations
 
@@ -8,9 +8,9 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any, cast
 
-from .definition import WorldComponent
-from .records import freeze_value, thaw_value
-from .serialization import content_digest
+from ..domain.definition import WorldComponent
+from ..domain.records import freeze_value, thaw_value
+from ..provenance.serialization import content_digest
 
 _SHA256_PATTERN = re.compile(r"[0-9a-f]{64}")
 

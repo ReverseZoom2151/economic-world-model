@@ -1,4 +1,4 @@
-"""Composable feasibility checks for typed economic actions."""
+"""Composable feasibility checks for economic actions."""
 
 from __future__ import annotations
 
@@ -55,4 +55,3 @@ class ConstraintSet:
             else:
                 accepted.append(action)
         return tuple(accepted), tuple(violations)
-

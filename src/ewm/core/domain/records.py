@@ -1,4 +1,4 @@
-"""Immutable value records shared across economic worlds and solvers."""
+"""Immutable value records shared by economic worlds and solvers."""
 
 from __future__ import annotations
 

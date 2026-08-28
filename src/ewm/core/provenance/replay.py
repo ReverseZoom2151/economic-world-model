@@ -1,4 +1,4 @@
-"""Content-addressed export and deterministic command replay for compiled worlds."""
+"""Content-addressed export and command replay for compiled worlds."""
 
 from __future__ import annotations
 
@@ -6,10 +6,10 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, cast
 
+from ..runtime.events import EVENT_SCHEMA_VERSION, Event, verify_event_chain
+from ..runtime.world import World
 from .contracts import RuntimeContract, runtime_contract_digest
-from .events import EVENT_SCHEMA_VERSION, Event, verify_event_chain
 from .serialization import StateCodec, action_from_data, state_digest
-from .world import World
 
 REPLAY_SCHEMA_VERSION = "ewm.replay.v1"
 _REPLAYABLE_EVENTS = frozenset({"reset", "run_agents", "step", "evaluate", "log", "close"})

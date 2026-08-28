@@ -1,4 +1,4 @@
-"""Strict execution contracts for worlds compiled from declarations."""
+"""Execution contracts for worlds compiled from declarations."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Literal
 
-from .records import Action
+from ..domain.records import Action
 from .serialization import content_digest
 
 SchedulerPolicy = Literal["deterministic", "submission_order", "role_priority"]

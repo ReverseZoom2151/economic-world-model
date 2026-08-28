@@ -1,4 +1,4 @@
-"""Owned random-number construction for reproducible worlds and experiments."""
+"""Random-number construction for reproducible worlds and experiments."""
 
 import numpy as np
 
@@ -16,4 +16,3 @@ def spawn_rngs(seed: int | None, count: int) -> tuple[np.random.Generator, ...]:
         raise ValueError("count must be non-negative")
     children = np.random.SeedSequence(seed).spawn(count)
     return tuple(np.random.default_rng(child) for child in children)
-

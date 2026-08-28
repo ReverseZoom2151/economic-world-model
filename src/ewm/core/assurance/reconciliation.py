@@ -1,4 +1,4 @@
-"""Constraint-preserving next-state reconciliation from Cong Proposition A.3."""
+"""Next-state reconciliation from Cong Proposition A.3."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from .records import Action
+from ..domain.records import Action
 
 ReconciliationRule = Callable[[Any, tuple[Action, ...], Any, Any], Any]
 StateFeasibilityRule = Callable[[Any], bool]

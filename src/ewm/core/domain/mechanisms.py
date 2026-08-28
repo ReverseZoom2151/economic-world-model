@@ -1,4 +1,4 @@
-"""Convenience mechanism implementations."""
+"""Backend-independent economic mechanism implementations."""
 
 from __future__ import annotations
 
@@ -27,4 +27,3 @@ class FunctionalMechanism:
         rng: np.random.Generator,
     ) -> tuple[Any, Mapping[str, Any]]:
         return self.clearing_function(state, actions, rng)
-

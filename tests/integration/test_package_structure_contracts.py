@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from importlib import import_module
+from pathlib import Path
+
+import pytest
 
 import ewm
 from ewm.capabilities.readiness import (
@@ -118,3 +121,37 @@ def test_local_paper_sources_have_one_ignored_reference_location() -> None:
 def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -> None:
     assert build_package_conformance_report.__module__ == "ewm.conformance.report"
     assert build_script_conformance_report.__module__ == "scripts.run_conformance"
+
+
+@pytest.mark.parametrize(
+    ("legacy_module", "canonical_module", "symbol"),
+    (
+        ("ewm.core.world", "ewm.core.runtime.world", "World"),
+    ),
+)
+def test_legacy_modules_alias_the_single_canonical_implementation(
+    legacy_module: str,
+    canonical_module: str,
+    symbol: str,
+) -> None:
+    legacy = import_module(legacy_module)
+    canonical = import_module(canonical_module)
+
+    assert legacy is canonical
+    assert getattr(legacy, symbol) is getattr(canonical, symbol)
+
+
+@pytest.mark.parametrize(
+    ("package_name", "expected"),
+    (
+        ("ewm.core", {"__init__.py"}),
+    ),
+)
+def test_large_packages_keep_only_true_entry_points_loose(
+    package_name: str,
+    expected: set[str],
+) -> None:
+    package = import_module(package_name)
+    package_path = Path(package.__file__).parent
+
+    assert {path.name for path in package_path.glob("*.py")} == expected

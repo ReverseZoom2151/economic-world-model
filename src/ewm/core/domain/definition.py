@@ -1,4 +1,4 @@
-"""Declarative objects for Cong's Economic World Model definition."""
+"""Declarative objects for Cong's economic world model definition."""
 
 from __future__ import annotations
 

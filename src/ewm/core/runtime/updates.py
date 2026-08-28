@@ -1,4 +1,4 @@
-"""Layer-neutral state-update primitives."""
+"""Layer-neutral runtime state-update primitives."""
 
 from __future__ import annotations
 

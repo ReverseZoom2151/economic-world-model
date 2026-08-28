@@ -22,7 +22,7 @@ Current repository evidence:
 - `src/ewm/core`, `src/ewm/equilibrium`, `src/ewm/scenarios`, and `src/ewm/experiments`;
 - `tests/test_architecture.py`;
 - `src/ewm/experiments/verification.py` and `src/ewm/experiments/identity.py`;
-- `src/ewm/core/serialization.py`;
+- `src/ewm/core/provenance/serialization.py`;
 - `docs/mathematical-contract.md`, `docs/paper-traceability.md`, `docs/replication.md`,
   `docs/capability-matrix.md`, and `docs/limitations.md`;
 - `references/papers.toml` and `references/conformance.toml`;
@@ -76,7 +76,7 @@ The design preserves these distinctions:
 
 Evidence in the current repository includes `src/ewm/equilibrium/correspondence.py`,
 `src/ewm/equilibrium/ddge.py`, `src/ewm/equilibrium/diagnostics.py`,
-`src/ewm/equilibrium/certificates.py`, `src/ewm/core/records.py`, and the Cong conformance tests.
+`src/ewm/equilibrium/certificates.py`, `src/ewm/core/domain/records.py`, and the Cong conformance tests.
 
 ### Han et al.
 
@@ -90,8 +90,8 @@ The design preserves these distinctions:
 - current L3-L6 results remain blocked readiness observations;
 - the ontology cannot award a capability because a class or relation has the right name.
 
-Evidence in the current repository includes `src/ewm/core/contracts.py`,
-`src/ewm/core/coevolution.py`, `src/ewm/capabilities/levels.py`,
+Evidence in the current repository includes `src/ewm/core/provenance/contracts.py`,
+`src/ewm/core/runtime/coevolution.py`, `src/ewm/capabilities/levels.py`,
 `src/ewm/capabilities/readiness.py`, `src/ewm/scenarios/fx/validation.py`, and the Han conformance
 tests.
 

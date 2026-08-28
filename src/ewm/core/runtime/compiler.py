@@ -1,4 +1,4 @@
-"""Explicit compilation of declarative world specifications into runtimes."""
+"""Compilation of declarative world specifications into runtimes."""
 
 from __future__ import annotations
 
@@ -9,10 +9,8 @@ from typing import Any, cast
 
 import numpy as np
 
-from .coevolution import ControlledCoevolution
-from .constraints import ConstraintSet
-from .contracts import RuntimeContract, SchedulerPolicy, ViolationPolicy
-from .protocols import (
+from ..domain.constraints import ConstraintSet
+from ..domain.protocols import (
     AgentPolicy,
     Constraint,
     InstitutionalEvolution,
@@ -20,9 +18,11 @@ from .protocols import (
     RealWorldAlignment,
     StateReconciler,
 )
-from .records import freeze_value
-from .serialization import CanonicalStateCodec, StateCodec
-from .specs import AgentSpecification, WorldSpecification
+from ..domain.records import freeze_value
+from ..domain.specs import AgentSpecification, WorldSpecification
+from ..provenance.contracts import RuntimeContract, SchedulerPolicy, ViolationPolicy
+from ..provenance.serialization import CanonicalStateCodec, StateCodec
+from .coevolution import ControlledCoevolution
 from .world import ProvenanceMode, World
 
 MechanismKey = tuple[str, str, str]

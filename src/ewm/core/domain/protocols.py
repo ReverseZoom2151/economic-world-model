@@ -1,4 +1,4 @@
-"""Structural interfaces for economic worlds, agents, and equilibrium problems."""
+"""Structural interfaces for worlds, agents, and equilibrium problems."""
 
 from __future__ import annotations
 
@@ -9,8 +9,8 @@ from typing import Any, Protocol, overload
 import numpy as np
 from numpy.typing import NDArray
 
-from .evaluation import EvaluationReport
-from .events import Event
+from ..assurance.evaluation import EvaluationReport
+from ..runtime.events import Event
 from .records import Action, CoevolutionReport, Transition
 
 

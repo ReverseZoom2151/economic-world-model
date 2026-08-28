@@ -1,4 +1,4 @@
-"""Deterministic event records for audit-friendly economic rollouts."""
+"""Deterministic event records for auditable economic rollouts."""
 
 from __future__ import annotations
 
@@ -6,8 +6,8 @@ from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
 from typing import Any, overload
 
-from .records import freeze_value
-from .serialization import content_digest
+from ..domain.records import freeze_value
+from ..provenance.serialization import content_digest
 
 EVENT_SCHEMA_VERSION = "ewm.event.v1"
 EVENT_GENESIS_HASH = "0" * 64

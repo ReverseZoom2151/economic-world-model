@@ -1,4 +1,4 @@
-"""Deterministic synchronous runtime for executable economic worlds."""
+"""Synchronous runtime for deterministic executable economic worlds."""
 
 from __future__ import annotations
 
@@ -9,12 +9,9 @@ from typing import Any, Literal, overload
 
 import numpy as np
 
-from .coevolution import ControlledCoevolution
-from .constraints import ConstraintSet
-from .contracts import RuntimeContract, runtime_contract_digest
-from .evaluation import EvaluationReport, evaluate_event_log
-from .events import Event, EventLog, EventLogView
-from .protocols import (
+from ..assurance.evaluation import EvaluationReport, evaluate_event_log
+from ..domain.constraints import ConstraintSet
+from ..domain.protocols import (
     AgentPolicy,
     AlignmentReportRecord,
     ExternalEvidenceRecord,
@@ -25,8 +22,7 @@ from .protocols import (
     RealWorldAlignment,
     StateReconciler,
 )
-from .randomness import make_rng
-from .records import (
+from ..domain.records import (
     Action,
     CoevolutionReport,
     CoevolutionSnapshot,
@@ -34,12 +30,16 @@ from .records import (
     freeze_value,
     thaw_value,
 )
-from .serialization import (
+from ..provenance.contracts import RuntimeContract, runtime_contract_digest
+from ..provenance.randomness import make_rng
+from ..provenance.serialization import (
     StateCodec,
     action_to_data,
     state_digest,
     violation_to_data,
 )
+from .coevolution import ControlledCoevolution
+from .events import Event, EventLog, EventLogView
 
 ProvenanceMode = Literal["full", "summary"]
 

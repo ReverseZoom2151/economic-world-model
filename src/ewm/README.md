@@ -4,7 +4,7 @@
 
 | Package | Ownership |
 |---|---|
-| `core/` | Shared declarations, records, economic runtime, coherence, and provenance primitives |
+| `core/` | Shared domain declarations, runtime, assurance, and provenance primitives |
 | `equilibrium/` | Inner equilibrium, DDGE, fixed points, damping, certificates, and diagnostics |
 | `capabilities/` | Han L3-L6 cognition, evolution, institutions, alignment, and evidence gates |
 | `conformance/` | Installable paper-level report construction and evidence orchestration |
@@ -17,6 +17,12 @@
 Within experiments, `experiments/catalog/` owns catalog models, scenario adapters, and default
 assembly. The historical `ewm.experiments.registry` module retains executor functions whose module
 names are embedded in ontology provenance.
+
+Within core, `core/domain/` owns economic declarations and records, `core/runtime/` owns world
+execution, `core/assurance/` owns coherence and evidence checks, and `core/provenance/` owns
+contracts, serialization, randomness, and replay. Historical direct module imports are aliases to
+these single implementation modules. Type-only declarations keep the locked Han v1 sources
+byte-stable while making those legacy imports visible to static analysis.
 
 Within ontology, `ontology/bundles/` owns identity shared by publication and verification. This
 keeps the module import graph acyclic. `ontology/profiles/` retains stable adapter class paths because

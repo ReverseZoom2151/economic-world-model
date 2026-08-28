@@ -1,4 +1,4 @@
-"""Validated finite stochastic kernels with complete draw provenance."""
+"""Finite stochastic kernels with complete draw provenance."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from typing import Generic, TypeVar
 
 import numpy as np
 
-from .serialization import canonical_json, content_digest
+from ..provenance.serialization import canonical_json, content_digest
 
 InputT = TypeVar("InputT")
 OutputT = TypeVar("OutputT", bound=Hashable)

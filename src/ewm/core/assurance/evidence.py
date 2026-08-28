@@ -1,4 +1,4 @@
-"""Tamper-evident records for observations used by official assessments."""
+"""Tamper-evident observation records for official assessments."""
 
 from __future__ import annotations
 

@@ -1,8 +1,8 @@
 """Shared records and protocols for Economic World Models."""
 
-from .agents import FunctionalAgent
-from .coevolution import ControlledCoevolution, ProposalRule
-from .coherence import (
+from ewm._internal.imports import register_module_aliases
+
+from .assurance.coherence import (
     CoherenceRelation,
     CoherenceReport,
     HardCoherenceCondition,
@@ -11,26 +11,22 @@ from .coherence import (
     SoftCoherenceResult,
     evaluate_coherence,
 )
-from .compiler import (
-    AgentFactory,
-    InitialStateFactory,
-    MechanismFactory,
-    MechanismKey,
-    ObservationFactory,
-    RuntimeAdapter,
-    RuntimeAdapterRegistry,
-    WorldBindings,
-    compile_world,
-    mechanism_key,
+from .assurance.evaluation import (
+    EvaluationLayerReport,
+    EvaluationReport,
+    LayeredEvaluationReport,
+    MeasurementStatus,
+    MetricMeasurement,
+    evaluate_event_log,
 )
-from .constraints import ConstraintSet, FunctionalConstraint
-from .contracts import (
-    RuntimeContract,
-    SchedulerPolicy,
-    ViolationPolicy,
-    runtime_contract_digest,
+from .assurance.reconciliation import (
+    FunctionalStateReconciler,
+    ReconciliationRule,
+    StateFeasibilityRule,
 )
-from .definition import (
+from .domain.agents import FunctionalAgent
+from .domain.constraints import ConstraintSet, FunctionalConstraint
+from .domain.definition import (
     AgentBlock,
     CoherenceCondition,
     CoherenceKind,
@@ -40,39 +36,8 @@ from .definition import (
     SpaceDefinition,
     WorldComponent,
 )
-from .evaluation import (
-    EvaluationLayerReport,
-    EvaluationReport,
-    LayeredEvaluationReport,
-    MeasurementStatus,
-    MetricMeasurement,
-    evaluate_event_log,
-)
-from .events import (
-    EVENT_GENESIS_HASH,
-    EVENT_SCHEMA_VERSION,
-    Event,
-    EventLog,
-    EventLogView,
-    verify_event_chain,
-)
-from .interventions import (
-    InterventionApplication,
-    InterventionDiff,
-    InterventionOperation,
-    InterventionRecord,
-    InterventionTarget,
-    SetValueIntervention,
-    apply_intervention,
-)
-from .kernels import (
-    CallableStochasticKernel,
-    CategoricalKernel,
-    KernelDraw,
-    RNGProvenance,
-)
-from .mechanisms import FunctionalMechanism
-from .protocols import (
+from .domain.mechanisms import FunctionalMechanism
+from .domain.protocols import (
     AgentPolicy,
     AlignmentReportRecord,
     Constraint,
@@ -88,13 +53,7 @@ from .protocols import (
     RealWorldAlignment,
     StateReconciler,
 )
-from .randomness import make_rng, spawn_rngs
-from .reconciliation import (
-    FunctionalStateReconciler,
-    ReconciliationRule,
-    StateFeasibilityRule,
-)
-from .records import (
+from .domain.records import (
     Action,
     CoevolutionProposal,
     CoevolutionReport,
@@ -112,24 +71,7 @@ from .records import (
     RunMetadata,
     Transition,
 )
-from .replay import (
-    REPLAY_SCHEMA_VERSION,
-    ReplayBundle,
-    ReplayManifest,
-    ReplayReport,
-    export_replay,
-    replay_bundle_from_events,
-    replay_world,
-)
-from .serialization import (
-    CANONICAL_STATE_CODEC_ID,
-    CanonicalStateCodec,
-    StateCodec,
-    canonical_json,
-    content_digest,
-    state_digest,
-)
-from .specs import (
+from .domain.specs import (
     AgentSpecification,
     AlignmentSpecification,
     CoevolutionSpecification,
@@ -144,8 +86,96 @@ from .specs import (
     UpdateSpecification,
     WorldSpecification,
 )
-from .updates import convex_update
-from .world import ProvenanceMode, World
+from .provenance.contracts import (
+    RuntimeContract,
+    SchedulerPolicy,
+    ViolationPolicy,
+    runtime_contract_digest,
+)
+from .provenance.randomness import make_rng, spawn_rngs
+from .provenance.replay import (
+    REPLAY_SCHEMA_VERSION,
+    ReplayBundle,
+    ReplayManifest,
+    ReplayReport,
+    export_replay,
+    replay_bundle_from_events,
+    replay_world,
+)
+from .provenance.serialization import (
+    CANONICAL_STATE_CODEC_ID,
+    CanonicalStateCodec,
+    StateCodec,
+    canonical_json,
+    content_digest,
+    state_digest,
+)
+from .runtime.coevolution import ControlledCoevolution, ProposalRule
+from .runtime.compiler import (
+    AgentFactory,
+    InitialStateFactory,
+    MechanismFactory,
+    MechanismKey,
+    ObservationFactory,
+    RuntimeAdapter,
+    RuntimeAdapterRegistry,
+    WorldBindings,
+    compile_world,
+    mechanism_key,
+)
+from .runtime.events import (
+    EVENT_GENESIS_HASH,
+    EVENT_SCHEMA_VERSION,
+    Event,
+    EventLog,
+    EventLogView,
+    verify_event_chain,
+)
+from .runtime.interventions import (
+    InterventionApplication,
+    InterventionDiff,
+    InterventionOperation,
+    InterventionRecord,
+    InterventionTarget,
+    SetValueIntervention,
+    apply_intervention,
+)
+from .runtime.kernels import (
+    CallableStochasticKernel,
+    CategoricalKernel,
+    KernelDraw,
+    RNGProvenance,
+)
+from .runtime.updates import convex_update
+from .runtime.world import ProvenanceMode, World
+
+register_module_aliases(
+    __name__,
+    {
+        "agents": "domain.agents",
+        "coevolution": "runtime.coevolution",
+        "coherence": "assurance.coherence",
+        "compiler": "runtime.compiler",
+        "constraints": "domain.constraints",
+        "contracts": "provenance.contracts",
+        "definition": "domain.definition",
+        "evaluation": "assurance.evaluation",
+        "events": "runtime.events",
+        "evidence": "assurance.evidence",
+        "interventions": "runtime.interventions",
+        "kernels": "runtime.kernels",
+        "mechanisms": "domain.mechanisms",
+        "protocols": "domain.protocols",
+        "randomness": "provenance.randomness",
+        "reconciliation": "assurance.reconciliation",
+        "records": "domain.records",
+        "replay": "provenance.replay",
+        "serialization": "provenance.serialization",
+        "specs": "domain.specs",
+        "updates": "runtime.updates",
+        "world": "runtime.world",
+    },
+)
 
 __all__ = [
     "CANONICAL_STATE_CODEC_ID",

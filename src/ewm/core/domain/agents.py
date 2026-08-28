@@ -1,4 +1,4 @@
-"""Small, backend-independent economic agent implementations."""
+"""Backend-independent economic agent implementations."""
 
 from __future__ import annotations
 
@@ -25,4 +25,3 @@ class FunctionalAgent:
                 f"policy for {self.agent_id!r} returned action for {action.agent_id!r}"
             )
         return action
-

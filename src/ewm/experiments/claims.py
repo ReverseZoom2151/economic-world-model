@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import StrEnum
 
-from ewm.core.evidence import EvidenceStatus, ValidatedEvidenceArtifact
+from ewm.core.assurance.evidence import EvidenceStatus, ValidatedEvidenceArtifact
 
 
 class ClaimKind(StrEnum):

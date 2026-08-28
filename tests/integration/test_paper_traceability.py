@@ -173,15 +173,15 @@ def test_executable_economic_primitives_are_registered_at_their_source_scope() -
     items = {item["id"]: item for item in registry["item"]}
     expected = {
         "cong-def-2.1": (
-            "src/ewm/core/coherence.py",
+            "src/ewm/core/assurance/coherence.py",
             "tests/unit/test_coherence.py",
         ),
         "cong-eq-2.1-2.2": (
-            "src/ewm/core/kernels.py",
+            "src/ewm/core/runtime/kernels.py",
             "tests/unit/test_kernels.py",
         ),
         "cong-def-2.4": (
-            "src/ewm/core/interventions.py",
+            "src/ewm/core/runtime/interventions.py",
             "tests/unit/test_interventions.py",
         ),
     }

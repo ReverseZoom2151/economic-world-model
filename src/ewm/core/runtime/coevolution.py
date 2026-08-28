@@ -1,4 +1,4 @@
-"""Controlled bidirectional adaptation for agents and economic environments."""
+"""Controlled bidirectional adaptation for agents and environments."""
 
 from __future__ import annotations
 
@@ -6,14 +6,14 @@ from collections.abc import Callable, Mapping
 from math import isfinite
 from typing import Any
 
-from .records import (
+from ..domain.records import (
     Action,
     CoevolutionProposal,
     CoevolutionReport,
     CoevolutionSnapshot,
     CoevolutionUpdate,
 )
-from .specs import CoevolutionSpecification
+from ..domain.specs import CoevolutionSpecification
 
 ProposalRule = Callable[
     [Any, tuple[Action, ...], Any, CoevolutionSnapshot],

@@ -1,4 +1,4 @@
-"""Immutable specification interfaces shaped after Han et al. Figures 9-15."""
+"""Immutable specifications shaped after Han et al. Figures 9-15."""
 
 from __future__ import annotations
 

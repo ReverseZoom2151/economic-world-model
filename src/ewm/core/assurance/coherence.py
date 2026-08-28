@@ -1,4 +1,4 @@
-"""Executable coherence checks with explicit measurement semantics."""
+"""Economic coherence checks with explicit measurement semantics."""
 
 from __future__ import annotations
 

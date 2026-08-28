@@ -28,7 +28,7 @@ from ewm.capabilities.readiness import (
     load_han_l3_l6_protocol,
     run_han_l3_l6_readiness,
 )
-from ewm.core.evidence import EvidenceStatus, ValidatedEvidenceArtifact
+from ewm.core.assurance.evidence import EvidenceStatus, ValidatedEvidenceArtifact
 from ewm.experiments.protocol_runner import run_locked_protocol
 from ewm.experiments.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
 from ewm.experiments.source_verification import (

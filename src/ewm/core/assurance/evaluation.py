@@ -1,4 +1,4 @@
-"""Read-only runtime evaluation over immutable event snapshots."""
+"""Read-only evaluation over immutable runtime event snapshots."""
 
 from __future__ import annotations
 
@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from enum import StrEnum
 from math import isfinite
 
-from .events import Event
-from .records import freeze_value
+from ..domain.records import freeze_value
+from ..runtime.events import Event
 
 
 class MeasurementStatus(StrEnum):

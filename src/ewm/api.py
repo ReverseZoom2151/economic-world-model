@@ -16,7 +16,7 @@ from ewm.core import (
     WorldSpecification,
     compile_world,
 )
-from ewm.core.specs import (
+from ewm.core.domain.specs import (
     agent,
     agent_updates,
     alignment,

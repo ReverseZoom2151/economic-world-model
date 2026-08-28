@@ -10,11 +10,13 @@ SRC = Path(__file__).parents[1] / "src"
 PACKAGE = SRC / "ewm"
 
 LAYER_IMPORTS = {
-    "core": ("ewm.core",),
-    "capabilities": ("ewm.capabilities", "ewm.core"),
-    "equilibrium": ("ewm.core", "ewm.equilibrium"),
-    "scenarios": ("ewm.core", "ewm.scenarios"),
+    "_internal": ("ewm._internal",),
+    "core": ("ewm._internal", "ewm.core"),
+    "capabilities": ("ewm._internal", "ewm.capabilities", "ewm.core"),
+    "equilibrium": ("ewm._internal", "ewm.core", "ewm.equilibrium"),
+    "scenarios": ("ewm._internal", "ewm.core", "ewm.scenarios"),
     "experiments": (
+        "ewm._internal",
         "ewm._version",
         "ewm.core",
         "ewm.equilibrium",
@@ -22,6 +24,7 @@ LAYER_IMPORTS = {
         "ewm.scenarios",
     ),
     "ontology": (
+        "ewm._internal",
         "ewm._version",
         "ewm.core",
         "ewm.equilibrium",
@@ -29,7 +32,12 @@ LAYER_IMPORTS = {
         "ewm.ontology",
         "ewm.scenarios",
     ),
-    "workbench": ("ewm._version", "ewm.ontology", "ewm.workbench"),
+    "workbench": (
+        "ewm._internal",
+        "ewm._version",
+        "ewm.ontology",
+        "ewm.workbench",
+    ),
 }
 
 

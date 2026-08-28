@@ -1,4 +1,4 @@
-"""Canonical serialization and state codecs for provenance and replay."""
+"""Canonical state serialization for provenance and replay."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from typing import Any, Protocol, cast, runtime_checkable
 
 import numpy as np
 
-from .records import Action, ConstraintViolation, freeze_value
+from ..domain.records import Action, ConstraintViolation, freeze_value
 
 CANONICAL_STATE_CODEC_ID = "ewm.state.canonical.v1"
 _TYPE = "__ewm_type__"
