@@ -1,6 +1,6 @@
 # Evidence-safe repository organization plan
 
-**Status:** active  
+**Status:** complete
 **Baseline:** 574 tests passing; Ruff clean; mypy clean  
 **Branch:** `main`
 
@@ -85,3 +85,26 @@ The final gate runs all 574 baseline tests, strict source verification, paper co
 scientific stress, and installed-distribution checks. A changed future run hash is expected after a
 Python source-tree change and is recorded as provenance; numerical outputs and public behavior must
 remain unchanged.
+
+## Outcome
+
+Completed on 2026-08-28 with the following structural results:
+
+- Added package and directory ownership maps for `src/ewm`, tests, documentation, examples,
+  references, and scripts.
+- Added characterization contracts for public exports, historical import paths, installed protocol
+  resources, ontology profile identities, and the ignored local paper cache.
+- Removed the ontology projection and verification import cycle through the shared
+  `ewm.ontology.bundles` identity boundary.
+- Split experiment catalog models, scenario adapters, and default assembly into
+  `ewm.experiments.catalog` while keeping provenance-bound executors at their historical paths.
+- Moved reusable conformance report construction into `ewm.conformance`; the repository script is
+  now a thin compatibility entry point.
+- Moved both untracked paper PDFs into the single ignored `references/local/` cache and made source
+  verification commands use it by default.
+- Preserved evidence-bound Han v1 files, public modules, documentation URLs, and test paths. Those
+  paths require explicit evidence-version migrations rather than cosmetic moves.
+
+Final verification: 582 tests passed, Ruff passed, mypy passed, 82 strict conformance evidence tests
+passed, both paper sources verified, all quick scientific stress checks passed, and the 0.2.0 wheel
+and source distribution validated.
