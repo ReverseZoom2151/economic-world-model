@@ -7,8 +7,8 @@ import math
 import pytest
 from fastapi.testclient import TestClient
 
-from ewm.ontology.snapshot import SnapshotSelection, validate_globe_geometry
-from ewm.workbench.export import SnapshotAssets
+from ewm.ontology.snapshots import SnapshotSelection, validate_globe_geometry
+from ewm.workbench.snapshots import SnapshotAssets
 
 
 @pytest.mark.parametrize(

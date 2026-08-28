@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from ewm.ontology.snapshot import SnapshotSelection, SnapshotSource, compile_investigation
-from ewm.workbench.export import (
+from ewm.ontology.snapshots import SnapshotSelection, SnapshotSource, compile_investigation
+from ewm.workbench.snapshots import (
     SnapshotAssets,
     SnapshotExportError,
     SnapshotVerificationError,

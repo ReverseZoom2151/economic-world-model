@@ -13,7 +13,7 @@ from ewm.ontology.graph.model import (
     SourceLocator,
 )
 from ewm.ontology.projection.service import seal_projection
-from ewm.ontology.snapshot import (
+from ewm.ontology.snapshots import (
     SnapshotLimits,
     SnapshotSelection,
     SnapshotSizeError,
