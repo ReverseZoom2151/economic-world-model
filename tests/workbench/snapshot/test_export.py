@@ -54,6 +54,8 @@ def test_export_is_deterministic_self_contained_and_csp_hashed(
     assert first_report.file_sha256 == hashlib.sha256(first.read_bytes()).hexdigest()
     assert "ewm.investigation.v1" in html
     assert "Content-Security-Policy" in html
+    # Browsers ignore frame-ancestors in a meta CSP; live HTTP responses enforce it.
+    assert "frame-ancestors" not in html
     assert assets.script_sha256_csp in html
     assert assets.style_sha256_csp in html
     assert '<template id="ewm-snapshot"' in html

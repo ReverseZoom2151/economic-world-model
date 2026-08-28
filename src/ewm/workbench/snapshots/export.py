@@ -155,7 +155,6 @@ def _document(payload: bytes, assets: SnapshotAssets) -> bytes:
             "connect-src 'none'",
             "font-src data:",
             "form-action 'none'",
-            "frame-ancestors 'none'",
             "img-src data: blob:",
             f"script-src {assets.script_sha256_csp}",
             f"style-src {assets.style_sha256_csp}",
