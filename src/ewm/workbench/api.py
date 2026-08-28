@@ -46,6 +46,7 @@ from ewm.ontology.query import (
     PathQuery,
     QueryCostError,
     RelationQuery,
+    SequenceWindow,
 )
 
 from .contracts import (
@@ -61,13 +62,6 @@ from .contracts import (
 from .security import SecurityPolicy, WorkbenchSecurityMiddleware, token_dependency
 
 _STATIC_DIRECTORY = Path(__file__).with_name("static")
-_EVENT_KINDS = (
-    "action_event",
-    "event",
-    "market_event",
-    "observation_event",
-    "settlement_event",
-)
 _STATE_KINDS = ("state_observation",)
 _DDGE_KINDS = ("ddge_candidate", "ddge_evaluation", "ddge_proposal")
 
@@ -416,8 +410,16 @@ def create_workbench_app(
         limit: Annotated[int | None, Query(gt=0)] = None,
         cursor: Annotated[str | None, Query(min_length=1)] = None,
     ) -> dict[str, Any]:
-        approved, data = await object_kind_page(run_id, _EVENT_KINDS, limit, cursor)
-        return _success(data, approved)
+        approved = registry.get(run_id)
+        page = approved.query.objects(
+            ObjectQuery(
+                layers=("runtime_occurrence",),
+                event_sequence=SequenceWindow(start=0),
+            ),
+            limit=limit,
+            cursor=cursor,
+        )
+        return _success(_page_data(page, ontology_object_to_data), approved)
 
     @router.get("/states", response_model=SuccessEnvelope)
     async def states(

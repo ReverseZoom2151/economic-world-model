@@ -163,7 +163,7 @@ export function AppShell({ dataSource }: AppShellProps) {
         <>
           <div className="workspace-grid">
             <ObjectExplorer dataSource={dataSource} />
-            <LensRouter />
+            <LensRouter dataSource={dataSource} />
             <EvidenceInspector dataSource={dataSource} />
           </div>
           <Timeline />
