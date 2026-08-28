@@ -11,7 +11,7 @@ describe("workbench client foundation", () => {
     expect(
       screen.getByRole("heading", { name: "Ontology Research Workbench" }),
     ).toBeVisible();
-    expect(screen.getByText("Client foundation ready")).toBeVisible();
+    expect(screen.getByText("Local research instrument")).toBeVisible();
 
     const accessibility = await axe.run(container, {
       rules: { "color-contrast": { enabled: false } },

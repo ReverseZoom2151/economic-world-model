@@ -122,7 +122,15 @@ class WorkbenchSecurityMiddleware:
 
         downstream_receive = receive
         if response is None and path.startswith("/api/"):
-            if headers.get("origin") not in self.policy.allowed_origins:
+            origin = headers.get("origin")
+            safe_same_origin_fetch = (
+                origin is None
+                and scope.get("method") in {"GET", "HEAD"}
+                and headers.get("sec-fetch-site") == "same-origin"
+                and headers.get("sec-fetch-mode") in {"cors", "same-origin"}
+                and headers.get("sec-fetch-dest") == "empty"
+            )
+            if origin not in self.policy.allowed_origins and not safe_same_origin_fetch:
                 response = _error_response(403, "invalid_origin", "request origin is not approved")
             else:
                 content_length = headers.get("content-length")

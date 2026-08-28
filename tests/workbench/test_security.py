@@ -144,6 +144,24 @@ def test_token_query_parameters_are_rejected_even_with_valid_header(
     assert "query-secret" not in response.text
 
 
+def test_safe_same_origin_browser_fetch_uses_fetch_metadata_when_origin_is_absent(
+    client: TestClient,
+    security_policy,
+) -> None:
+    response = client.get(
+        "/api/v1/system",
+        headers={
+            "Host": "127.0.0.1:8123",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
+            "X-EWM-Token": security_policy.session_token,
+        },
+    )
+
+    assert response.status_code == 200
+
+
 def test_server_configuration_and_socket_are_loopback_only(
     approved_registry,
 ) -> None:
