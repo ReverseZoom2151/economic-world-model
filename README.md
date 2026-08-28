@@ -237,6 +237,7 @@ See [Limitations and non-goals](docs/limitations.md) for the complete boundary.
 | [Capability matrix](docs/capability-matrix.md) | Han L1 to L6 requirements and the separate DDGE axis |
 | [Product validation](docs/product-validation.md) | Historical benchmarks plus the current 0.2.0 audit |
 | [Limitations and non-goals](docs/limitations.md) | Numerical, empirical, runtime, and deployment boundaries |
+| [Ontology repository study](docs/ontology-repository-study.md) | Eight-repository architecture, provenance, verifier, and licensing review |
 
 The formal ideas and paper-specific equations belong to the cited authors. This repository is an
 independent implementation and is not an official release or endorsement by either paper's authors.
