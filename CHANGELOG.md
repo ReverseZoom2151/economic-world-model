@@ -17,11 +17,17 @@ and versions follow Semantic Versioning where practical during the alpha phase.
 - Distribution validation, reproducible release dry-runs, security scanning, and bounded property
   and mutation workflows.
 - Community health, governance, contribution, support, and security policies.
+- Sealed v2 run artifacts, deterministic FX replay, and explicit read-only handling of legacy v1
+  artifacts.
+- Hashed Han L1/L2 validation and a 16-requirement L3-L6 readiness harness that awards no higher
+  capability without the required external evidence.
 
 ### Changed
 
 - The package release line is now 0.2.0 and reads its version from `src/ewm/_version.py`.
 - GitHub Actions use least-privilege permissions, explicit timeouts, and immutable action pins.
+- Compiled FX summary workloads omit replay-complete payloads while retaining runtime contracts and
+  canonical summary events; replayable runs continue to use full provenance by default.
 
 ### Security
 

@@ -1,6 +1,6 @@
 # Local product validation
 
-**Document version:** 1.4<br>
+**Document version:** 1.5<br>
 **Last reviewed:** 2026-08-28<br>
 **Scope:** Current release 0.2.0 audit with the measured 0.1.0 baseline preserved below
 
@@ -17,7 +17,7 @@ benchmark values.
 |---|---|---|
 | Package release | `_version.py` is the version source; reproducible wheel and source builds validate metadata, contents, installed CLI discovery, and the shipped locked protocol | Installation checks do not validate economic assumptions |
 | Runtime compilation | Typed world declarations compile to a lifecycle with ownership, scheduling, constraint policy, rollback, codecs, and owned RNG restoration | Compiler correctness is established for declared finite mechanisms, not arbitrary economies |
-| FX migration | Compiled execution preserves characterized pre-compiler outputs for declared seeds and adds canonical event and replay contracts | This is software parity, not an independent economic oracle |
+| FX migration | Compiled execution preserves characterized pre-compiler outputs for declared seeds and adds canonical event and replay contracts; discarded inner replications use summary provenance | Summary provenance retains compiler and mechanism execution but cannot be exported for replay; this is software parity, not an independent economic oracle |
 | Numerical verification | Package-import-free scalar, forecasting-population, and production oracles use distinct equations or algorithms; a separate singular-direction oracle checks non-contraction | Forecasting finite-sample damping and the production calibration remain package-authored |
 | Theorem certificates | Restricted affine and polyhedral certificates record assumption provenance, invariant domains, solver residuals, total-variation domain checks, and Euclidean contraction diagnostics | General Assumption 3.2 and Kakutani obligations remain open |
 | Run artifacts | `ewm.run.v2` seals every payload and the canonical identity; `verify-run` fails closed; `replay-run` supports sealed FX rollouts | `ewm.run.v1` receives read-only structural verification and is not sealed |
@@ -32,11 +32,39 @@ themselves establish that an authored finite instance is a paper target or a rea
 
 | Gate | Result on 28 August 2026 |
 |---|---|
-| Documentation contract | Pending final local rerun |
-| Ruff and strict mypy | Pending final local rerun |
-| Pytest with branch coverage | Pending final local rerun |
-| Distribution and installed-wheel checks | Pending final local rerun |
-| Paper source locks and conformance | Pending final local rerun |
+| Documentation contract | Passed within the 472-test suite, including README math, links, paths, evidence wording, and current-version traceability |
+| Ruff and strict mypy | Passed across the repository and 87 source files |
+| Pytest with branch coverage | 472 passed; 85.4% total branch coverage against an 85% floor |
+| Distribution and installed-wheel checks | Reproducible 0.2.0 wheel and source distribution, Twine, CFF, content, clean-install, `pip check`, version, and installed CLI checks passed |
+| Paper source locks and conformance | Both local PDFs matched locked hashes and page counts; 63 evidence tests passed; Han level L2; zero L3-L6 awards |
+| Scientific stress and locked protocol | All 7 stress checks passed; the 12-replication locked credit protocol exited nonzero as specified, with all seeds breaching tolerance and no authorized claim |
+| Property, mutation, and security | 3 seeded property tests passed; 11 scoped mutants killed with 0 unresolved; pip-audit and Bandit passed |
+| Public examples | All 8 documented examples passed |
+| Isolated performance | All 8 experiment-preset cells completed with stable run hashes |
+
+### Current performance baseline
+
+Each cell ran in a fresh process from a native-filesystem virtual environment under Python 3.12.3
+on WSL2. Smoke results use 10 samples and research results use 3. The p95 research figures are
+interpolated from three samples and are descriptive local measurements, not service-level
+objectives.
+
+| Experiment | Preset | p50 | p95 | Maximum peak RSS |
+|---|---|---:|---:|---:|
+| Credit regimes | Smoke | 1.346s | 1.408s | 181 MiB |
+| Credit regimes | Research | 8.898s | 8.946s | 323 MiB |
+| Forecasting DDGE | Smoke | 0.808s | 0.859s | 160 MiB |
+| Forecasting DDGE | Research | 4.304s | 4.310s | 164 MiB |
+| FX comparisons | Smoke | 0.836s | 0.853s | 160 MiB |
+| FX comparisons | Research | 94.929s | 95.005s | 161 MiB |
+| FX rollout | Smoke | 0.651s | 0.667s | 159 MiB |
+| FX rollout | Research | 4.221s | 4.231s | 223 MiB |
+
+The compiled research FX comparison remains slower than the historical direct path: its p50 is
+2.45 times the preserved 0.1 baseline. A replay-payload profile identified redundant serialization
+for inner replications. Summary provenance reduced that workload materially while preserving the
+compiler, contracts, constraints, scheduler, market mechanism, deterministic results, and canonical
+summary event chain. Full `fx.rollout` runs retain replay-complete provenance.
 
 ### Current claim audit
 

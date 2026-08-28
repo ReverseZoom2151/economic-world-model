@@ -14,7 +14,7 @@ Build and solve economic worlds where agents, markets, data, and learned models 
 <p align="center">
 <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940">Cong: Economic World Models and Data-Driven Generative Equilibria</a>
 |
-<a href="https://arxiv.org/abs/2608.06020v1">Han et al.: From Economic Agents to Agentic Economies</a>
+<a href="https://arxiv.org/abs/2608.06020v1">Han et al.: From Economic Agents to Agentic Economies: A Systems Blueprint for Economic World Models</a>
 </p>
 
 Economic World Model is an auditable research implementation of selected definitions, protocols,
@@ -201,6 +201,11 @@ action contracts, state codecs, event-chain provenance, rollback-safe randomness
 [audited dependency map](docs/architecture/ewm_foundations_dependency_map.md) records enforced
 one-way imports.
 
+Replayable runs use full provenance by default. Replicated comparative-statistics runs use summary
+provenance because their inner event streams are discarded; they still execute through the same
+compiler, action validation, scheduler, constraints, and market mechanism. Summary runs retain a
+canonical event chain but intentionally cannot be exported for replay.
+
 ## Limitations
 
 - The bundled laboratories use synthetic populations and package-authored assumptions. They do not
@@ -213,6 +218,9 @@ one-way imports.
   evolution, institutions, and alignment do not award L3, L4, L5, or L6.
 - `replay-run` currently supports sealed FX rollout artifacts only. Legacy v1 bundles are verified in
   read-only compatibility mode and cannot be replayed under the v2 contract.
+- Full replay provenance has a measurable runtime cost. On the recorded local 0.2 audit,
+  `fx.rollout` research runs had a 4.22-second p50 and replicated FX research comparisons had a
+  94.93-second p50. These are research baselines, not service-level objectives.
 - Credit, FX, forecasting, and production outputs must not guide lending, trading, employment,
   pricing, regulatory, or public-policy decisions.
 
