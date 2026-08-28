@@ -1,6 +1,6 @@
 {
   "index.html": {
-    "file": "assets/index-hKHn0Dz1.js",
+    "file": "assets/index-CCi7uQ5V.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -9,7 +9,7 @@
       "node_modules/cytoscape/dist/cytoscape.esm.mjs"
     ],
     "css": [
-      "assets/index-BfP_Lv9J.css"
+      "assets/index-BzA60UbH.css"
     ]
   },
   "node_modules/cytoscape/dist/cytoscape.esm.mjs": {
@@ -19,7 +19,7 @@
     "isDynamicEntry": true
   },
   "node_modules/vega-embed/build/embed.js": {
-    "file": "assets/embed-BcSZb--p.js",
+    "file": "assets/embed-Cd6Mfkao.js",
     "name": "embed",
     "src": "node_modules/vega-embed/build/embed.js",
     "isDynamicEntry": true,

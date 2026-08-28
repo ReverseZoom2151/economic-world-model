@@ -891,6 +891,268 @@ select:focus-visible {
   margin-bottom: 0;
 }
 
+.learning-closure > ol {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(7rem, 1fr));
+  gap: 1px;
+  padding: 1px;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  background: var(--rule);
+  list-style: none;
+}
+
+.learning-closure > ol li {
+  position: relative;
+  display: grid;
+  min-height: 8rem;
+  align-content: space-between;
+  gap: 0.7rem;
+  padding: 0.8rem;
+  background: var(--paper);
+}
+
+.learning-closure > ol li:not(:last-child)::after {
+  position: absolute;
+  z-index: 1;
+  top: calc(50% - 0.8rem);
+  right: -0.55rem;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: var(--signal);
+  content: "→";
+  font-size: 0.65rem;
+  line-height: 0.9rem;
+  text-align: center;
+}
+
+.learning-closure > ol li[data-stage-status="unavailable"] {
+  background: #e2e2da;
+  color: var(--quiet);
+}
+
+.learning-closure > ol li > span {
+  color: var(--quiet);
+  font-size: 0.55rem;
+}
+
+.learning-closure > ol li > strong {
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.learning-closure > ol li > small {
+  font-size: 0.58rem;
+}
+
+.closure-detail dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(8rem, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--ink);
+}
+
+.closure-detail dl div {
+  min-width: 0;
+  padding: 0.8rem;
+  border-right: 1px solid var(--rule);
+}
+
+.closure-detail dt,
+.candidate-basins dt,
+.residual-history dt {
+  color: var(--quiet);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.closure-detail dd,
+.candidate-basins dd,
+.residual-history dd {
+  overflow-wrap: anywhere;
+  margin: 0.35rem 0 0;
+  font-size: 0.72rem;
+}
+
+.closure-gaps {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--ink);
+}
+
+.closure-gaps > strong {
+  display: inline-block;
+  padding: 0.3rem 0.5rem;
+  background: var(--signal);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.closure-gaps ul {
+  padding: 0;
+  list-style: none;
+}
+
+.closure-gaps li {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.7fr) 1fr;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.68rem;
+}
+
+.closure-gaps li p {
+  margin: 0;
+  color: var(--quiet);
+}
+
+.candidate-basins,
+.residual-history,
+.certificate-panel {
+  margin-top: 1.7rem;
+}
+
+.candidate-basins h3,
+.residual-history h3,
+.certificate-panel h3 {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.candidate-basins > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+.candidate-basins > header > div {
+  display: grid;
+  padding-bottom: 0.5rem;
+  text-align: right;
+}
+
+.candidate-basins > header span {
+  color: var(--quiet);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+}
+
+.candidate-basins > ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.candidate-basins > ol > li {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(12rem, 0.7fr) 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.candidate-basins > ol > li > span {
+  color: var(--quiet);
+  font-family: ui-monospace, "Cascadia Mono", monospace;
+  font-size: 0.62rem;
+}
+
+.candidate-basins > ol > li > div {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.candidate-basins > ol > li > div strong {
+  overflow: hidden;
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-weight: 500;
+  text-overflow: ellipsis;
+}
+
+.candidate-basins > ol > li > div small {
+  color: var(--quiet);
+  text-transform: lowercase;
+}
+
+.candidate-basins dl,
+.residual-history dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(6rem, 1fr));
+  gap: 0.7rem;
+  margin: 0;
+}
+
+.residual-table {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1px;
+  padding: 1px;
+  background: var(--rule);
+}
+
+.residual-table > article {
+  padding: 1rem;
+  background: var(--paper);
+}
+
+.residual-table article > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.62rem;
+}
+
+.residual-table code {
+  display: block;
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+.residual-table dl {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.certificate-panel > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1px;
+  padding: 1px;
+  background: var(--rule);
+}
+
+.certificate-panel article {
+  padding: 1rem;
+  background: var(--paper);
+}
+
+.certificate-panel h4 {
+  overflow-wrap: anywhere;
+  margin-top: 0;
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-weight: 500;
+}
+
+.certificate-panel article > p,
+.certificate-panel article > div > p {
+  color: var(--quiet);
+  font-size: 0.72rem;
+}
+
+.certificate-panel ul {
+  padding-left: 1rem;
+  font-size: 0.68rem;
+}
+
 .sparse-fallback,
 .lens-loading {
   display: grid;

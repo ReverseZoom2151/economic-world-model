@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 
 import type {
+  CoverageContract,
   InvestigationDataSource,
   MeasurementContract,
   OntologyObjectContract,
   RelationContract,
 } from "../data/InvestigationDataSource";
 import { MarketLens } from "../lenses/market/MarketLens";
+import { DdgeLens } from "../lenses/ddge/DdgeLens";
+import { LearningLens } from "../lenses/learning/LearningLens";
 import { RuntimeLens } from "../lenses/runtime/RuntimeLens";
 import { WorldLens } from "../lenses/world/WorldLens";
 import { useInvestigation, type InvestigationLens } from "../state/investigation";
@@ -36,6 +39,7 @@ interface PrimaryLensData {
   readonly relations: ReadonlyArray<RelationContract>;
   readonly events: ReadonlyArray<OntologyObjectContract>;
   readonly measurements: ReadonlyArray<MeasurementContract>;
+  readonly coverage: ReadonlyArray<CoverageContract>;
   readonly failed: boolean;
 }
 
@@ -45,11 +49,95 @@ const EMPTY_DATA: PrimaryLensData = {
   relations: [],
   events: [],
   measurements: [],
+  coverage: [],
   failed: false,
 };
 
-function isPrimaryLens(lens: InvestigationLens): lens is "world" | "runtime" | "market" {
-  return lens === "world" || lens === "runtime" || lens === "market";
+type ImplementedLens = "world" | "runtime" | "market" | "learning" | "ddge";
+
+function isImplementedLens(lens: InvestigationLens): lens is ImplementedLens {
+  return ["world", "runtime", "market", "learning", "ddge"].includes(lens);
+}
+
+async function loadLens(
+  dataSource: InvestigationDataSource,
+  runId: string,
+  lens: ImplementedLens,
+): Promise<Omit<PrimaryLensData, "key" | "failed">> {
+  if (lens === "world") {
+    const [objects, relations] = await Promise.all([
+      dataSource.objects({ runId, layers: ["economic_declaration"], limit: 200 }),
+      dataSource.relations({ runId, limit: 200 }),
+    ]);
+    return {
+      objects: objects.items,
+      relations: relations.items,
+      events: [],
+      measurements: [],
+      coverage: [],
+    };
+  }
+  if (lens === "runtime") {
+    const [events, relations] = await Promise.all([
+      dataSource.events({ runId, limit: 200 }),
+      dataSource.relations({ runId, limit: 200 }),
+    ]);
+    return {
+      objects: [],
+      relations: relations.items,
+      events: events.items,
+      measurements: [],
+      coverage: [],
+    };
+  }
+  if (lens === "market") {
+    const [measurements, events] = await Promise.all([
+      dataSource.measurements({ runId, limit: 200 }),
+      dataSource.events({ runId, limit: 200 }),
+    ]);
+    return {
+      objects: [],
+      relations: [],
+      events: events.items.filter(
+        (event) =>
+          event.ref.kind === "market_rejection" ||
+          (event.ref.kind === "outcome" &&
+            event.properties.outcome_kind === "order_rejections"),
+      ),
+      measurements: measurements.items,
+      coverage: [],
+    };
+  }
+  const kinds =
+    lens === "learning"
+      ? [
+          "parameter_version",
+          "action_occurrence",
+          "generated_datum",
+          "dataset",
+          "training_run",
+          "model_version",
+        ]
+      : [
+          "inner_equilibrium",
+          "ddge_candidate",
+          "residual",
+          "numerical_validation",
+          "stability_diagnostic",
+          "theorem_certificate",
+        ];
+  const [objects, relations, run] = await Promise.all([
+    dataSource.objects({ runId, kinds, limit: 200 }),
+    dataSource.relations({ runId, limit: 200 }),
+    dataSource.run(runId),
+  ]);
+  return {
+    objects: objects.items,
+    relations: relations.items,
+    events: [],
+    measurements: [],
+    coverage: run.coverage ?? [],
+  };
 }
 
 export function LensRouter({ dataSource }: LensRouterProps) {
@@ -59,50 +147,10 @@ export function LensRouter({ dataSource }: LensRouterProps) {
 
   useEffect(() => {
     let active = true;
-    if (state.runId === null || !isPrimaryLens(state.lens)) {
+    if (state.runId === null || !isImplementedLens(state.lens)) {
       return;
     }
-    const runId = state.runId;
-    const relations = dataSource.relations({ runId, limit: 200 });
-    const request =
-      state.lens === "world"
-        ? Promise.all([
-            dataSource.objects({
-              runId,
-              layers: ["economic_declaration"],
-              limit: 200,
-            }),
-            relations,
-          ]).then(([objects, relationPage]) => ({
-            objects: objects.items,
-            relations: relationPage.items,
-            events: [],
-            measurements: [],
-          }))
-        : state.lens === "runtime"
-          ? Promise.all([dataSource.events({ runId, limit: 200 }), relations]).then(
-              ([events, relationPage]) => ({
-                objects: [],
-                relations: relationPage.items,
-                events: events.items,
-                measurements: [],
-              }),
-            )
-          : Promise.all([
-              dataSource.measurements({ runId, limit: 200 }),
-              dataSource.events({ runId, limit: 200 }),
-            ]).then(([measurements, events]) => ({
-              objects: [],
-              relations: [],
-              events: events.items.filter(
-                (event) =>
-                  event.ref.kind === "market_rejection" ||
-                  (event.ref.kind === "outcome" &&
-                    event.properties.outcome_kind === "order_rejections"),
-              ),
-              measurements: measurements.items,
-            }));
-    void request
+    void loadLens(dataSource, state.runId, state.lens)
       .then((data) => {
         if (active) {
           setResult({ key: requestKey, ...data, failed: false });
@@ -118,7 +166,7 @@ export function LensRouter({ dataSource }: LensRouterProps) {
     };
   }, [dataSource, requestKey, state.lens, state.runId]);
 
-  if (state.runId !== null && isPrimaryLens(state.lens)) {
+  if (state.runId !== null && isImplementedLens(state.lens)) {
     if (result.key !== requestKey) {
       return (
         <section className="lens-slot" aria-label="Active analytical lens">
@@ -160,9 +208,27 @@ export function LensRouter({ dataSource }: LensRouterProps) {
         </section>
       );
     }
+    if (state.lens === "market") {
+      return (
+        <section className="lens-slot" aria-label="Active analytical lens">
+          <MarketLens measurements={result.measurements} rejections={result.events} />
+        </section>
+      );
+    }
+    if (state.lens === "learning") {
+      return (
+        <section className="lens-slot" aria-label="Active analytical lens">
+          <LearningLens
+            objects={result.objects}
+            relations={result.relations}
+            coverage={result.coverage}
+          />
+        </section>
+      );
+    }
     return (
       <section className="lens-slot" aria-label="Active analytical lens">
-        <MarketLens measurements={result.measurements} rejections={result.events} />
+        <DdgeLens objects={result.objects} relations={result.relations} />
       </section>
     );
   }

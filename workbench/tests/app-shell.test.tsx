@@ -16,6 +16,12 @@ describe("investigation shell", () => {
     expect(screen.getByRole("region", { name: "Evidence inspector" })).toBeVisible();
     expect(screen.getByRole("region", { name: "Event timeline" })).toBeVisible();
 
+    await user.click(screen.getByRole("button", { name: "Learning" }));
+    expect(
+      await screen.findByRole("heading", { name: "Behavior-to-learning closure" }),
+    ).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "DDGE" }));
+    expect(await screen.findByRole("heading", { name: "DDGE diagnostics" })).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Evidence" }));
     expect(screen.getByRole("heading", { name: "Evidence lens" })).toBeVisible();
 

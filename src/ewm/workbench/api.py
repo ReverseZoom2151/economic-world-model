@@ -28,6 +28,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from ewm.core.provenance.serialization import canonical_json, content_digest
 from ewm.ontology.comparison import compare_projections
 from ewm.ontology.graph.identity import (
+    coverage_entry_to_data,
     measurement_to_data,
     ontology_object_to_data,
     ontology_record_to_data,
@@ -98,6 +99,9 @@ class ApprovedRun:
             "integrity_level": self.integrity_level,
             "projection_digest": self.projection.projection_digest,
             "ontology_schema": self.projection.schema,
+            "coverage": [
+                coverage_entry_to_data(entry) for entry in self.projection.coverage
+            ],
         }
 
 

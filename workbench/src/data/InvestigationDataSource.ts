@@ -21,6 +21,16 @@ export interface RunSummary {
   readonly integrity_level: string;
   readonly projection_digest: string;
   readonly ontology_schema: string;
+  readonly coverage?: ReadonlyArray<CoverageContract>;
+}
+
+export interface CoverageContract {
+  readonly record_type: "coverage_entry";
+  readonly source: SourceLocatorContract;
+  readonly field: string;
+  readonly status: string;
+  readonly targets: ReadonlyArray<OntologyRefContract>;
+  readonly reason: string | null;
 }
 
 export interface OntologyRefContract {
