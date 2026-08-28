@@ -24,7 +24,7 @@ def _run(command: list[str], *, cwd: Path, env: dict[str, str] | None = None) ->
     return result.stdout
 
 
-def test_built_wheel_installs_verify_and_replay_commands(tmp_path: Path) -> None:
+def test_built_wheel_installs_run_and_ontology_commands(tmp_path: Path) -> None:
     repository = Path(__file__).parents[3]
     run_dir = ewm.run_experiment(
         "fx.rollout",
@@ -85,6 +85,35 @@ def test_built_wheel_installs_verify_and_replay_commands(tmp_path: Path) -> None
     replay = json.loads(
         _run([str(command), "replay-run", str(run_dir)], cwd=tmp_path, env=env)
     )
+    projection_dir = tmp_path / "installed-ontology"
+    projection = json.loads(
+        _run(
+            [
+                str(command),
+                "ontology",
+                "project",
+                "--run-dir",
+                str(run_dir),
+                "--output",
+                str(projection_dir),
+            ],
+            cwd=tmp_path,
+            env=env,
+        )
+    )
+    ontology_verification = json.loads(
+        _run(
+            [
+                str(command),
+                "ontology",
+                "verify",
+                "--bundle",
+                str(projection_dir),
+            ],
+            cwd=tmp_path,
+            env=env,
+        )
+    )
     installed_path = Path(
         _run(
             [str(python), "-c", "import ewm; print(ewm.__file__)"],
@@ -96,4 +125,7 @@ def test_built_wheel_installs_verify_and_replay_commands(tmp_path: Path) -> None
     assert "fx.rollout" in listing
     assert verification["ok"] is True
     assert replay["matched"] is True
+    assert projection["ok"] is True
+    assert ontology_verification["ok"] is True
+    assert projection["projection_digest"] == ontology_verification["projection_digest"]
     assert environment_dir in installed_path.parents

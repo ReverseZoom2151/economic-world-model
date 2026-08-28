@@ -21,6 +21,15 @@ from .experiments import (
     verify_and_replay_run,
     verify_run,
 )
+from .ontology import (
+    DEFAULT_PROFILES,
+    ProjectionCompilationError,
+    ProjectionVerificationError,
+    ProjectionVerificationReport,
+    compile_run_projection,
+    verify_projection_bundle,
+    write_projection_bundle,
+)
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -45,6 +54,25 @@ def _parser() -> argparse.ArgumentParser:
         "replay-run", help="verify and deterministically replay one supported run"
     )
     replay_parser.add_argument("run_dir", type=Path)
+    ontology_parser = commands.add_parser(
+        "ontology",
+        help="project and verify read-only ontology bundles",
+    )
+    ontology_commands = ontology_parser.add_subparsers(
+        dest="ontology_command",
+        required=True,
+    )
+    project_parser = ontology_commands.add_parser(
+        "project",
+        help="project one verified run into an explicit derived output path",
+    )
+    project_parser.add_argument("--run-dir", type=Path, required=True)
+    project_parser.add_argument("--output", type=Path, required=True)
+    ontology_verify_parser = ontology_commands.add_parser(
+        "verify",
+        help="verify one sealed ontology projection bundle",
+    )
+    ontology_verify_parser.add_argument("--bundle", type=Path, required=True)
     return parser
 
 
@@ -79,6 +107,84 @@ def _failure_data(operation: str, run_dir: Path, error: Exception) -> dict[str, 
     }
 
 
+def _projection_verification_data(
+    report: ProjectionVerificationReport,
+) -> dict[str, object]:
+    return {
+        "adapter_digest": report.adapter_digest,
+        "adapter_identity": report.adapter_identity,
+        "artifact_schema": report.artifact_schema,
+        "bundle_dir": str(report.bundle_dir),
+        "bundle_sha256": report.bundle_sha256,
+        "integrity_level": report.integrity_level,
+        "ok": True,
+        "operation": "ontology.verify",
+        "payloads": {
+            name: dict(checksum) for name, checksum in report.payloads.items()
+        },
+        "projection_digest": report.projection_digest,
+        "source_bundle_sha256": report.source_bundle_sha256,
+        "source_fingerprint": report.source_fingerprint,
+        "source_identity_sha256": report.source_identity_sha256,
+        "source_manifest_sha256": report.source_manifest_sha256,
+        "source_run_hash": report.source_run_hash,
+    }
+
+
+def _ontology_project(run_dir: Path, output: Path) -> int:
+    try:
+        compilation = compile_run_projection(run_dir, adapters=DEFAULT_PROFILES)
+        bundle = write_projection_bundle(
+            output,
+            compilation.projection,
+            compilation.provenance,
+            source_run_dir=run_dir,
+        )
+        report = verify_projection_bundle(bundle)
+    except (OSError, ProjectionCompilationError, ProjectionVerificationError) as error:
+        _print_json(
+            {
+                "error": str(error),
+                "error_type": type(error).__name__,
+                "ok": False,
+                "operation": "ontology.project",
+                "output": str(output),
+                "run_dir": str(run_dir),
+            }
+        )
+        return 1
+    _print_json(
+        {
+            "adapter_identity": report.adapter_identity,
+            "bundle_dir": str(bundle),
+            "bundle_sha256": report.bundle_sha256,
+            "ok": True,
+            "operation": "ontology.project",
+            "projection_digest": report.projection_digest,
+            "source_run_hash": report.source_run_hash,
+        }
+    )
+    return 0
+
+
+def _ontology_verify(bundle: Path) -> int:
+    try:
+        report = verify_projection_bundle(bundle)
+    except ProjectionVerificationError as error:
+        _print_json(
+            {
+                "bundle_dir": str(bundle),
+                "error": str(error),
+                "error_type": type(error).__name__,
+                "ok": False,
+                "operation": "ontology.verify",
+            }
+        )
+        return 1
+    _print_json(_projection_verification_data(report))
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Execute the CLI and return a process status code."""
 
@@ -110,6 +216,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             _print_json(_failure_data("replay-run", run_dir, error))
             return 1
         return 0
+    if arguments.command == "ontology":
+        if arguments.ontology_command == "project":
+            return _ontology_project(Path(arguments.run_dir), Path(arguments.output))
+        return _ontology_verify(Path(arguments.bundle))
     run = run_experiment(
         str(arguments.experiment),
         preset=str(arguments.preset),
