@@ -4,7 +4,7 @@ Tests are grouped by what they establish, not only by the source module they tou
 
 | Directory | Evidence intent |
 |---|---|
-| `unit/` | Local contracts grouped into `core/`, `equilibrium/`, `capabilities/`, and `experiments/` |
+| `unit/` | Local contracts grouped into `core/`, `equilibrium/`, `capabilities/`, and `experiments/`; core tests mirror its four source boundaries |
 | `integration/` | Cross-component workflows grouped into `runtime/`, `experiments/`, `papers/`, `ontology/`, and `examples/` |
 | `conformance/` | Paper-level requirements and claim-boundary enforcement |
 | `scenarios/` | Economy-specific mechanics and source targets |

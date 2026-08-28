@@ -1,4 +1,4 @@
-"""Unit contracts for external replay bundles."""
+"""Provenance contracts for external replay bundles."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Unit contracts for core update primitives."""
+"""Runtime contracts for core update primitives."""
 
 from __future__ import annotations
 

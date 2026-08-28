@@ -1,4 +1,4 @@
-"""Unit contracts for stochastic kernels."""
+"""Runtime contracts for stochastic kernels."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Unit contracts for economic world specifications."""
+"""Domain contracts for economic world specifications."""
 
 from __future__ import annotations
 

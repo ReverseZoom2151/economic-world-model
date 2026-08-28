@@ -1,4 +1,4 @@
-"""Unit contracts for economic action constraints."""
+"""Domain contracts for economic action constraints."""
 
 from ewm.core.constraints import ConstraintSet, FunctionalConstraint
 

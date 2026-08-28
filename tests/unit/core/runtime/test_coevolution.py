@@ -1,4 +1,4 @@
-"""Unit contracts for controlled co-evolution."""
+"""Runtime contracts for controlled co-evolution."""
 
 from __future__ import annotations
 

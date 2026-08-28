@@ -1,4 +1,4 @@
-"""Unit contracts for deterministic replay."""
+"""Provenance contracts for deterministic replay."""
 
 from __future__ import annotations
 

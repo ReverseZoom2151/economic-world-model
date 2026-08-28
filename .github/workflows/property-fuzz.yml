@@ -3,7 +3,7 @@ name: Bounded property tests
 on:
   pull_request:
     paths:
-      - "src/ewm/experiments/statistics.py"
+      - "src/ewm/experiments/analysis/statistics.py"
       - "src/ewm/scenarios/fx/**"
       - "tests/properties/**"
       - ".github/workflows/property-fuzz.yml"

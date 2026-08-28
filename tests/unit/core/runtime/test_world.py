@@ -1,4 +1,4 @@
-"""Unit contracts for world execution."""
+"""Runtime contracts for world execution."""
 
 from __future__ import annotations
 

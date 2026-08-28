@@ -1,4 +1,4 @@
-"""Unit contracts for owned randomness."""
+"""Provenance contracts for owned randomness."""
 
 import numpy as np
 import pytest

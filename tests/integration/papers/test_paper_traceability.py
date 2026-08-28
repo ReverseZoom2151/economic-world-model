@@ -176,15 +176,15 @@ def test_executable_economic_primitives_are_registered_at_their_source_scope() -
     expected = {
         "cong-def-2.1": (
             "src/ewm/core/assurance/coherence.py",
-            "tests/unit/core/test_coherence.py",
+            "tests/unit/core/assurance/test_coherence.py",
         ),
         "cong-eq-2.1-2.2": (
             "src/ewm/core/runtime/kernels.py",
-            "tests/unit/core/test_kernels.py",
+            "tests/unit/core/runtime/test_kernels.py",
         ),
         "cong-def-2.4": (
             "src/ewm/core/runtime/interventions.py",
-            "tests/unit/core/test_interventions.py",
+            "tests/unit/core/runtime/test_interventions.py",
         ),
     }
 

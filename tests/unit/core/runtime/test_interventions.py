@@ -1,4 +1,4 @@
-"""Unit contracts for typed interventions."""
+"""Runtime contracts for typed interventions."""
 
 from __future__ import annotations
 

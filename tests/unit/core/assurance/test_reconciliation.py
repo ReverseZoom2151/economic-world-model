@@ -1,4 +1,4 @@
-"""Unit contracts for state reconciliation."""
+"""Assurance contracts for state reconciliation."""
 
 from __future__ import annotations
 

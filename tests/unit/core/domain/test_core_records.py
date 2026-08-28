@@ -1,4 +1,4 @@
-"""Unit contracts for immutable core records."""
+"""Domain contracts for immutable core records."""
 
 from dataclasses import FrozenInstanceError
 

@@ -1,4 +1,4 @@
-"""Unit contracts for economic coherence."""
+"""Assurance contracts for economic coherence."""
 
 from __future__ import annotations
 
