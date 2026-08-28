@@ -10,7 +10,7 @@ from typing import Generic, TypeVar
 
 import numpy as np
 
-from ..provenance.serialization import canonical_json, content_digest
+from ...provenance.serialization import canonical_json, content_digest
 
 InputT = TypeVar("InputT")
 OutputT = TypeVar("OutputT", bound=Hashable)

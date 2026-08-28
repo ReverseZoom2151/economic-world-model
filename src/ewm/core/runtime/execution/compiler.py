@@ -9,8 +9,8 @@ from typing import Any, cast
 
 import numpy as np
 
-from ..domain.constraints import ConstraintSet
-from ..domain.protocols import (
+from ...domain.constraints import ConstraintSet
+from ...domain.protocols import (
     AgentPolicy,
     Constraint,
     InstitutionalEvolution,
@@ -18,11 +18,11 @@ from ..domain.protocols import (
     RealWorldAlignment,
     StateReconciler,
 )
-from ..domain.records import freeze_value
-from ..domain.specs import AgentSpecification, WorldSpecification
-from ..provenance.contracts import RuntimeContract, SchedulerPolicy, ViolationPolicy
-from ..provenance.serialization import CanonicalStateCodec, StateCodec
-from .coevolution import ControlledCoevolution
+from ...domain.records import freeze_value
+from ...domain.specs import AgentSpecification, WorldSpecification
+from ...provenance.contracts import RuntimeContract, SchedulerPolicy, ViolationPolicy
+from ...provenance.serialization import CanonicalStateCodec, StateCodec
+from ..dynamics.coevolution import ControlledCoevolution
 from .world import ProvenanceMode, World
 
 MechanismKey = tuple[str, str, str]

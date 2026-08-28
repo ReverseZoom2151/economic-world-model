@@ -6,8 +6,8 @@ from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
 from typing import Any, overload
 
-from ..domain.records import freeze_value
-from ..provenance.serialization import content_digest
+from ...domain.records import freeze_value
+from ...provenance.serialization import content_digest
 
 EVENT_SCHEMA_VERSION = "ewm.event.v1"
 EVENT_GENESIS_HASH = "0" * 64

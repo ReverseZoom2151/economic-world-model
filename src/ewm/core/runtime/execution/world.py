@@ -9,9 +9,9 @@ from typing import Any, Literal, overload
 
 import numpy as np
 
-from ..assurance.evaluation import EvaluationReport, evaluate_event_log
-from ..domain.constraints import ConstraintSet
-from ..domain.protocols import (
+from ...assurance.evaluation import EvaluationReport, evaluate_event_log
+from ...domain.constraints import ConstraintSet
+from ...domain.protocols import (
     AgentPolicy,
     AlignmentReportRecord,
     ExternalEvidenceRecord,
@@ -22,7 +22,7 @@ from ..domain.protocols import (
     RealWorldAlignment,
     StateReconciler,
 )
-from ..domain.records import (
+from ...domain.records import (
     Action,
     CoevolutionReport,
     CoevolutionSnapshot,
@@ -30,16 +30,16 @@ from ..domain.records import (
     freeze_value,
     thaw_value,
 )
-from ..provenance.contracts import RuntimeContract, runtime_contract_digest
-from ..provenance.randomness import make_rng
-from ..provenance.serialization import (
+from ...provenance.contracts import RuntimeContract, runtime_contract_digest
+from ...provenance.randomness import make_rng
+from ...provenance.serialization import (
     StateCodec,
     action_to_data,
     state_digest,
     violation_to_data,
 )
-from .coevolution import ControlledCoevolution
-from .events import Event, EventLog, EventLogView
+from ..dynamics.coevolution import ControlledCoevolution
+from ..records.events import Event, EventLog, EventLogView
 
 ProvenanceMode = Literal["full", "summary"]
 

@@ -6,8 +6,8 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, cast
 
-from ..runtime.events import EVENT_SCHEMA_VERSION, Event, verify_event_chain
-from ..runtime.world import World
+from ..runtime.execution.world import World
+from ..runtime.records.events import EVENT_SCHEMA_VERSION, Event, verify_event_chain
 from .contracts import RuntimeContract, runtime_contract_digest
 from .serialization import StateCodec, action_from_data, state_digest
 

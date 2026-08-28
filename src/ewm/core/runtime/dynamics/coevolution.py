@@ -6,14 +6,14 @@ from collections.abc import Callable, Mapping
 from math import isfinite
 from typing import Any
 
-from ..domain.records import (
+from ...domain.records import (
     Action,
     CoevolutionProposal,
     CoevolutionReport,
     CoevolutionSnapshot,
     CoevolutionUpdate,
 )
-from ..domain.specs import CoevolutionSpecification
+from ...domain.specs import CoevolutionSpecification
 
 ProposalRule = Callable[
     [Any, tuple[Action, ...], Any, CoevolutionSnapshot],

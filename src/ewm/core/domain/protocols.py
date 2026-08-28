@@ -10,7 +10,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from ..assurance.evaluation import EvaluationReport
-from ..runtime.events import Event
+from ..runtime.records.events import Event
 from .records import Action, CoevolutionReport, Transition
 
 

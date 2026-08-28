@@ -9,7 +9,7 @@ from enum import StrEnum
 from math import isfinite
 
 from ..domain.records import freeze_value
-from ..runtime.events import Event
+from ..runtime.records.events import Event
 
 
 class MeasurementStatus(StrEnum):

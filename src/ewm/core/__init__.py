@@ -110,8 +110,17 @@ from .provenance.serialization import (
     content_digest,
     state_digest,
 )
-from .runtime.coevolution import ControlledCoevolution, ProposalRule
-from .runtime.compiler import (
+from .runtime.dynamics.coevolution import ControlledCoevolution, ProposalRule
+from .runtime.dynamics.interventions import (
+    InterventionApplication,
+    InterventionDiff,
+    InterventionOperation,
+    InterventionRecord,
+    InterventionTarget,
+    SetValueIntervention,
+    apply_intervention,
+)
+from .runtime.execution.compiler import (
     AgentFactory,
     InitialStateFactory,
     MechanismFactory,
@@ -123,7 +132,14 @@ from .runtime.compiler import (
     compile_world,
     mechanism_key,
 )
-from .runtime.events import (
+from .runtime.execution.kernels import (
+    CallableStochasticKernel,
+    CategoricalKernel,
+    KernelDraw,
+    RNGProvenance,
+)
+from .runtime.execution.world import ProvenanceMode, World
+from .runtime.records.events import (
     EVENT_GENESIS_HASH,
     EVENT_SCHEMA_VERSION,
     Event,
@@ -131,39 +147,37 @@ from .runtime.events import (
     EventLogView,
     verify_event_chain,
 )
-from .runtime.interventions import (
-    InterventionApplication,
-    InterventionDiff,
-    InterventionOperation,
-    InterventionRecord,
-    InterventionTarget,
-    SetValueIntervention,
-    apply_intervention,
+from .runtime.records.updates import convex_update
+
+register_module_aliases(
+    f"{__name__}.runtime",
+    {
+        "coevolution": "dynamics.coevolution",
+        "events": "records.events",
+        "interventions": "dynamics.interventions",
+        "kernels": "execution.kernels",
+        "updates": "records.updates",
+        "world": "execution.world",
+        "compiler": "execution.compiler",
+    },
+    preserve_symbol_modules=False,
 )
-from .runtime.kernels import (
-    CallableStochasticKernel,
-    CategoricalKernel,
-    KernelDraw,
-    RNGProvenance,
-)
-from .runtime.updates import convex_update
-from .runtime.world import ProvenanceMode, World
 
 register_module_aliases(
     __name__,
     {
         "agents": "domain.agents",
-        "coevolution": "runtime.coevolution",
+        "coevolution": "runtime.dynamics.coevolution",
         "coherence": "assurance.coherence",
-        "compiler": "runtime.compiler",
+        "compiler": "runtime.execution.compiler",
         "constraints": "domain.constraints",
         "contracts": "provenance.contracts",
         "definition": "domain.definition",
         "evaluation": "assurance.evaluation",
-        "events": "runtime.events",
+        "events": "runtime.records.events",
         "evidence": "assurance.evidence",
-        "interventions": "runtime.interventions",
-        "kernels": "runtime.kernels",
+        "interventions": "runtime.dynamics.interventions",
+        "kernels": "runtime.execution.kernels",
         "mechanisms": "domain.mechanisms",
         "protocols": "domain.protocols",
         "randomness": "provenance.randomness",
@@ -172,8 +186,8 @@ register_module_aliases(
         "replay": "provenance.replay",
         "serialization": "provenance.serialization",
         "specs": "domain.specs",
-        "updates": "runtime.updates",
-        "world": "runtime.world",
+        "updates": "runtime.records.updates",
+        "world": "runtime.execution.world",
     },
 )
 

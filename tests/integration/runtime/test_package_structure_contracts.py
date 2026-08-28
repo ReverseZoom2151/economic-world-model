@@ -156,7 +156,42 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
             "ewm.capabilities.assessment.readiness",
             "HanReadinessProtocol",
         ),
-        ("ewm.core.world", "ewm.core.runtime.world", "World"),
+        (
+            "ewm.core.runtime.coevolution",
+            "ewm.core.runtime.dynamics.coevolution",
+            "ControlledCoevolution",
+        ),
+        (
+            "ewm.core.runtime.interventions",
+            "ewm.core.runtime.dynamics.interventions",
+            "apply_intervention",
+        ),
+        (
+            "ewm.core.runtime.compiler",
+            "ewm.core.runtime.execution.compiler",
+            "compile_world",
+        ),
+        (
+            "ewm.core.runtime.kernels",
+            "ewm.core.runtime.execution.kernels",
+            "CategoricalKernel",
+        ),
+        (
+            "ewm.core.runtime.world",
+            "ewm.core.runtime.execution.world",
+            "World",
+        ),
+        (
+            "ewm.core.runtime.events",
+            "ewm.core.runtime.records.events",
+            "Event",
+        ),
+        (
+            "ewm.core.runtime.updates",
+            "ewm.core.runtime.records.updates",
+            "convex_update",
+        ),
+        ("ewm.core.world", "ewm.core.runtime.execution.world", "World"),
         (
             "ewm.equilibrium.fixed_point",
             "ewm.equilibrium.solvers.fixed_point",
@@ -183,6 +218,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
     (
         ("ewm.capabilities", {"__init__.py"}),
         ("ewm.core", {"__init__.py"}),
+        ("ewm.core.runtime", {"__init__.py"}),
         ("ewm.equilibrium", {"__init__.py"}),
         ("ewm.experiments", {"__init__.py", "registry.py"}),
         ("ewm.ontology", {"__init__.py"}),
