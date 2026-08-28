@@ -238,6 +238,9 @@ See [Limitations and non-goals](docs/limitations.md) for the complete boundary.
 | [Product validation](docs/product-validation.md) | Historical benchmarks plus the current 0.2.0 audit |
 | [Limitations and non-goals](docs/limitations.md) | Numerical, empirical, runtime, and deployment boundaries |
 | [Ontology repository study](docs/ontology-repository-study.md) | Eight-repository architecture, provenance, verifier, and licensing review |
+| [Ontology workbench architecture](docs/architecture/ontology-research-workbench.md) | Approved ontology, workflows, API, 2D and 3D visual system, globe, snapshots, and quality contracts |
+| [Ontology workbench implementation plan](docs/plans/2026-08-28-ontology-workbench-implementation.md) | Twenty-two test-first tasks with exact files, commands, commits, and release gates |
+| [Ontology workbench design audit](docs/architecture/ontology-workbench-design-audit.md) | Paper-fidelity, repository-consistency, scope, and completion evidence for the design |
 
 The formal ideas and paper-specific equations belong to the cited authors. This repository is an
 independent implementation and is not an official release or endorsement by either paper's authors.
