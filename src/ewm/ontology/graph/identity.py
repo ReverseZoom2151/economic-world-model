@@ -1,4 +1,4 @@
-"""Deterministic ontology identities and explicit canonical record serializers."""
+"""Ontology identities and canonical record serializers."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import re
 from collections.abc import Callable, Mapping, Sequence
 from typing import Any, TypeAlias, cast
 
-from ewm.core import serialization
+from ewm.core.provenance import serialization
 
 from .model import (
     CoverageEntry,

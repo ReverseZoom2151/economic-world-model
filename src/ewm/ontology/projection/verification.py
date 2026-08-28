@@ -1,4 +1,4 @@
-"""Fail-closed verification for sealed ontology projection bundles."""
+"""Fail-closed verification of sealed ontology projection bundles."""
 
 from __future__ import annotations
 
@@ -11,12 +11,12 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any, cast
 
-from ewm.core.serialization import content_digest
+from ewm.core.provenance.serialization import content_digest
 
+from ..graph.identity import canonical_bytes, projection_from_data
+from ..graph.model import OntologyProjection
+from ..graph.schema import OntologyValidationError, assert_valid_projection
 from .bundles.digest import compute_projection_digest
-from .identity import canonical_bytes, projection_from_data
-from .model import OntologyProjection
-from .schema import OntologyValidationError, assert_valid_projection
 
 ONTOLOGY_ARTIFACT_SCHEMA = "ewm.ontology.v1"
 PROJECTION_PAYLOADS = ("projection.json", "coverage.json")

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from ewm._version import __version__
-from ewm.core.serialization import content_digest
+from ewm.core.provenance.serialization import content_digest
 
 from .base import OntologyProfileContext, ProfileBuilder, ProfileProjection, artifact_source
 

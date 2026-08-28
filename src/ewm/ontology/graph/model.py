@@ -1,4 +1,4 @@
-"""Immutable value objects for canonical ontology projections."""
+"""Immutable records for canonical ontology projections."""
 
 from __future__ import annotations
 
@@ -10,8 +10,8 @@ from typing import Any, TypeVar, cast
 
 import numpy as np
 
-from ewm.core.records import freeze_value
-from ewm.core.serialization import canonical_json
+from ewm.core.domain.records import freeze_value
+from ewm.core.provenance.serialization import canonical_json
 
 ONTOLOGY_LAYERS = frozenset(
     {

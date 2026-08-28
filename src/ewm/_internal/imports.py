@@ -8,7 +8,7 @@ from types import ModuleType
 from typing import Any
 
 
-def _preserve_legacy_symbol_modules(module: ModuleType, legacy_name: str) -> None:
+def preserve_module_symbols(module: ModuleType, legacy_name: str) -> None:
     """Keep function and class identities stable after moving their implementation module."""
 
     for value in vars(module).values():
@@ -36,5 +36,5 @@ def register_module_aliases(
         if existing is not None and existing is not module:
             raise RuntimeError(f"module alias collision for {legacy_name}")
         if preserve_symbol_modules:
-            _preserve_legacy_symbol_modules(module, legacy_name)
+            preserve_module_symbols(module, legacy_name)
         sys.modules[legacy_name] = module

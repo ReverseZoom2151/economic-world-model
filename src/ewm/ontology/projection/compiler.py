@@ -1,4 +1,4 @@
-"""Fail-closed compilation of verified run bundles into ontology projections."""
+"""Compilation of verified run bundles into ontology projections."""
 
 from __future__ import annotations
 
@@ -16,8 +16,8 @@ import numpy as np
 from ewm.experiments import ArtifactVerificationError, VerificationReport, verify_run
 from ewm.experiments.runs.verification import PAYLOAD_FILENAMES
 
-from .identity import make_ontology_ref
-from .model import (
+from ..graph.identity import make_ontology_ref
+from ..graph.model import (
     CoverageEntry,
     Measurement,
     OntologyObject,
@@ -26,14 +26,14 @@ from .model import (
     RelationAssertion,
     SourceLocator,
 )
-from .profiles.base import (
+from ..graph.schema import OntologyValidationError, assert_valid_projection
+from ..profiles.base import (
     OntologyProfile,
     OntologyProfileContext,
     ProfileProjection,
     profile_digest,
 )
-from .projection import ProjectionBundleProvenance, seal_projection
-from .schema import OntologyValidationError, assert_valid_projection
+from .service import ProjectionBundleProvenance, seal_projection
 
 
 class ProjectionCompilationError(ValueError):

@@ -1,13 +1,13 @@
-"""Canonical semantic identity for ontology projections."""
+"""Canonical identity for ontology projection bundles."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from ewm.core.serialization import content_digest
+from ewm.core.provenance.serialization import content_digest
 
-from ..identity import projection_to_data
-from ..model import OntologyProjection
+from ...graph.identity import projection_to_data
+from ...graph.model import OntologyProjection
 
 
 def _semantic_projection_data(projection: OntologyProjection) -> dict[str, Any]:

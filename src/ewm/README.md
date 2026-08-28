@@ -29,9 +29,10 @@ byte-stable while making those legacy imports visible to static analysis.
 Within equilibrium, `equilibrium/solvers/` owns inner-equilibrium, fixed-point, damping, and DDGE
 execution. `equilibrium/analysis/` owns certificates, set-valued correspondences, and diagnostics.
 
-Within ontology, `ontology/bundles/` owns identity shared by publication and verification. This
-keeps the module import graph acyclic. `ontology/profiles/` retains stable adapter class paths because
-their module-qualified names contribute to projection identity.
+Within ontology, `ontology/graph/` owns immutable records, identities, vocabulary, and invariants.
+`ontology/projection/` owns compilation, publication, bundle identity, and verification.
+`ontology/profiles/` retains stable adapter class paths because their module-qualified names
+contribute to projection identity.
 
 The evidence-bound files under `capabilities/` and `scenarios/fx/` remain in place for the Han v1
 protocols. Moving them requires an explicit v2 evidence migration, not an ordinary refactor.

@@ -1,4 +1,4 @@
-"""Atomic construction and publication of derived ontology projection bundles."""
+"""Construction and publication of ontology projection bundles."""
 
 from __future__ import annotations
 
@@ -10,10 +10,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ewm.core.serialization import content_digest
+from ewm.core.provenance.serialization import content_digest
 
-from .bundles.digest import compute_projection_digest
-from .identity import (
+from ..graph.identity import (
     canonical_bytes,
     coverage_entry_to_data,
     measurement_to_data,
@@ -21,7 +20,7 @@ from .identity import (
     ontology_ref_to_data,
     relation_assertion_to_data,
 )
-from .model import (
+from ..graph.model import (
     CoverageEntry,
     Measurement,
     OntologyObject,
@@ -29,7 +28,8 @@ from .model import (
     OntologyRef,
     RelationAssertion,
 )
-from .schema import OntologyValidationError, assert_valid_projection
+from ..graph.schema import OntologyValidationError, assert_valid_projection
+from .bundles.digest import compute_projection_digest
 from .verification import (
     ONTOLOGY_ARTIFACT_SCHEMA,
     ProjectionVerificationError,

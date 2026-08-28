@@ -133,6 +133,7 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
             "FixedPointConfig",
         ),
         ("ewm.experiments.runner", "ewm.experiments.runs.runner", "ExperimentRun"),
+        ("ewm.ontology.model", "ewm.ontology.graph.model", "OntologyProjection"),
     ),
 )
 def test_legacy_modules_alias_the_single_canonical_implementation(
@@ -153,6 +154,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
         ("ewm.core", {"__init__.py"}),
         ("ewm.equilibrium", {"__init__.py"}),
         ("ewm.experiments", {"__init__.py", "registry.py"}),
+        ("ewm.ontology", {"__init__.py"}),
     ),
 )
 def test_large_packages_keep_only_true_entry_points_loose(

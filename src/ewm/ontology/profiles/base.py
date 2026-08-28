@@ -6,11 +6,11 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from ewm.core.records import freeze_value
-from ewm.core.serialization import content_digest
+from ewm.core.domain.records import freeze_value
+from ewm.core.provenance.serialization import content_digest
 
-from ..identity import make_ontology_ref
-from ..model import (
+from ..graph.identity import make_ontology_ref
+from ..graph.model import (
     CoverageEntry,
     Measurement,
     OntologyObject,

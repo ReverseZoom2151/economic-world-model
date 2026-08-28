@@ -1,4 +1,4 @@
-"""Canonical ontology vocabulary and cross-record scientific invariants."""
+"""Ontology vocabulary and cross-record scientific invariants."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from numbers import Real
 from types import MappingProxyType
 from typing import Any
 
-from ewm.core.serialization import canonical_json
+from ewm.core.provenance.serialization import canonical_json
 
 from .model import (
     Measurement,

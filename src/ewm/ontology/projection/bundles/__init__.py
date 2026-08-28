@@ -1,4 +1,4 @@
-"""Identity helpers shared by ontology bundle publication and verification."""
+"""Identity helpers for ontology bundle publication and verification."""
 
 from .digest import compute_projection_digest
 
