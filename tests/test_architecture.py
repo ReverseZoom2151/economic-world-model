@@ -82,3 +82,48 @@ def test_layer_imports_only_same_or_lower_layers(
     ]
 
     assert not violations, "architecture boundary violations:\n" + "\n".join(violations)
+
+
+def _module_name(path: Path) -> str:
+    relative = path.relative_to(SRC).with_suffix("")
+    parts = relative.parts[:-1] if relative.name == "__init__" else relative.parts
+    return ".".join(parts)
+
+
+def test_internal_module_import_graph_is_acyclic() -> None:
+    paths = tuple(sorted(PACKAGE.rglob("*.py")))
+    modules = {_module_name(path): path for path in paths}
+    dependencies: dict[str, set[str]] = {module: set() for module in modules}
+    for module, path in modules.items():
+        for imported, _line in _imported_modules(path):
+            candidates = tuple(
+                candidate
+                for candidate in modules
+                if imported == candidate or imported.startswith(f"{candidate}.")
+            )
+            if candidates:
+                dependencies[module].add(max(candidates, key=len))
+
+    visiting: list[str] = []
+    visited: set[str] = set()
+
+    def visit(module: str) -> tuple[str, ...] | None:
+        if module in visiting:
+            start = visiting.index(module)
+            return (*visiting[start:], module)
+        if module in visited:
+            return None
+        visiting.append(module)
+        for dependency in sorted(dependencies[module]):
+            cycle = visit(dependency)
+            if cycle is not None:
+                return cycle
+        visiting.pop()
+        visited.add(module)
+        return None
+
+    cycle = next(
+        (found for module in sorted(modules) if (found := visit(module)) is not None),
+        None,
+    )
+    assert cycle is None, "internal import cycle: " + " -> ".join(cycle or ())

@@ -12,13 +12,13 @@ from typing import Any
 
 from ewm.core.serialization import content_digest
 
+from .bundles.digest import compute_projection_digest
 from .identity import (
     canonical_bytes,
     coverage_entry_to_data,
     measurement_to_data,
     ontology_object_to_data,
     ontology_ref_to_data,
-    projection_to_data,
     relation_assertion_to_data,
 )
 from .model import (
@@ -67,21 +67,6 @@ class ProjectionBundleProvenance:
             raise ValueError("source run hash must be the identity digest prefix")
         if not self.adapter_identity:
             raise ValueError("adapter identity must not be empty")
-
-
-def _semantic_projection_data(projection: OntologyProjection) -> dict[str, Any]:
-    data = projection_to_data(projection)
-    return {
-        key: value
-        for key, value in data.items()
-        if key not in {"record_type", "projection_digest"}
-    }
-
-
-def compute_projection_digest(projection: OntologyProjection) -> str:
-    """Return the semantic digest of graph and coverage without circular self-inclusion."""
-
-    return content_digest(_semantic_projection_data(projection))
 
 
 def seal_projection(

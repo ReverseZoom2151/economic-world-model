@@ -13,6 +13,7 @@ from typing import Any, cast
 
 from ewm.core.serialization import content_digest
 
+from .bundles.digest import compute_projection_digest
 from .identity import canonical_bytes, projection_from_data
 from .model import OntologyProjection
 from .schema import OntologyValidationError, assert_valid_projection
@@ -307,8 +308,6 @@ def _verify_projection_bundle(
     projection = _projection_from_payloads(graph, coverage)
     if projection.projection_digest != projection_digest:
         raise _fail("manifest projection digest does not match payloads")
-    from .projection import compute_projection_digest
-
     if compute_projection_digest(projection) != projection_digest:
         raise _fail("projection digest does not match canonical graph and coverage semantics")
     try:
@@ -346,4 +345,3 @@ def load_projection_bundle(bundle_dir: Path) -> OntologyProjection:
 
     _report, projection = _verify_projection_bundle(bundle_dir)
     return projection
-
