@@ -7,6 +7,7 @@ ROOT = Path(__file__).parents[2]
 README = ROOT / "README.md"
 PRODUCT_VALIDATION = ROOT / "docs" / "product-validation.md"
 PUBLIC_MARKDOWN = (README, *sorted((ROOT / "docs").glob("*.md")))
+ALL_MARKDOWN = (README, *sorted((ROOT / "docs").rglob("*.md")))
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^]]+\]\(([^)]+)\)")
 
 
@@ -54,7 +55,7 @@ def test_public_documentation_matches_the_current_release_contract() -> None:
 
 def test_public_markdown_links_paths_and_code_fences_are_well_formed() -> None:
     failures: list[str] = []
-    for path in PUBLIC_MARKDOWN:
+    for path in ALL_MARKDOWN:
         content = _text(path)
         if sum(line.startswith("```") for line in content.splitlines()) % 2:
             failures.append(f"{path.relative_to(ROOT)} has an unclosed code fence")
@@ -68,3 +69,20 @@ def test_public_markdown_links_paths_and_code_fences_are_well_formed() -> None:
                     f"{path.relative_to(ROOT)} links to missing path {raw_target!r}"
                 )
     assert not failures, "\n".join(failures)
+
+
+def test_large_repository_directories_have_ownership_indexes() -> None:
+    indexes = {
+        ROOT / "docs" / "README.md": ("Guides", "Architecture", "Plans"),
+        ROOT / "examples" / "README.md": ("Runnable examples", "extensions/"),
+        ROOT / "references" / "README.md": ("Machine-readable", "conformance.toml"),
+        ROOT / "scripts" / "README.md": ("Stable entry points", "run_conformance.py"),
+        ROOT / "src" / "ewm" / "README.md": ("Package map", "experiments/catalog/"),
+        ROOT / "tests" / "README.md": ("Evidence intent", "conformance/"),
+    }
+
+    for path, required_text in indexes.items():
+        assert path.is_file(), path
+        content = _text(path)
+        for text in required_text:
+            assert text in content, (path, text)
