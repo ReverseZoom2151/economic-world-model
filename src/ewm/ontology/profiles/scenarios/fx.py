@@ -5,8 +5,13 @@ from __future__ import annotations
 from ewm._version import __version__
 from ewm.core.provenance.serialization import content_digest
 
-from ..graph.model import OntologyRef
-from .base import OntologyProfileContext, ProfileBuilder, ProfileProjection, artifact_source
+from ...graph.model import OntologyRef
+from ..contracts.base import (
+    OntologyProfileContext,
+    ProfileBuilder,
+    ProfileProjection,
+    artifact_source,
+)
 
 
 class FXOntologyProfile:

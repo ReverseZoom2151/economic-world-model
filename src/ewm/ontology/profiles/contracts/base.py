@@ -9,8 +9,8 @@ from typing import Any, Protocol
 from ewm.core.domain.records import freeze_value
 from ewm.core.provenance.serialization import content_digest
 
-from ..graph.identity import make_ontology_ref
-from ..graph.model import (
+from ...graph.identity import make_ontology_ref
+from ...graph.model import (
     CoverageEntry,
     Measurement,
     OntologyObject,

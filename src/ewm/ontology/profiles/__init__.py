@@ -1,6 +1,8 @@
 """Versioned scenario profiles for verified ontology projection."""
 
-from .base import (
+from ewm._internal.imports import register_module_aliases
+
+from .contracts.base import (
     OntologyProfile,
     OntologyProfileContext,
     ProfileBuilder,
@@ -8,11 +10,11 @@ from .base import (
     artifact_source,
     profile_digest,
 )
-from .credit import CREDIT_PROFILE, CreditOntologyProfile
-from .forecasting import FORECASTING_PROFILE, ForecastingOntologyProfile
-from .fx import FX_PROFILE, FXOntologyProfile
-from .production import PRODUCTION_PROFILE, ProductionOntologyProfile
-from .scalar import SCALAR_PROFILE, ScalarOntologyProfile
+from .scenarios.credit import CREDIT_PROFILE, CreditOntologyProfile
+from .scenarios.forecasting import FORECASTING_PROFILE, ForecastingOntologyProfile
+from .scenarios.fx import FX_PROFILE, FXOntologyProfile
+from .scenarios.production import PRODUCTION_PROFILE, ProductionOntologyProfile
+from .scenarios.scalar import SCALAR_PROFILE, ScalarOntologyProfile
 
 DEFAULT_PROFILES: tuple[OntologyProfile, ...] = (
     CREDIT_PROFILE,
@@ -20,6 +22,18 @@ DEFAULT_PROFILES: tuple[OntologyProfile, ...] = (
     FX_PROFILE,
     PRODUCTION_PROFILE,
     SCALAR_PROFILE,
+)
+
+register_module_aliases(
+    __name__,
+    {
+        "base": "contracts.base",
+        "credit": "scenarios.credit",
+        "forecasting": "scenarios.forecasting",
+        "fx": "scenarios.fx",
+        "production": "scenarios.production",
+        "scalar": "scenarios.scalar",
+    },
 )
 
 __all__ = [

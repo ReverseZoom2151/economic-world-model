@@ -284,6 +284,36 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
         ),
         ("ewm.experiments.runner", "ewm.experiments.runs.runner", "ExperimentRun"),
         ("ewm.ontology.model", "ewm.ontology.graph.model", "OntologyProjection"),
+        (
+            "ewm.ontology.profiles.base",
+            "ewm.ontology.profiles.contracts.base",
+            "OntologyProfileContext",
+        ),
+        (
+            "ewm.ontology.profiles.credit",
+            "ewm.ontology.profiles.scenarios.credit",
+            "CreditOntologyProfile",
+        ),
+        (
+            "ewm.ontology.profiles.forecasting",
+            "ewm.ontology.profiles.scenarios.forecasting",
+            "ForecastingOntologyProfile",
+        ),
+        (
+            "ewm.ontology.profiles.fx",
+            "ewm.ontology.profiles.scenarios.fx",
+            "FXOntologyProfile",
+        ),
+        (
+            "ewm.ontology.profiles.production",
+            "ewm.ontology.profiles.scenarios.production",
+            "ProductionOntologyProfile",
+        ),
+        (
+            "ewm.ontology.profiles.scalar",
+            "ewm.ontology.profiles.scenarios.scalar",
+            "ScalarOntologyProfile",
+        ),
     ),
 )
 def test_legacy_modules_alias_the_single_canonical_implementation(
@@ -307,6 +337,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
         ("ewm.equilibrium", {"__init__.py"}),
         ("ewm.experiments", {"__init__.py", "registry.py"}),
         ("ewm.ontology", {"__init__.py"}),
+        ("ewm.ontology.profiles", {"__init__.py"}),
         ("ewm.scenarios.credit", {"__init__.py"}),
         ("ewm.scenarios.forecasting", {"__init__.py"}),
         ("ewm.scenarios.fx", {"__init__.py"}),

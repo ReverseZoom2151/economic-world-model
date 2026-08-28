@@ -27,7 +27,7 @@ from ..graph.model import (
     SourceLocator,
 )
 from ..graph.schema import OntologyValidationError, assert_valid_projection
-from ..profiles.base import (
+from ..profiles.contracts.base import (
     OntologyProfile,
     OntologyProfileContext,
     ProfileProjection,

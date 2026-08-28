@@ -12,7 +12,7 @@ from ewm.experiments.runs.artifacts import write_artifacts
 from ewm.experiments.runs.identity import build_run_identity, identity_sha256
 from ewm.ontology import CoverageEntry, OntologyObject
 from ewm.ontology.graph.identity import make_ontology_ref
-from ewm.ontology.profiles.base import OntologyProfileContext, ProfileProjection
+from ewm.ontology.profiles.contracts.base import OntologyProfileContext, ProfileProjection
 from ewm.ontology.projection import write_projection_bundle
 from ewm.ontology.projection.compiler import compile_run_projection
 from ewm.ontology.projection.verification import load_projection_bundle, verify_projection_bundle
