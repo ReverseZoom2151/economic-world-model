@@ -1,4 +1,4 @@
-"""Deterministic OpenAPI document assembly outside transport contracts."""
+"""Deterministic OpenAPI assembly for the secured HTTP transport."""
 
 from __future__ import annotations
 

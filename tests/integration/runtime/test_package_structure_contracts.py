@@ -314,6 +314,31 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
             "ewm.ontology.profiles.scenarios.scalar",
             "ScalarOntologyProfile",
         ),
+        (
+            "ewm.workbench.api",
+            "ewm.workbench.http.api",
+            "ApprovedRunRegistry",
+        ),
+        (
+            "ewm.workbench.contracts",
+            "ewm.workbench.http.contracts",
+            "ComparisonRequest",
+        ),
+        (
+            "ewm.workbench.openapi",
+            "ewm.workbench.http.openapi",
+            "build_openapi_document",
+        ),
+        (
+            "ewm.workbench.security",
+            "ewm.workbench.http.security",
+            "SecurityPolicy",
+        ),
+        (
+            "ewm.workbench.server",
+            "ewm.workbench.http.server",
+            "WorkbenchServerConfig",
+        ),
     ),
 )
 def test_legacy_modules_alias_the_single_canonical_implementation(
@@ -341,6 +366,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
         ("ewm.scenarios.credit", {"__init__.py"}),
         ("ewm.scenarios.forecasting", {"__init__.py"}),
         ("ewm.scenarios.fx", {"__init__.py"}),
+        ("ewm.workbench", {"__init__.py"}),
     ),
 )
 def test_large_packages_keep_only_true_entry_points_loose(

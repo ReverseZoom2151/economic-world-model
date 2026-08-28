@@ -1,4 +1,4 @@
-"""Loopback transport controls for the local ontology workbench."""
+"""Loopback HTTP transport controls for the local ontology workbench."""
 
 from __future__ import annotations
 

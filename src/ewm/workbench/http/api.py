@@ -62,7 +62,7 @@ from .contracts import (
 )
 from .security import SecurityPolicy, WorkbenchSecurityMiddleware, token_dependency
 
-_STATIC_DIRECTORY = Path(__file__).with_name("static")
+_STATIC_DIRECTORY = Path(__file__).parents[1] / "static"
 _STATE_KINDS = ("state_observation",)
 _DDGE_KINDS = ("ddge_candidate", "ddge_evaluation", "ddge_proposal")
 

@@ -23,7 +23,7 @@ function pythonExecutable() {
 
 const generated = spawnSync(
   pythonExecutable(),
-  ["-m", "ewm.workbench.contracts"],
+  ["-m", "ewm.workbench.http.contracts"],
   {
     cwd: project,
     encoding: "utf8",

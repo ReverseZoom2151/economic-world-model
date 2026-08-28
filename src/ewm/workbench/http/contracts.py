@@ -89,7 +89,7 @@ def openapi_document() -> dict[str, Any]:
 
     builder = cast(
         Callable[[], dict[str, Any]],
-        import_module("ewm.workbench.openapi").build_openapi_document,
+        import_module("ewm.workbench.http.openapi").build_openapi_document,
     )
     return builder()
 

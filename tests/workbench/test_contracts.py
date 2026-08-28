@@ -7,7 +7,7 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from ewm.workbench.contracts import (
+from ewm.workbench.http.contracts import (
     API_MAJOR,
     API_MINOR,
     API_PATHS,

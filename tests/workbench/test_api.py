@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
-from ewm.workbench.contracts import API_MINOR
+from ewm.workbench.http.contracts import API_MINOR
 
 
 def _assert_envelope(response, *, ok: bool = True) -> dict[str, object]:

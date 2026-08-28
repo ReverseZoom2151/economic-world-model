@@ -10,8 +10,8 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from ewm.workbench.contracts import API_MINOR
-from ewm.workbench.server import WorkbenchServerConfig, bind_workbench_server
+from ewm.workbench.http.contracts import API_MINOR
+from ewm.workbench.http.server import WorkbenchServerConfig, bind_workbench_server
 
 
 def test_host_origin_and_header_token_are_independent_mandatory_controls(

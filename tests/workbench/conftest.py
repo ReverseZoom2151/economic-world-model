@@ -111,7 +111,7 @@ def _projection(side: str) -> OntologyProjection:
 
 @pytest.fixture
 def approved_registry():
-    from ewm.workbench.api import ApprovedRun, ApprovedRunRegistry
+    from ewm.workbench.http.api import ApprovedRun, ApprovedRunRegistry
 
     return ApprovedRunRegistry(
         (
@@ -135,7 +135,7 @@ def approved_registry():
 
 @pytest.fixture
 def security_policy():
-    from ewm.workbench.security import SecurityPolicy
+    from ewm.workbench.http.security import SecurityPolicy
 
     return SecurityPolicy(
         session_token="test-session-token-with-sufficient-entropy",
@@ -149,7 +149,7 @@ def security_policy():
 def client(approved_registry, security_policy):
     from fastapi.testclient import TestClient
 
-    from ewm.workbench.api import create_workbench_app
+    from ewm.workbench.http.api import create_workbench_app
 
     app = create_workbench_app(approved_registry, security_policy)
     return TestClient(app, base_url="http://127.0.0.1:8123", raise_server_exceptions=False)

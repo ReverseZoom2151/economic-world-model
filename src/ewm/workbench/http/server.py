@@ -1,4 +1,4 @@
-"""Loopback-only socket binding for the local ontology workbench."""
+"""Loopback-only HTTP socket binding for the local ontology workbench."""
 
 from __future__ import annotations
 
