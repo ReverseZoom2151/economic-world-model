@@ -1,3 +1,5 @@
+"""Evidence-bound unit contracts for institutional evolution."""
+
 from __future__ import annotations
 
 import hashlib

@@ -1,3 +1,5 @@
+"""Evidence-bound unit contracts for cognitive agents."""
+
 from __future__ import annotations
 
 from collections.abc import Mapping

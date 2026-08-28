@@ -143,7 +143,7 @@ turn sealing and replay into paper-derived claims.
 Run the registry integrity check:
 
 ```bash
-python -m pytest tests/integration/test_paper_traceability.py -q
+python -m pytest tests/integration/papers/test_paper_traceability.py -q
 ```
 
 The test rejects duplicate or missing item IDs, unknown statuses or claim types, malformed expected

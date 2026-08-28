@@ -4,8 +4,8 @@ Tests are grouped by what they establish, not only by the source module they tou
 
 | Directory | Evidence intent |
 |---|---|
-| `unit/` | Local records, algorithms, and component contracts |
-| `integration/` | Cross-component public workflows, artifacts, replay, and source traceability |
+| `unit/` | Local contracts grouped into `core/`, `equilibrium/`, `capabilities/`, and `experiments/` |
+| `integration/` | Cross-component workflows grouped into `runtime/`, `experiments/`, `papers/`, `ontology/`, and `examples/` |
 | `conformance/` | Paper-level requirements and claim-boundary enforcement |
 | `scenarios/` | Economy-specific mechanics and source targets |
 | `properties/` | Invariants over generated inputs and state transitions |
@@ -19,3 +19,6 @@ Tests are grouped by what they establish, not only by the source module they tou
 Paths under `conformance/`, `oracles/`, `properties/`, `scenarios/`, and selected integration tests
 are named in machine-readable evidence registries. Move them only as an atomic traceability
 migration that updates registries, provenance strings, automation, and documentation together.
+
+Four unit tests remain directly under `unit/` because their historical paths are embedded in the
+byte-locked Han v1 capability evidence source. Moving them requires a versioned protocol migration.

@@ -104,7 +104,7 @@ ewm replay-run runs/<run_hash>
 ewm-run-protocol --quick
 python scripts/verify_sources.py --require-all
 python scripts/run_conformance.py --require-sources
-python -m pytest tests/integration/test_independent_numerical_oracles.py -q
+python -m pytest tests/integration/papers/test_independent_numerical_oracles.py -q
 python -m pytest tests/conformance/test_han_l1_l2_validation.py -q
 python -m pytest tests/conformance/test_han_l3_l6_readiness.py -q
 ```

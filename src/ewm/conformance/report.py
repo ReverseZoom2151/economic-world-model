@@ -53,8 +53,8 @@ CAPABILITY_EVIDENCE_PATHS = (
     "tests/scenarios/test_fx.py",
 )
 DDGE_EVIDENCE_PATHS = (
-    "tests/integration/test_independent_numerical_oracles.py",
-    "tests/integration/test_locked_protocol_smoke.py",
+    "tests/integration/papers/test_independent_numerical_oracles.py",
+    "tests/integration/experiments/test_locked_protocol_smoke.py",
 )
 
 
@@ -67,7 +67,7 @@ def _source_fingerprint(root: Path = ROOT) -> str:
         "references/*.toml",
         "protocols/**/*",
         "tests/conformance/**/*.py",
-        "tests/integration/test_han_runtime_protocol.py",
+        "tests/integration/runtime/test_han_runtime_protocol.py",
         "tests/oracles/**/*.py",
         *CAPABILITY_EVIDENCE_PATHS,
         *DDGE_EVIDENCE_PATHS,
@@ -230,7 +230,7 @@ def _ddge_assessments(test_outcome: dict[str, Any]) -> dict[str, dict[str, Any]]
             "evidence": [
                 "tests/conformance/test_cong_conformance.py",
                 "tests/oracles/scalar_oracle.py",
-                "tests/integration/test_independent_numerical_oracles.py",
+                "tests/integration/papers/test_independent_numerical_oracles.py",
             ],
             "qualification": (
                 "exact scalar Laboratory II equations and targets; package-import-free "
@@ -243,7 +243,7 @@ def _ddge_assessments(test_outcome: dict[str, Any]) -> dict[str, dict[str, Any]]
         {
             "evidence": [
                 "tests/oracles/forecasting_oracle.py",
-                "tests/integration/test_independent_numerical_oracles.py",
+                "tests/integration/papers/test_independent_numerical_oracles.py",
             ],
             "qualification": (
                 "population stationary-kernel OLS roots only; finite-sample damping "
@@ -276,7 +276,7 @@ def _ddge_assessments(test_outcome: dict[str, Any]) -> dict[str, dict[str, Any]]
             {
                 "evidence": [
                     "src/ewm/protocols/credit-mechanism-v1.toml",
-                    "tests/integration/test_locked_protocol_smoke.py",
+                    "tests/integration/experiments/test_locked_protocol_smoke.py",
                 ],
                 "qualification": (
                     "prospectively locked quick protocol failed its prespecified "

@@ -127,7 +127,7 @@ def test_passing_conformance_reports_each_exercised_ddge_claim_at_its_boundary(
             "claim": "qualitative-reconstruction",
             "evidence": [
                 "src/ewm/protocols/credit-mechanism-v1.toml",
-                "tests/integration/test_locked_protocol_smoke.py",
+                "tests/integration/experiments/test_locked_protocol_smoke.py",
             ],
             "qualification": (
                 "prospectively locked quick protocol failed its prespecified "
@@ -141,7 +141,7 @@ def test_passing_conformance_reports_each_exercised_ddge_claim_at_its_boundary(
             "evidence": [
                 "tests/conformance/test_cong_conformance.py",
                 "tests/oracles/scalar_oracle.py",
-                "tests/integration/test_independent_numerical_oracles.py",
+                "tests/integration/papers/test_independent_numerical_oracles.py",
             ],
             "qualification": (
                 "exact scalar Laboratory II equations and targets; package-import-free "
@@ -154,7 +154,7 @@ def test_passing_conformance_reports_each_exercised_ddge_claim_at_its_boundary(
             "claim": "exact-replication",
             "evidence": [
                 "tests/oracles/forecasting_oracle.py",
-                "tests/integration/test_independent_numerical_oracles.py",
+                "tests/integration/papers/test_independent_numerical_oracles.py",
             ],
             "qualification": (
                 "population stationary-kernel OLS roots only; finite-sample damping "
@@ -173,8 +173,8 @@ def test_conformance_gate_executes_every_reported_evidence_path() -> None:
     assert outcome["command"] == (
         "python -m pytest tests/conformance tests/properties/test_fx_accounting.py "
         "tests/scenarios/test_fx.py "
-        "tests/integration/test_independent_numerical_oracles.py "
-        "tests/integration/test_locked_protocol_smoke.py -q"
+        "tests/integration/papers/test_independent_numerical_oracles.py "
+        "tests/integration/experiments/test_locked_protocol_smoke.py -q"
     )
 
 

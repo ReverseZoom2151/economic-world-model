@@ -144,7 +144,7 @@ Run:
 python -m pytest \
   tests/scenarios/test_forecasting.py \
   tests/scenarios/test_forecasting_replication.py \
-  tests/integration/test_independent_numerical_oracles.py -q
+  tests/integration/papers/test_independent_numerical_oracles.py -q
 python examples/forecasting.py
 ```
 
@@ -218,8 +218,8 @@ Run:
 ```bash
 python -m pytest \
   tests/scenarios/test_production.py \
-  tests/integration/test_production_example.py \
-  tests/integration/test_independent_numerical_oracles.py -q
+  tests/integration/examples/test_production_example.py \
+  tests/integration/papers/test_independent_numerical_oracles.py -q
 python examples/production.py
 ```
 
@@ -250,12 +250,12 @@ Run:
 
 ```bash
 python -m pytest \
-  tests/integration/test_han_runtime_protocol.py \
-  tests/integration/test_layered_evaluation.py \
+  tests/integration/runtime/test_han_runtime_protocol.py \
+  tests/integration/experiments/test_layered_evaluation.py \
   tests/conformance/test_han_conformance.py \
   tests/conformance/test_han_l1_l2_validation.py \
   tests/conformance/test_han_l3_l6_readiness.py \
-  tests/unit/test_capability_levels.py -q
+  tests/unit/capabilities/test_capability_levels.py -q
 python examples/cognitive_agent.py
 python examples/offline_alignment.py
 ```

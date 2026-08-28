@@ -115,6 +115,6 @@ skip_covered = true
 [tool.mutmut]
 source_paths = ["src/ewm"]
 only_mutate = ["src/ewm/experiments/analysis/statistics.py"]
-pytest_add_cli_args_test_selection = ["tests/unit/test_statistics.py"]
+pytest_add_cli_args_test_selection = ["tests/unit/experiments/test_statistics.py"]
 pytest_add_cli_args = ["-q"]
 mutate_only_covered_lines = false
