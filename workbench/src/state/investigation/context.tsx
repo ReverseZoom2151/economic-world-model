@@ -1,28 +1,39 @@
-import {
-  type PropsWithChildren,
-  useEffect,
-  useMemo,
-  useReducer,
-} from "react";
+import { type PropsWithChildren, useEffect, useMemo, useReducer } from "react";
 
 import {
   initialInvestigationState,
   investigationReducer,
   parseInvestigationUrl,
   serializeInvestigationUrl,
+  type InvestigationState,
 } from "./model";
 import { InvestigationContext } from "./store";
 
-export function InvestigationProvider({ children }: PropsWithChildren) {
+interface InvestigationProviderProps extends PropsWithChildren {
+  readonly initialState?: Partial<InvestigationState>;
+}
+
+export function InvestigationProvider({
+  children,
+  initialState,
+}: InvestigationProviderProps) {
   const hydrated = useMemo(
-    () =>
-      typeof window === "undefined"
-        ? initialInvestigationState
-        : investigationReducer(initialInvestigationState, {
+    () => {
+      const selected =
+        initialState === undefined
+          ? initialInvestigationState
+          : investigationReducer(initialInvestigationState, {
+              type: "hydrate",
+              state: initialState,
+            });
+      return typeof window === "undefined"
+        ? selected
+        : investigationReducer(selected, {
             type: "hydrate",
             state: parseInvestigationUrl(window.location.search),
-          }),
-    [],
+          });
+    },
+    [initialState],
   );
   const [state, dispatch] = useReducer(investigationReducer, hydrated);
 

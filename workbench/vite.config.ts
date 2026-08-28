@@ -7,6 +7,7 @@ export default defineConfig({
   base: "./",
   build: {
     assetsDir: "assets",
+    chunkSizeWarningLimit: 3_000,
     emptyOutDir: true,
     manifest: "manifest.json",
     outDir: resolve(import.meta.dirname, "../src/ewm/workbench/static"),
@@ -15,6 +16,7 @@ export default defineConfig({
         assetFileNames: "assets/[name]-[hash][extname]",
         chunkFileNames: "assets/[name]-[hash].js",
         entryFileNames: "assets/[name]-[hash].js",
+        codeSplitting: false,
       },
     },
     sourcemap: false,

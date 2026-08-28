@@ -1,69 +1,14 @@
 {
-  "_Instances-C-yHP3K1.js": {
-    "file": "assets/Instances-C-yHP3K1.js",
-    "name": "Instances",
-    "imports": [
-      "_rolldown-runtime-hePW80VL.js",
-      "index.html"
-    ]
-  },
-  "_rolldown-runtime-hePW80VL.js": {
-    "file": "assets/rolldown-runtime-hePW80VL.js",
-    "name": "rolldown-runtime"
-  },
   "index.html": {
-    "file": "assets/index-BM6rKakO.js",
+    "file": "assets/index-DaaIpds3.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
-    "imports": [
-      "_rolldown-runtime-hePW80VL.js"
-    ],
     "dynamicImports": [
-      "src/globe/rendering/EconomicGlobe.tsx",
-      "node_modules/vega-embed/build/embed.js",
-      "src/scene/OntologyScene.tsx",
-      "node_modules/cytoscape/dist/cytoscape.esm.mjs"
+      "index.html"
     ],
     "css": [
       "assets/index-DTmphplz.css"
-    ]
-  },
-  "node_modules/cytoscape/dist/cytoscape.esm.mjs": {
-    "file": "assets/cytoscape.esm-BiK1LiYw.js",
-    "name": "cytoscape.esm",
-    "src": "node_modules/cytoscape/dist/cytoscape.esm.mjs",
-    "isDynamicEntry": true
-  },
-  "node_modules/vega-embed/build/embed.js": {
-    "file": "assets/embed-CVV55ZbX.js",
-    "name": "embed",
-    "src": "node_modules/vega-embed/build/embed.js",
-    "isDynamicEntry": true,
-    "imports": [
-      "_rolldown-runtime-hePW80VL.js"
-    ]
-  },
-  "src/globe/rendering/EconomicGlobe.tsx": {
-    "file": "assets/EconomicGlobe-BvpSibww.js",
-    "name": "EconomicGlobe",
-    "src": "src/globe/rendering/EconomicGlobe.tsx",
-    "isDynamicEntry": true,
-    "imports": [
-      "_rolldown-runtime-hePW80VL.js",
-      "index.html",
-      "_Instances-C-yHP3K1.js"
-    ]
-  },
-  "src/scene/OntologyScene.tsx": {
-    "file": "assets/OntologyScene-BFiHWau1.js",
-    "name": "OntologyScene",
-    "src": "src/scene/OntologyScene.tsx",
-    "isDynamicEntry": true,
-    "imports": [
-      "_rolldown-runtime-hePW80VL.js",
-      "index.html",
-      "_Instances-C-yHP3K1.js"
     ]
   }
 }

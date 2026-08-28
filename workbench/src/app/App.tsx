@@ -9,6 +9,7 @@ import type {
 } from "../data/InvestigationDataSource";
 import { getBootstrap } from "../security/bootstrap";
 import { InvestigationProvider } from "../state/investigation";
+import type { InvestigationState } from "../state/investigation/model";
 
 class LauncherRequiredDataSource implements InvestigationDataSource {
   async system(): Promise<SystemContract> {
@@ -52,12 +53,13 @@ function browserDataSource(): InvestigationDataSource {
 
 interface AppProps {
   readonly dataSource?: InvestigationDataSource;
+  readonly initialState?: Partial<InvestigationState>;
 }
 
-export function App({ dataSource }: AppProps) {
+export function App({ dataSource, initialState }: AppProps) {
   const source = useMemo(() => dataSource ?? browserDataSource(), [dataSource]);
   return (
-    <InvestigationProvider>
+    <InvestigationProvider initialState={initialState}>
       <AppShell dataSource={source} />
     </InvestigationProvider>
   );

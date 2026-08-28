@@ -32,6 +32,19 @@ from .ontology import (
     verify_projection_bundle,
     write_projection_bundle,
 )
+from .ontology.snapshot import (
+    SnapshotSelection,
+    SnapshotSizeError,
+    SnapshotSource,
+    compile_investigation,
+)
+from .workbench.export import (
+    SnapshotExportError,
+    SnapshotVerificationError,
+    export_snapshot_html,
+    verify_snapshot_html,
+    write_detached_sha256,
+)
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -80,6 +93,30 @@ def _parser() -> argparse.ArgumentParser:
         help="verify one sealed ontology projection bundle",
     )
     ontology_verify_parser.add_argument("--bundle", type=Path, required=True)
+    snapshot_parser = commands.add_parser(
+        "snapshot",
+        help="compile and verify portable offline investigations",
+    )
+    snapshot_commands = snapshot_parser.add_subparsers(
+        dest="snapshot_command",
+        required=True,
+    )
+    snapshot_export_parser = snapshot_commands.add_parser(
+        "export",
+        help="compile one verified run into a standalone HTML investigation",
+    )
+    snapshot_export_parser.add_argument("run_dir", type=Path)
+    snapshot_export_parser.add_argument("--selection", type=Path, required=True)
+    snapshot_export_parser.add_argument("--output", type=Path, required=True)
+    snapshot_verify_parser = snapshot_commands.add_parser(
+        "verify",
+        help="verify standalone HTML and its embedded investigation",
+    )
+    snapshot_verify_parser.add_argument("file", type=Path)
+    snapshot_verify_parser.add_argument(
+        "--expected-sha256",
+        help="separately obtained full-file SHA-256 for authenticity comparison",
+    )
     return parser
 
 
@@ -216,6 +253,105 @@ def _ontology_verify(bundle: Path) -> int:
     return 0
 
 
+def _snapshot_export(run_dir: Path, selection_path: Path, output: Path) -> int:
+    try:
+        selection_value = json.loads(selection_path.read_text(encoding="utf-8"))
+        if not isinstance(selection_value, dict):
+            raise ValueError("snapshot selection must contain a JSON object")
+        selection = SnapshotSelection.from_data(selection_value)
+        compilation = compile_run_projection(run_dir, adapters=DEFAULT_PROFILES)
+        provenance = compilation.provenance
+        snapshot = compile_investigation(
+            compilation.projection,
+            SnapshotSource(
+                run_id=provenance.source_run_hash,
+                source_run_hash=provenance.source_run_hash,
+                source_identity_sha256=provenance.source_identity_sha256,
+                source_bundle_sha256=provenance.source_bundle_sha256,
+                profile_identity=provenance.adapter_identity,
+                profile_digest=provenance.adapter_digest,
+                integrity_level="checksummed",
+            ),
+            selection,
+        )
+        report = export_snapshot_html(snapshot, output)
+        detached = write_detached_sha256(report)
+    except (
+        OSError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        TypeError,
+        ValueError,
+        ProjectionCompilationError,
+        SnapshotExportError,
+        SnapshotSizeError,
+    ) as error:
+        result: dict[str, object] = {
+            "error": str(error),
+            "error_type": type(error).__name__,
+            "ok": False,
+            "operation": "snapshot.export",
+            "output": str(output),
+            "run_dir": str(run_dir),
+            "selection": str(selection_path),
+        }
+        if isinstance(error, SnapshotExportError | SnapshotSizeError):
+            result["diagnostic"] = error.as_dict()
+        _print_json(result)
+        return 1
+    _print_json(
+        {
+            "authenticity_claim": report.authenticity_claim,
+            "detached_sha256": str(detached),
+            "digital_signature_present": report.digital_signature_present,
+            "embedded_sha256": report.embedded_sha256,
+            "file_sha256": report.file_sha256,
+            "html_bytes": report.html_bytes,
+            "ok": True,
+            "operation": "snapshot.export",
+            "output": str(output),
+            "projection_digest": report.projection_digest,
+            "subset_digest": report.subset_digest,
+        }
+    )
+    return 0
+
+
+def _snapshot_verify(path: Path, expected_file_sha256: str | None) -> int:
+    try:
+        report = verify_snapshot_html(
+            path,
+            expected_file_sha256=expected_file_sha256,
+        )
+    except SnapshotVerificationError as error:
+        _print_json(
+            {
+                "error": str(error),
+                "error_type": type(error).__name__,
+                "file": str(path),
+                "ok": False,
+                "operation": "snapshot.verify",
+            }
+        )
+        return 1
+    _print_json(
+        {
+            "authenticity_claim": report.authenticity_claim,
+            "authenticity_verified": report.authenticity_verified,
+            "digital_signature_present": report.digital_signature_present,
+            "embedded_sha256": report.embedded_sha256,
+            "file": str(path),
+            "file_sha256": report.file_sha256,
+            "ok": True,
+            "operation": "snapshot.verify",
+            "projection_digest": report.projection_digest,
+            "source_bundle_sha256": report.source_bundle_sha256,
+            "subset_digest": report.subset_digest,
+        }
+    )
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Execute the CLI and return a process status code."""
 
@@ -259,6 +395,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                 ),
             )
         return _ontology_verify(Path(arguments.bundle))
+    if arguments.command == "snapshot":
+        if arguments.snapshot_command == "export":
+            return _snapshot_export(
+                Path(arguments.run_dir),
+                Path(arguments.selection),
+                Path(arguments.output),
+            )
+        return _snapshot_verify(
+            Path(arguments.file),
+            (
+                str(arguments.expected_sha256)
+                if arguments.expected_sha256 is not None
+                else None
+            ),
+        )
     run = run_experiment(
         str(arguments.experiment),
         preset=str(arguments.preset),
