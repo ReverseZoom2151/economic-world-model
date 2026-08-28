@@ -6,8 +6,8 @@ from dataclasses import dataclass
 
 from ewm.core import Event, ProvenanceMode
 
-from .model import FXSimulationResult, FXState
-from .presets import FXSimulationConfig
+from ..economy.model import FXSimulationResult, FXState
+from ..economy.presets import FXSimulationConfig
 from .runtime import fx_world_blueprint
 
 

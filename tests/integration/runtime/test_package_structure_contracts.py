@@ -11,16 +11,16 @@ from ewm.capabilities.readiness import (
     load_han_l3_l6_protocol,
 )
 from ewm.experiments.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
+from ewm.scenarios.fx.validation import (
+    DEFAULT_HAN_L1_L2_PROTOCOL,
+    load_han_l1_l2_protocol,
+)
 
 import ewm
 from ewm.conformance import build_report as build_package_conformance_report
 from ewm.core import World
 from ewm.experiments.registry import ExperimentSpec, ScenarioPlugin, ScenarioRegistry
 from ewm.ontology.profiles import DEFAULT_PROFILES
-from ewm.scenarios.fx.validation import (
-    DEFAULT_HAN_L1_L2_PROTOCOL,
-    load_han_l1_l2_protocol,
-)
 from scripts.run_conformance import (
     DEFAULT_SOURCE_DIR as CONFORMANCE_SOURCE_DIR,
 )
@@ -193,6 +193,41 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
         ),
         ("ewm.core.world", "ewm.core.runtime.execution.world", "World"),
         (
+            "ewm.scenarios.fx.agents",
+            "ewm.scenarios.fx.economy.agents",
+            "household_order",
+        ),
+        (
+            "ewm.scenarios.fx.mechanism",
+            "ewm.scenarios.fx.economy.mechanism",
+            "clear_market",
+        ),
+        (
+            "ewm.scenarios.fx.model",
+            "ewm.scenarios.fx.economy.model",
+            "FXState",
+        ),
+        (
+            "ewm.scenarios.fx.presets",
+            "ewm.scenarios.fx.economy.presets",
+            "smoke_config",
+        ),
+        (
+            "ewm.scenarios.fx.runtime",
+            "ewm.scenarios.fx.execution.runtime",
+            "fx_world_blueprint",
+        ),
+        (
+            "ewm.scenarios.fx.simulation",
+            "ewm.scenarios.fx.execution.simulation",
+            "run_fx_simulation",
+        ),
+        (
+            "ewm.scenarios.fx.validation",
+            "ewm.scenarios.fx.execution.validation",
+            "HanValidationProtocol",
+        ),
+        (
             "ewm.equilibrium.fixed_point",
             "ewm.equilibrium.solvers.fixed_point",
             "FixedPointConfig",
@@ -222,6 +257,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
         ("ewm.equilibrium", {"__init__.py"}),
         ("ewm.experiments", {"__init__.py", "registry.py"}),
         ("ewm.ontology", {"__init__.py"}),
+        ("ewm.scenarios.fx", {"__init__.py"}),
     ),
 )
 def test_large_packages_keep_only_true_entry_points_loose(

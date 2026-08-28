@@ -36,7 +36,7 @@ from ewm.experiments.assurance.source_verification import (
 )
 from ewm.experiments.studies.protocol_runner import run_locked_protocol
 from ewm.experiments.studies.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
-from ewm.scenarios.fx.validation import (
+from ewm.scenarios.fx.execution.validation import (
     DEFAULT_HAN_L1_L2_PROTOCOL,
     HanValidationReport,
     han_l1_l2_artifacts,

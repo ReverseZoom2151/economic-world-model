@@ -15,13 +15,13 @@ from ewm.core import Event, canonical_json, content_digest, state_digest, verify
 from ewm.core.evidence import EvidenceStatus, ValidatedEvidenceArtifact
 from ewm.core.records import freeze_value
 
-from .model import FXState
-from .presets import smoke_config
+from ..economy.model import FXState
+from ..economy.presets import smoke_config
 from .runtime import fx_world_blueprint
 
 HAN_L1_L2_PROTOCOL_SCHEMA = "ewm.han-l1-l2.protocol.v1"
 HAN_L1_L2_REPORT_SCHEMA = "ewm.han-l1-l2.report.v1"
-DEFAULT_HAN_L1_L2_PROTOCOL = Path(__file__).with_name("han-l1-l2-validation-v1.toml")
+DEFAULT_HAN_L1_L2_PROTOCOL = Path(__file__).parents[1] / "han-l1-l2-validation-v1.toml"
 _CLASSIFICATION = "synthetic_systems_conformance"
 _EXCLUDED_CLAIMS = (
     "empirical_validation",
@@ -115,11 +115,16 @@ def _require_exact_keys(
 
 def _source_sha256(source_files: tuple[str, ...]) -> str:
     digest = hashlib.sha256()
-    directory = Path(__file__).parent
+    directory = Path(__file__).parents[1]
     for name in sorted(source_files):
         path = Path(name)
-        if path.name != name or path.suffix != ".py":
-            raise ValueError("validation source files must be local Python filenames")
+        if (
+            path.is_absolute()
+            or path.suffix != ".py"
+            or path.as_posix() != name
+            or any(part in {"", ".", ".."} for part in path.parts)
+        ):
+            raise ValueError("validation source files must be safe local Python paths")
         source = directory / name
         if not source.is_file():
             raise FileNotFoundError(f"validation source file is missing: {name}")

@@ -9,12 +9,12 @@ seeds = [17, 42]
 periods = 6
 arms = ["adaptive", "fixed_beliefs"]
 source_files = [
-  "agents.py",
-  "mechanism.py",
-  "model.py",
-  "runtime.py",
-  "simulation.py",
-  "validation.py",
+  "economy/agents.py",
+  "economy/mechanism.py",
+  "economy/model.py",
+  "execution/runtime.py",
+  "execution/simulation.py",
+  "execution/validation.py",
 ]
 
 [[requirement]]

@@ -25,10 +25,10 @@ from ewm.core.records import freeze_value
 from ewm.core.specs import agent, constraints, environment, mechanism, scheduler, state
 from ewm.core.world import ProvenanceMode
 
-from .agents import bank_orders, firm_order, household_order
-from .mechanism import FXBatchMechanism
-from .model import FXAccount, FXOrder, FXState, HouseholdBelief
-from .presets import FXSimulationConfig
+from ..economy.agents import bank_orders, firm_order, household_order
+from ..economy.mechanism import FXBatchMechanism
+from ..economy.model import FXAccount, FXOrder, FXState, HouseholdBelief
+from ..economy.presets import FXSimulationConfig
 
 FX_MECHANISM_KEY = (
     "batch_clearing",

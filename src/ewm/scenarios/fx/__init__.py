@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
-from .agents import (
+from ewm._internal.imports import register_module_aliases
+
+from .economy.agents import (
     HouseholdBelief,
     bank_orders,
     firm_order,
     household_order,
     update_belief,
 )
-from .mechanism import FXBatchMechanism, clear_market
-from .model import (
+from .economy.mechanism import FXBatchMechanism, clear_market
+from .economy.model import (
     FXAccount,
     FXClearingResult,
     FXOrder,
@@ -19,9 +21,22 @@ from .model import (
     FXState,
     FXTrade,
 )
-from .presets import FXSimulationConfig, research_config, smoke_config
-from .runtime import FXStateCodec, FXWorldBlueprint, fx_world_blueprint
-from .simulation import FXWorldRun, run_fx_simulation, run_fx_world
+from .economy.presets import FXSimulationConfig, research_config, smoke_config
+from .execution.runtime import FXStateCodec, FXWorldBlueprint, fx_world_blueprint
+from .execution.simulation import FXWorldRun, run_fx_simulation, run_fx_world
+
+register_module_aliases(
+    __name__,
+    {
+        "agents": "economy.agents",
+        "mechanism": "economy.mechanism",
+        "model": "economy.model",
+        "presets": "economy.presets",
+        "runtime": "execution.runtime",
+        "simulation": "execution.simulation",
+        "validation": "execution.validation",
+    },
+)
 
 __all__ = [
     "FXAccount",
