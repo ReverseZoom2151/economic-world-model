@@ -94,8 +94,8 @@ Completed on 2026-08-28 with the following structural results:
   references, and scripts.
 - Added characterization contracts for public exports, historical import paths, installed protocol
   resources, ontology profile identities, and the ignored local paper cache.
-- Removed the ontology projection and verification import cycle through the shared
-  `ewm.ontology.bundles` identity boundary.
+- Removed the ontology projection and verification import cycle through the shared bundle identity
+  boundary, now located at `ewm.ontology.projection.bundles`.
 - Split experiment catalog models, scenario adapters, and default assembly into
   `ewm.experiments.catalog` while keeping provenance-bound executors at their historical paths.
 - Moved reusable conformance report construction into `ewm.conformance`; the repository script is

@@ -1,6 +1,6 @@
 # Semantic package subdivision plan
 
-**Status:** active
+**Status:** complete
 **Branch:** `main`
 **Baseline:** 582 tests passing; Ruff clean; mypy clean
 
@@ -58,3 +58,27 @@ ewm/
 5. Subdivide ontology records and projection services while preserving profile module identities.
 6. Refresh ownership maps, run strict source verification, full paper conformance, scientific
    stress, tests, lint, types, distribution, and reproducibility gates.
+
+## Outcome
+
+Completed on 2026-08-28.
+
+- `core` now separates domain, runtime, assurance, and provenance concerns.
+- `equilibrium` now separates solvers from analysis and certification.
+- `experiments` now separates catalog discovery, run lifecycle, analysis, laboratories, locked
+  studies, and source assurance. The provenance-bound registry remains the only loose implementation
+  module.
+- `ontology` now separates canonical graph semantics from projection compilation, bundle identity,
+  publication, and verification. Scenario profile module identities remain stable.
+- Historical direct imports resolve to the single canonical module object. No compatibility facade
+  duplicates implementation logic.
+- Six type-only core declarations preserve static analysis for byte-locked Han v1 imports without
+  leaving loose implementation modules.
+- Unit and integration tests are grouped by evidence domain. Four Han v1 provenance tests remain at
+  their locked historical locations.
+- Current traceability registries, commands, workflows, mutation configuration, documentation, and
+  installed entry points reference the new canonical paths.
+
+Final verification: 594 tests passed, Ruff passed, mypy passed, 82 strict conformance evidence tests
+passed, both paper sources verified, all quick scientific stress checks passed, wheel and source
+distribution contents validated, and repeated 0.2.0 builds were byte-identical.
