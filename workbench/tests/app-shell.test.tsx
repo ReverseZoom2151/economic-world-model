@@ -22,6 +22,10 @@ describe("investigation shell", () => {
     ).toBeVisible();
     await user.click(screen.getByRole("button", { name: "DDGE" }));
     expect(await screen.findByRole("heading", { name: "DDGE diagnostics" })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "3D Scene" }));
+    expect(
+      await screen.findByRole("heading", { name: "Deterministic ontology scene" }),
+    ).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Evidence" }));
     expect(screen.getByRole("heading", { name: "Evidence lens" })).toBeVisible();
 

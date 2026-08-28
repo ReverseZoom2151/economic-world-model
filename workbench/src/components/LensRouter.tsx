@@ -14,7 +14,9 @@ import { LearningLens } from "../lenses/learning/LearningLens";
 import { LineageLens } from "../lenses/lineage/LineageLens";
 import { MarketLens } from "../lenses/market/MarketLens";
 import { RuntimeLens } from "../lenses/runtime/RuntimeLens";
+import { SceneLens } from "../lenses/scene/SceneLens";
 import { WorldLens } from "../lenses/world/WorldLens";
+import { CANONICAL_SCENE_CAMERA } from "../scene/camera";
 import { useInvestigation, type InvestigationLens } from "../state/investigation";
 
 const DESCRIPTIONS: Readonly<Record<InvestigationLens, string>> = {
@@ -26,6 +28,7 @@ const DESCRIPTIONS: Readonly<Record<InvestigationLens, string>> = {
   compare: "Compatible measurements and every rejected alignment decision.",
   evidence: "Claims, evidence classifications, protocols, sources, and limitations.",
   lineage: "Derivation paths from runtime records back to artifacts and code.",
+  scene: "Deterministic semantic lanes, ontology layers, and declared temporal depth.",
 };
 
 function title(lens: InvestigationLens): string {
@@ -190,6 +193,20 @@ export function LensRouter({ dataSource }: LensRouterProps) {
           dataSource={dataSource}
           runId={state.runId}
           selectedId={state.objectId}
+        />
+      </section>
+    );
+  }
+  if (state.runId !== null && state.lens === "scene") {
+    return (
+      <section className="lens-slot" aria-label="Active analytical lens">
+        <SceneLens
+          dataSource={dataSource}
+          runId={state.runId}
+          selectedId={state.objectId}
+          camera={state.camera ?? CANONICAL_SCENE_CAMERA}
+          onCameraChange={(camera) => dispatch({ type: "set-camera", camera })}
+          onSelect={(objectId) => dispatch({ type: "select-object", objectId })}
         />
       </section>
     );

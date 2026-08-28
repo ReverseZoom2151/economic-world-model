@@ -37,7 +37,9 @@ const STATUS_MESSAGES: Readonly<Record<Exclude<WorkbenchStatus, "ready">, string
 };
 
 function lensLabel(lens: InvestigationLens): string {
-  return lens === "ddge" ? "DDGE" : `${lens[0]?.toUpperCase()}${lens.slice(1)}`;
+  if (lens === "ddge") return "DDGE";
+  if (lens === "scene") return "3D Scene";
+  return `${lens[0]?.toUpperCase()}${lens.slice(1)}`;
 }
 
 export function AppShell({ dataSource }: AppShellProps) {

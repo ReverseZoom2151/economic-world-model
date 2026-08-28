@@ -1,15 +1,23 @@
 {
+  "_rolldown-runtime-hePW80VL.js": {
+    "file": "assets/rolldown-runtime-hePW80VL.js",
+    "name": "rolldown-runtime"
+  },
   "index.html": {
-    "file": "assets/index-CHQQgZcp.js",
+    "file": "assets/index-DXbMGE1C.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-hePW80VL.js"
+    ],
     "dynamicImports": [
       "node_modules/vega-embed/build/embed.js",
+      "src/scene/OntologyScene.tsx",
       "node_modules/cytoscape/dist/cytoscape.esm.mjs"
     ],
     "css": [
-      "assets/index-CFaPNSNK.css"
+      "assets/index-758WwgvU.css"
     ]
   },
   "node_modules/cytoscape/dist/cytoscape.esm.mjs": {
@@ -19,11 +27,21 @@
     "isDynamicEntry": true
   },
   "node_modules/vega-embed/build/embed.js": {
-    "file": "assets/embed-G93dc5R-.js",
+    "file": "assets/embed-CVV55ZbX.js",
     "name": "embed",
     "src": "node_modules/vega-embed/build/embed.js",
     "isDynamicEntry": true,
     "imports": [
+      "_rolldown-runtime-hePW80VL.js"
+    ]
+  },
+  "src/scene/OntologyScene.tsx": {
+    "file": "assets/OntologyScene-DVpAZVJ6.js",
+    "name": "OntologyScene",
+    "src": "src/scene/OntologyScene.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-hePW80VL.js",
       "index.html"
     ]
   }
