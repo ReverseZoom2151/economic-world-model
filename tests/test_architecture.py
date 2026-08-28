@@ -78,23 +78,15 @@ def test_declared_architecture_layers_exist() -> None:
     assert not missing, f"declared architecture layers do not exist: {missing}"
 
 
-@pytest.mark.parametrize("category", ("unit", "unit/core", "integration"))
+@pytest.mark.parametrize(
+    "category",
+    ("unit", "unit/core", "integration", "scenarios", "ontology", "workbench"),
+)
 def test_large_test_categories_are_subdivided_by_evidence_domain(category: str) -> None:
     loose_tests = {
         path.name for path in (PACKAGE.parents[1] / "tests" / category).glob("test_*.py")
     }
-    expected = (
-        {
-            "test_alignment.py",
-            "test_capability_evolution.py",
-            "test_cognition.py",
-            "test_institutions.py",
-        }
-        if category == "unit"
-        else set()
-    )
-
-    assert loose_tests == expected
+    assert loose_tests == set()
 
 
 @pytest.mark.parametrize(("layer", "allowed"), LAYER_IMPORTS.items())

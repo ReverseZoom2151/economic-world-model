@@ -114,7 +114,7 @@ that is present but has the wrong hash, page count, or PDF structure still fails
 Run:
 
 ```bash
-python -m pytest tests/scenarios/test_scalar.py -q
+python -m pytest tests/scenarios/scalar/test_scalar.py -q
 python examples/scalar.py
 ```
 
@@ -142,8 +142,8 @@ Run:
 
 ```bash
 python -m pytest \
-  tests/scenarios/test_forecasting.py \
-  tests/scenarios/test_forecasting_replication.py \
+  tests/scenarios/forecasting/test_forecasting.py \
+  tests/scenarios/forecasting/test_forecasting_replication.py \
   tests/integration/papers/test_independent_numerical_oracles.py -q
 python examples/forecasting.py
 ```
@@ -181,8 +181,8 @@ Run:
 
 ```bash
 python -m pytest \
-  tests/scenarios/test_credit.py \
-  tests/scenarios/test_credit_paper_targets.py -q
+  tests/scenarios/credit/test_credit.py \
+  tests/scenarios/credit/test_credit_paper_targets.py -q
 python examples/credit.py
 ```
 
@@ -217,7 +217,7 @@ Run:
 
 ```bash
 python -m pytest \
-  tests/scenarios/test_production.py \
+  tests/scenarios/production/test_production.py \
   tests/integration/examples/test_production_example.py \
   tests/integration/papers/test_independent_numerical_oracles.py -q
 python examples/production.py

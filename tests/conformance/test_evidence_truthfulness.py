@@ -172,7 +172,7 @@ def test_conformance_gate_executes_every_reported_evidence_path() -> None:
     assert outcome["status"] == "not_run"
     assert outcome["command"] == (
         "python -m pytest tests/conformance tests/properties/test_fx_accounting.py "
-        "tests/scenarios/test_fx.py "
+        "tests/scenarios/fx/test_fx.py "
         "tests/integration/papers/test_independent_numerical_oracles.py "
         "tests/integration/experiments/test_locked_protocol_smoke.py -q"
     )

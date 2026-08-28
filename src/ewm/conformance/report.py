@@ -50,7 +50,7 @@ SCHEMA_VERSION = "ewm.conformance.v1"
 PAPER_REGISTRY = ROOT / "references" / "papers.toml"
 CAPABILITY_EVIDENCE_PATHS = (
     "tests/properties/test_fx_accounting.py",
-    "tests/scenarios/test_fx.py",
+    "tests/scenarios/fx/test_fx.py",
 )
 DDGE_EVIDENCE_PATHS = (
     "tests/integration/papers/test_independent_numerical_oracles.py",

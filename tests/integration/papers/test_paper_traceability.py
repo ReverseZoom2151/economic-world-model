@@ -255,7 +255,7 @@ def test_compiled_fx_runtime_is_bound_to_han_runtime_claims() -> None:
     ):
         item = items[item_id]
         assert "src/ewm/scenarios/fx/execution/runtime.py" in item["implementation"]
-        assert "tests/scenarios/test_fx_world.py" in item["evidence"]
+        assert "tests/scenarios/fx/test_fx_world.py" in item["evidence"]
 
 
 def test_traceability_guide_separates_replay_engineering_from_paper_claims() -> None:

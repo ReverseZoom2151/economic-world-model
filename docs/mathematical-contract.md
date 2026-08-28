@@ -517,7 +517,7 @@ template, not an exact numerical replication and not a proof of the general exis
 | Forecasting population roots and derivative | `ewm.scenarios.forecasting` | Package-import-free stationary-kernel OLS oracle plus package iteration in `tests/integration/papers/test_independent_numerical_oracles.py` |
 | FX feasibility and conservation | `ewm.scenarios.fx` | Example and Hypothesis property tests in `tests/scenarios` and `tests/properties` |
 | FX comparative statics | `ewm.experiments.fx` | Replicated common-random-number effects and interval tests in `tests/integration/experiments/test_comparisons.py` |
-| Credit provenance, adoption, observation, and claim boundaries | `ewm.scenarios.credit`, `ewm.experiments.credit` | Source-target and economic-invariant tests in `tests/scenarios/test_credit_paper_targets.py` and `tests/scenarios/test_credit.py` |
+| Credit provenance, adoption, observation, and claim boundaries | `ewm.scenarios.credit`, `ewm.experiments.credit` | Source-target and economic-invariant tests in `tests/scenarios/credit/test_credit_paper_targets.py` and `tests/scenarios/credit/test_credit.py` |
 | Appendix D production instantiation | `ewm.scenarios.production`, `ewm.experiments.production` | Package-import-free objective optimization and market clearing in `tests/integration/papers/test_independent_numerical_oracles.py` |
 | Han seven-call runtime protocol | `ewm.core.world`, `ewm.core.specs`, `ewm.core.events` | End-to-end event-order and version checks in `tests/integration/runtime/test_han_runtime_protocol.py` and `tests/conformance/test_han_conformance.py` |
 | Five-layer evaluation | `ewm.experiments.evaluation` | Provenance, missingness, and read-only tests in `tests/integration/experiments/test_layered_evaluation.py` |
