@@ -12,6 +12,8 @@ interface EconomicGlobeProps {
   readonly flows: ReadonlyArray<GeoFlow>;
   readonly selectedId: string | null;
   readonly onSelect: (id: string) => void;
+  readonly showFlows?: boolean;
+  readonly showUncertainty?: boolean;
 }
 
 function GlobeControls() {
@@ -29,7 +31,14 @@ function GlobeControls() {
   );
 }
 
-export function EconomicGlobe({ placements, flows, selectedId, onSelect }: EconomicGlobeProps) {
+export function EconomicGlobe({
+  placements,
+  flows,
+  selectedId,
+  onSelect,
+  showFlows = true,
+  showUncertainty = true,
+}: EconomicGlobeProps) {
   return (
     <div className="economic-globe" role="img" aria-label="3D economic globe with explicit anchors">
       <Canvas
@@ -46,8 +55,8 @@ export function EconomicGlobe({ placements, flows, selectedId, onSelect }: Econo
           <meshStandardMaterial color="#293027" roughness={0.9} metalness={0} />
         </mesh>
         <EarthBoundaries />
-        <FlowArcs flows={flows} />
-        <UncertaintyRings placements={placements} />
+        {showFlows ? <FlowArcs flows={flows} /> : null}
+        {showUncertainty ? <UncertaintyRings placements={placements} /> : null}
         <AnchoredObjects placements={placements} selectedId={selectedId} onSelect={onSelect} />
         <GlobeControls />
       </Canvas>

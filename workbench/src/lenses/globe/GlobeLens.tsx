@@ -7,6 +7,7 @@ import type {
 } from "../../data/InvestigationDataSource";
 import { GlobeLedger } from "../../globe/GlobeLedger";
 import { GlobeLegend } from "../../globe/GlobeLegend";
+import { GlobeControls } from "../../globe/GlobeControls";
 import {
   boundedGeoFlows,
   eligibleGeoPlacements,
@@ -80,6 +81,9 @@ export function GlobeLens({
     active: EMPTY_RUN,
     comparison: null,
   });
+  const [disabledKinds, setDisabledKinds] = useState<ReadonlySet<string>>(new Set());
+  const [showFlows, setShowFlows] = useState(true);
+  const [showUncertainty, setShowUncertainty] = useState(true);
 
   useEffect(() => {
     let current = true;
@@ -115,6 +119,19 @@ export function GlobeLens({
     () => [...activePlacements, ...comparisonPlacements],
     [activePlacements, comparisonPlacements],
   );
+  const kinds = useMemo(
+    () => [...new Set(placements.map((placement) => placement.subject.ref.kind))]
+      .sort((left, right) => left.localeCompare(right)),
+    [placements],
+  );
+  const effectiveKinds = useMemo(
+    () => new Set(kinds.filter((kind) => !disabledKinds.has(kind))),
+    [disabledKinds, kinds],
+  );
+  const visiblePlacements = useMemo(
+    () => placements.filter((placement) => effectiveKinds.has(placement.subject.ref.kind)),
+    [effectiveKinds, placements],
+  );
   const flows = useMemo(
     () => [
       ...boundedGeoFlows(activePlacements, records.active.relations),
@@ -123,6 +140,16 @@ export function GlobeLens({
     [activePlacements, comparisonPlacements, records.active.relations, records.comparison],
   );
   const available = useMemo(() => webglAvailable(), [webglAvailable]);
+  const visibleIds = useMemo(
+    () => new Set(visiblePlacements.map((placement) => `${placement.runId}:${placement.subject.ref.id}`)),
+    [visiblePlacements],
+  );
+  const visibleFlows = useMemo(
+    () => flows.filter((flow) =>
+      visibleIds.has(`${flow.source.runId}:${flow.source.subject.ref.id}`)
+      && visibleIds.has(`${flow.target.runId}:${flow.target.subject.ref.id}`)),
+    [flows, visibleIds],
+  );
 
   return (
     <section className="analytical-lens globe-lens">
@@ -140,8 +167,26 @@ export function GlobeLens({
       ) : null}
       {records.key === requestKey && !records.failed && placements.length === 0 ? (
         <section className="globe-unavailable">
-          <h3>No explicit geography is available.</h3>
-          <p>No jurisdiction or coordinate was inferred.</p>
+          <div>
+            <p className="globe-unavailable__eyebrow">GEOGRAPHY READINESS</p>
+            <h3>No explicit geography is available.</h3>
+            <p>No jurisdiction or coordinate was inferred.</p>
+          </div>
+          <dl>
+            <div><dt>Loaded objects</dt><dd>{records.active.objects.length}</dd></div>
+            <div><dt>Valid anchors</dt><dd>0</dd></div>
+            <div><dt>Inferred positions</dt><dd>0</dd></div>
+          </dl>
+          <details>
+            <summary>Add an evidence-backed geography overlay</summary>
+            <p>
+              Import a verified <code>ewm.geo-overlay.v1</code> sidecar with EPSG:4326 coordinates,
+              validity, uncertainty, and source locators. The run remains unchanged.
+            </p>
+            <code className="globe-unavailable__command">
+              ewm ontology project --run-dir &lt;run&gt; --geo-overlay &lt;overlay.json&gt; --output &lt;projection&gt;
+            </code>
+          </details>
         </section>
       ) : null}
       {records.key === requestKey && !records.failed && placements.length > 0 ? (
@@ -149,15 +194,31 @@ export function GlobeLens({
           <GlobeLegend
             activeCount={activePlacements.length}
             comparisonCount={comparisonPlacements.length}
-            flowCount={flows.length}
+            flowCount={visibleFlows.length}
+          />
+          <GlobeControls
+            kinds={kinds}
+            enabledKinds={effectiveKinds}
+            showFlows={showFlows}
+            showUncertainty={showUncertainty}
+            onToggleKind={(kind) => {
+              setDisabledKinds((current) => {
+                const next = new Set(current);
+                if (next.has(kind)) next.delete(kind);
+                else next.add(kind);
+                return next;
+              });
+            }}
+            onShowFlows={setShowFlows}
+            onShowUncertainty={setShowUncertainty}
           />
           {available ? (
             <SceneErrorBoundary
               key={requestKey}
               fallback={
                 <GlobeLedger
-                  placements={placements}
-                  flows={flows}
+                  placements={visiblePlacements}
+                  flows={showFlows ? visibleFlows : []}
                   selectedId={selectedId}
                   onSelect={onSelect}
                   renderingUnavailable
@@ -166,17 +227,19 @@ export function GlobeLens({
             >
               <Suspense fallback={<p className="lens-loading">Loading bundled globe geometry…</p>}>
                 <LazyEconomicGlobe
-                  placements={placements}
-                  flows={flows}
+                  placements={visiblePlacements}
+                  flows={visibleFlows}
                   selectedId={selectedId}
                   onSelect={onSelect}
+                  showFlows={showFlows}
+                  showUncertainty={showUncertainty}
                 />
               </Suspense>
             </SceneErrorBoundary>
           ) : null}
           <GlobeLedger
-            placements={placements}
-            flows={flows}
+            placements={visiblePlacements}
+            flows={showFlows ? visibleFlows : []}
             selectedId={selectedId}
             onSelect={onSelect}
             renderingUnavailable={!available}
