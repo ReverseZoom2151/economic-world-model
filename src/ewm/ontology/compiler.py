@@ -626,6 +626,33 @@ def _validate_profile_projection(
     generic_coverage: tuple[CoverageEntry, ...],
 ) -> None:
     for ontology_object in fragment.objects:
+        if (
+            ontology_object.ref.kind in {"claim", "evidence_artifact"}
+            and ontology_object.properties.get("profile_evidence") is True
+        ):
+            classification = ontology_object.properties.get("evidence_classification")
+            if not isinstance(classification, str) or not classification.strip():
+                raise ProjectionCompilationError(
+                    "profile claims and evidence require an explicit evidence classification"
+                )
+        if ontology_object.ref.kind == "readiness_assessment":
+            classification = ontology_object.properties.get("classification")
+            official_awards = ontology_object.properties.get("official_awards")
+            level = ontology_object.properties.get("level")
+            blocked = ontology_object.properties.get("blocked")
+            awards_are_zero = (
+                isinstance(official_awards, int)
+                and not isinstance(official_awards, bool)
+                and official_awards == 0
+            )
+            if (
+                classification != "evidence_readiness_only"
+                or not awards_are_zero
+                or (level in {"L3", "L4", "L5", "L6"} and blocked is not True)
+            ):
+                raise ProjectionCompilationError(
+                    "ontology adapters cannot award Han L3-L6 capability"
+                )
         if ontology_object.layer != "economic_declaration":
             continue
         if ontology_object.properties.get("evidence_origin") != "adapter_derived":

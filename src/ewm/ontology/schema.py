@@ -111,6 +111,7 @@ _KINDS_BY_LAYER: Mapping[str, tuple[str, ...]] = MappingProxyType(
             "fixed_point_candidate",
             "ddge_candidate",
             "residual",
+            "numerical_validation",
             "certificate",
             "certified_result",
             "basin",
@@ -274,6 +275,17 @@ RELATION_SPECS: Mapping[str, RelationSpec] = MappingProxyType(
             {"equilibrium_witness", "fixed_point_candidate", "ddge_candidate"},
             {"residual"},
         ),
+        "VALIDATES": _relation_spec(
+            "VALIDATES",
+            {"numerical_validation"},
+            {
+                "inner_equilibrium",
+                "equilibrium_witness",
+                "fixed_point_candidate",
+                "ddge_candidate",
+                "residual",
+            },
+        ),
         "HAS_BASIN": _relation_spec(
             "HAS_BASIN", {"fixed_point_candidate", "ddge_candidate"}, {"basin"}
         ),
@@ -334,8 +346,11 @@ _DISTINCT_SOLUTION_ROLES = frozenset(
     {
         "rollout",
         "inner_equilibrium",
+        "equilibrium_witness",
         "fixed_point_candidate",
         "ddge_candidate",
+        "numerical_validation",
+        "certificate",
         "certified_result",
     }
 )
@@ -745,8 +760,9 @@ def _validate_solution_roles(projection: OntologyProjection) -> list[SchemaViola
                     8,
                     "conflated_solution_roles",
                     (
-                        "rollouts, candidates, witnesses, and certified results require "
-                        "distinct objects"
+                        "rollouts, correspondences, candidates, witnesses, numerical "
+                        "validations, certificates, and certified results require distinct "
+                        "objects"
                     ),
                     ontology_object.ref.id,
                     ontology_object.sources,
@@ -949,6 +965,44 @@ def _validate_claims(projection: OntologyProjection) -> list[SchemaViolation]:
     return violations
 
 
+def _validate_readiness(projection: OntologyProjection) -> list[SchemaViolation]:
+    violations: list[SchemaViolation] = []
+    for assessment in (
+        ontology_object
+        for ontology_object in projection.objects
+        if ontology_object.ref.kind == "readiness_assessment"
+    ):
+        classification = assessment.properties.get("classification")
+        official_awards = assessment.properties.get("official_awards")
+        level = assessment.properties.get("level")
+        blocked = assessment.properties.get("blocked")
+        higher_level = level in {"L3", "L4", "L5", "L6"}
+        awards_are_zero = (
+            isinstance(official_awards, int)
+            and not isinstance(official_awards, bool)
+            and official_awards == 0
+        )
+        truthful = (
+            classification == "evidence_readiness_only"
+            and awards_are_zero
+            and (not higher_level or blocked is True)
+        )
+        if not truthful:
+            violations.append(
+                _violation(
+                    14,
+                    "readiness_award_forbidden",
+                    (
+                        "ontology readiness records are evidence-only and cannot award "
+                        "Han L3-L6 capability"
+                    ),
+                    assessment.ref.id,
+                    assessment.sources,
+                )
+            )
+    return violations
+
+
 def validate_projection(projection: OntologyProjection) -> tuple[SchemaViolation, ...]:
     """Return every schema violation in deterministic scientific-invariant order."""
 
@@ -967,6 +1021,7 @@ def validate_projection(projection: OntologyProjection) -> tuple[SchemaViolation
         _validate_bounds,
         _validate_interventions,
         _validate_claims,
+        _validate_readiness,
     )
     violations = (
         violation

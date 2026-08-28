@@ -18,7 +18,7 @@ class ScalarOntologyProfile:
     source_digest = content_digest(
         {
             "profile": identity,
-            "mapping_version": 1,
+            "mapping_version": 2,
             "sources": (
                 "ewm.scenarios.scalar.model.ScalarProblem",
                 "ewm.scenarios.scalar.verification.scalar_verification_report",
@@ -108,8 +108,26 @@ class ScalarOntologyProfile:
             {"evidence": "scalar_independent_root_cross_check"},
             {
                 "profile_evidence": True,
-                "evidence_classification": "synthetic_conformance",
+                "evidence_classification": "exact-replication",
                 "method": "sign bracketing cross-checked against fixed-point iteration",
+                "scope": "Cong Laboratory II scalar equations and targets",
+            },
+            sources=event_sources,
+        )
+        claim = builder.object(
+            "claim",
+            "research_evidence",
+            {"claim": "cong_laboratory_ii_scalar_replication"},
+            {
+                "profile_evidence": True,
+                "claim_kind": "exact_replication",
+                "evidence_classification": "exact-replication",
+                "status": "supported",
+                "scope": "Cong Laboratory II scalar equations and targets",
+                "qualification": (
+                    "package-import-free direct-equation and bracketing oracle; "
+                    "no empirical validation claim"
+                ),
             },
             sources=event_sources,
         )
@@ -120,8 +138,16 @@ class ScalarOntologyProfile:
             {"evidence": "root_cross_check"},
             locator=context.run_source,
         )
+        builder.relation(
+            "SUPPORTS",
+            evidence,
+            claim,
+            {"claim": "cong_laboratory_ii_scalar_replication"},
+            locator=artifact_source(context, "events.jsonl"),
+        )
 
         candidate_refs = []
+        validation_refs = []
         for sequence, event in enumerate(context.events):
             locator = event_sources[sequence]
             root = float(event["root"])
@@ -157,6 +183,21 @@ class ScalarOntologyProfile:
                 },
                 sources=(locator,),
             )
+            validation = builder.object(
+                "numerical_validation",
+                "learning_equilibrium",
+                {"sequence": sequence, "candidate": candidate.id},
+                {
+                    "validation_method": "independent_sign_bracketing_and_iteration",
+                    "status": "passed" if abs(residual_value) <= tolerance else "failed",
+                    "residual_norm": abs(residual_value),
+                    "tolerance": tolerance,
+                    "solver": solver,
+                    "stopping_rule": stopping_rule,
+                    "semantic_roles": ("numerical_validation",),
+                },
+                sources=(locator,),
+            )
             builder.relation(
                 "HAS_CANDIDATE",
                 correspondence,
@@ -172,13 +213,38 @@ class ScalarOntologyProfile:
                 {"sequence": sequence},
                 locator=locator,
             )
+            builder.relation(
+                "VALIDATES",
+                validation,
+                candidate,
+                {"sequence": sequence, "target": "candidate"},
+                locator=locator,
+            )
+            builder.relation(
+                "VALIDATES",
+                validation,
+                residual,
+                {"sequence": sequence, "target": "residual"},
+                locator=locator,
+            )
             candidate_refs.append(candidate)
+            validation_refs.append(validation)
 
         provenance = builder.add_profile_provenance()
         builder.projected(
             "adapter.scalar.fixed_points",
             correspondence,
             *candidate_refs,
+            source=artifact_source(context, "events.jsonl"),
+        )
+        builder.projected(
+            "adapter.scalar.numerical_validations",
+            *validation_refs,
+            source=artifact_source(context, "events.jsonl"),
+        )
+        builder.projected(
+            "adapter.scalar.claim",
+            claim,
             source=artifact_source(context, "events.jsonl"),
         )
         builder.projected(

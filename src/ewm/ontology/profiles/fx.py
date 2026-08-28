@@ -19,7 +19,7 @@ class FXOntologyProfile:
     source_digest = content_digest(
         {
             "profile": identity,
-            "mapping_version": 1,
+            "mapping_version": 2,
             "sources": (
                 "ewm.scenarios.fx.runtime.fx_world_blueprint",
                 "ewm.scenarios.fx.mechanism.UniformPriceBatchMechanism",
@@ -130,8 +130,28 @@ class FXOntologyProfile:
             {"evidence": "fx_verified_run"},
             {
                 "profile_evidence": True,
-                "evidence_classification": "synthetic_conformance",
+                "evidence_classification": "synthetic_systems_conformance",
                 "event_count": len(context.events),
+                "scope": "deterministic synthetic FX runtime and accounting checks",
+            },
+            sources=(artifact_source(context, "events.jsonl"),),
+        )
+        claim = builder.object(
+            "claim",
+            "research_evidence",
+            {"claim": "fx_synthetic_systems_conformance_observation"},
+            {
+                "profile_evidence": True,
+                "claim_kind": "synthetic_systems_conformance_observation",
+                "evidence_classification": "synthetic_systems_conformance",
+                "status": "supporting_observation",
+                "scope": "deterministic synthetic FX runtime and accounting checks",
+                "capability_ceiling": "L2",
+                "official_award": False,
+                "qualification": (
+                    "a sealed synthetic run is supporting evidence only; official capability "
+                    "assessment remains evidence-gated"
+                ),
             },
             sources=(artifact_source(context, "events.jsonl"),),
         )
@@ -140,6 +160,13 @@ class FXOntologyProfile:
             experiment,
             evidence,
             {"evidence": "verified_event_stream"},
+            locator=artifact_source(context, "events.jsonl"),
+        )
+        builder.relation(
+            "SUPPORTS",
+            evidence,
+            claim,
+            {"claim": "fx_synthetic_systems_conformance_observation"},
             locator=artifact_source(context, "events.jsonl"),
         )
 
@@ -193,6 +220,8 @@ class FXOntologyProfile:
         transaction_refs = []
         rejection_refs = []
         clearing_refs = []
+        residual_refs = []
+        validation_refs = []
         for event in context.events:
             if event.get("kind") != "step":
                 continue
@@ -268,6 +297,52 @@ class FXOntologyProfile:
                 },
                 sources=(locator,),
             )
+            residual_values = (
+                float(outcomes["clearing_residual"]),
+                float(outcomes["cash_residual"]),
+                float(outcomes["foreign_residual"]),
+            )
+            residual_norm = max(abs(value) for value in residual_values)
+            tolerance = 1e-10
+            residual = builder.object(
+                "residual",
+                "learning_equilibrium",
+                {"sequence": sequence, "witness": witness.id},
+                {
+                    "value": residual_values,
+                    "components": (
+                        "clearing_residual",
+                        "cash_conservation_residual",
+                        "foreign_asset_conservation_residual",
+                    ),
+                    "norm": residual_norm,
+                    "norm_type": "maximum_absolute_component",
+                    "tolerance": tolerance,
+                    "solver": "uniform_price_batch_enumeration",
+                    "stopping_rule": "market-clearing and accounting residuals <= 1e-10",
+                    "status": (
+                        "within_tolerance"
+                        if residual_norm <= tolerance
+                        else "outside_tolerance"
+                    ),
+                },
+                sources=(locator, context.adapter_source),
+            )
+            validation = builder.object(
+                "numerical_validation",
+                "learning_equilibrium",
+                {"sequence": sequence, "witness": witness.id},
+                {
+                    "validation_method": "market_clearing_and_conservation_cross_check",
+                    "status": "passed" if residual_norm <= tolerance else "failed",
+                    "residual_norm": residual_norm,
+                    "tolerance": tolerance,
+                    "solver": "uniform_price_batch_enumeration",
+                    "stopping_rule": "market-clearing and accounting residuals <= 1e-10",
+                    "semantic_roles": ("numerical_validation",),
+                },
+                sources=(locator, context.adapter_source),
+            )
             builder.relation(
                 "CONTAINS",
                 rollout,
@@ -304,14 +379,52 @@ class FXOntologyProfile:
                 {"sequence": sequence},
                 locator=locator,
             )
+            builder.relation(
+                "HAS_RESIDUAL",
+                witness,
+                residual,
+                {"sequence": sequence},
+                locator=locator,
+            )
+            builder.relation(
+                "VALIDATES",
+                validation,
+                witness,
+                {"sequence": sequence, "target": "witness"},
+                locator=locator,
+            )
+            builder.relation(
+                "VALIDATES",
+                validation,
+                residual,
+                {"sequence": sequence, "target": "residual"},
+                locator=locator,
+            )
             transaction_refs.append(transaction)
             rejection_refs.append(rejection)
             clearing_refs.append(clearing)
+            residual_refs.append(residual)
+            validation_refs.append(validation)
 
         provenance = builder.add_profile_provenance()
         builder.projected(
             "adapter.fx.transactions",
             *transaction_refs,
+            source=artifact_source(context, "events.jsonl"),
+        )
+        builder.projected(
+            "adapter.fx.accounting_residuals",
+            *residual_refs,
+            source=artifact_source(context, "events.jsonl"),
+        )
+        builder.projected(
+            "adapter.fx.numerical_validations",
+            *validation_refs,
+            source=artifact_source(context, "events.jsonl"),
+        )
+        builder.projected(
+            "adapter.fx.claim",
+            claim,
             source=artifact_source(context, "events.jsonl"),
         )
         builder.projected(
