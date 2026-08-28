@@ -6,6 +6,7 @@ import type {
   RelationContract,
 } from "../../data/InvestigationDataSource";
 import type { CameraState } from "../../state/investigation";
+import { supportsWebGL } from "../../scene/capabilities";
 import { layoutOntologyScene, type SceneLayout } from "../../scene/layout";
 import { SceneControls } from "../../scene/SceneControls";
 import { SceneErrorBoundary } from "../../scene/SceneErrorBoundary";
@@ -30,21 +31,6 @@ interface SceneRecords {
   readonly failed: boolean;
   readonly objects: ReadonlyArray<OntologyObjectContract>;
   readonly relations: ReadonlyArray<RelationContract>;
-}
-
-function supportsWebGL(): boolean {
-  try {
-    if (
-      typeof window.WebGLRenderingContext === "undefined" &&
-      typeof window.WebGL2RenderingContext === "undefined"
-    ) {
-      return false;
-    }
-    const canvas = document.createElement("canvas");
-    return Boolean(canvas.getContext("webgl2") ?? canvas.getContext("webgl"));
-  } catch {
-    return false;
-  }
 }
 
 function visibleLayout(layout: SceneLayout, layers: ReadonlyArray<string>): SceneLayout {

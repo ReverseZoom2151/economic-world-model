@@ -24,6 +24,7 @@ from .contracts import (
     ClaimQuery,
     CursorError,
     EvidenceQuery,
+    GeoAnchorQuery,
     MeasurementPage,
     MeasurementQuery,
     ObjectPage,
@@ -135,6 +136,31 @@ def _record_layer(record: OntologyRecord) -> str | None:
     if isinstance(record, Measurement):
         return "research_evidence"
     return None
+
+
+def _geo_valid_at(value: object, point: int | float | str) -> bool:
+    if not isinstance(value, Mapping):
+        return False
+    start = value.get("start")
+    end = value.get("end")
+    if isinstance(point, str):
+        if (start is not None and not isinstance(start, str)) or (
+            end is not None and not isinstance(end, str)
+        ):
+            return False
+        return (start is None or point >= start) and (end is None or point <= end)
+    if isinstance(point, bool):
+        return False
+    numeric_types = (int, float)
+    invalid_start = start is not None and (
+        isinstance(start, bool) or not isinstance(start, numeric_types)
+    )
+    invalid_end = end is not None and (
+        isinstance(end, bool) or not isinstance(end, numeric_types)
+    )
+    if invalid_start or invalid_end:
+        return False
+    return (start is None or point >= start) and (end is None or point <= end)
 
 
 class OntologyQueryService:
@@ -453,6 +479,37 @@ class OntologyQueryService:
             for record_id in sorted(candidates)
         )
         return self._page("evidence", request, items, limit=limit, cursor=cursor)
+
+    def geo_anchors(
+        self,
+        query: GeoAnchorQuery | None = None,
+        *,
+        limit: int | None = None,
+        cursor: str | None = None,
+    ) -> ObjectPage:
+        """Return explicit geographic anchors active at an optional declared time."""
+
+        request = query or GeoAnchorQuery()
+        self._validate_filter_cost("geo_anchors", request.ids, request.bases)
+        candidates = set(self._indexes.object_ids_by_kind.get("geo_anchor", ()))
+        if request.ids:
+            candidates &= set(request.ids)
+        if request.bases:
+            candidates &= _union_buckets(
+                self._indexes.geo_anchor_ids_by_basis,
+                request.bases,
+            )
+        items = tuple(
+            cast(OntologyObject, self._indexes.records_by_id[record_id])
+            for record_id in sorted(candidates)
+        )
+        if request.valid_at is not None:
+            items = tuple(
+                item
+                for item in items
+                if _geo_valid_at(item.properties.get("validity"), request.valid_at)
+            )
+        return self._page("geo_anchors", request, items, limit=limit, cursor=cursor)
 
     def _path_filter_cost(self, path_filter: PathFilter) -> None:
         self._validate_filter_cost(

@@ -92,6 +92,7 @@ class OntologyIndexes:
     measurement_ids_by_subject: Mapping[str, tuple[str, ...]]
     claim_ids_by_classification: Mapping[str, tuple[str, ...]]
     evidence_ids_by_classification: Mapping[str, tuple[str, ...]]
+    geo_anchor_ids_by_basis: Mapping[str, tuple[str, ...]]
 
     @property
     def projection_digest(self) -> str:
@@ -128,6 +129,7 @@ def build_indexes(projection: OntologyProjection) -> OntologyIndexes:
     measurement_subjects: defaultdict[str, set[str]] = defaultdict(set)
     claim_classifications: defaultdict[str, set[str]] = defaultdict(set)
     evidence_classifications: defaultdict[str, set[str]] = defaultdict(set)
+    geo_anchor_bases: defaultdict[str, set[str]] = defaultdict(set)
 
     for ontology_object in projection.objects:
         object_kinds[ontology_object.ref.kind].add(ontology_object.ref.id)
@@ -140,6 +142,11 @@ def build_indexes(projection: OntologyProjection) -> OntologyIndexes:
                 claim_classifications[classification].add(ontology_object.ref.id)
             elif ontology_object.ref.kind == "evidence_artifact":
                 evidence_classifications[classification].add(ontology_object.ref.id)
+        if ontology_object.ref.kind == "geo_anchor":
+            basis = ontology_object.properties.get("anchor_basis")
+            if not isinstance(basis, str) or not basis.strip():
+                raise ValueError("geo anchor basis must be non-empty text")
+            geo_anchor_bases[basis].add(ontology_object.ref.id)
 
     for relation in projection.relations:
         relation_types[relation.relation_type].add(relation.ref.id)
@@ -191,4 +198,5 @@ def build_indexes(projection: OntologyProjection) -> OntologyIndexes:
         measurement_ids_by_subject=_freeze_buckets(measurement_subjects),
         claim_ids_by_classification=_freeze_buckets(claim_classifications),
         evidence_ids_by_classification=_freeze_buckets(evidence_classifications),
+        geo_anchor_ids_by_basis=_freeze_buckets(geo_anchor_bases),
     )

@@ -24,6 +24,9 @@ ONTOLOGY_LAYERS = frozenset(
     }
 )
 COVERAGE_STATUSES = frozenset({"projected", "omitted", "rejected", "unavailable"})
+GEO_COORDINATE_REFERENCE_SYSTEMS = frozenset({"EPSG:4326"})
+GEO_ANCHOR_BASES = frozenset({"observed", "declared", "externally_supplied"})
+GEO_EVIDENCE_CLASSIFICATIONS = frozenset({"researcher_declared"})
 
 _T = TypeVar("_T")
 

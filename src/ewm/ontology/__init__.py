@@ -2,8 +2,19 @@
 
 from ewm._internal.imports import register_module_aliases
 
+from .geography import (
+    GEO_OVERLAY_SCHEMA,
+    GeoOverlayApplication,
+    GeoOverlayError,
+    GeoPlacement,
+    apply_geo_overlay,
+    geographic_placements,
+)
 from .graph.model import (
     COVERAGE_STATUSES,
+    GEO_ANCHOR_BASES,
+    GEO_COORDINATE_REFERENCE_SYSTEMS,
+    GEO_EVIDENCE_CLASSIFICATIONS,
     ONTOLOGY_LAYERS,
     CoverageEntry,
     Measurement,
@@ -42,8 +53,15 @@ register_module_aliases(
 __all__ = [
     "COVERAGE_STATUSES",
     "DEFAULT_PROFILES",
+    "GEO_ANCHOR_BASES",
+    "GEO_COORDINATE_REFERENCE_SYSTEMS",
+    "GEO_EVIDENCE_CLASSIFICATIONS",
+    "GEO_OVERLAY_SCHEMA",
     "ONTOLOGY_LAYERS",
     "CoverageEntry",
+    "GeoOverlayApplication",
+    "GeoOverlayError",
+    "GeoPlacement",
     "Measurement",
     "OntologyObject",
     "OntologyProjection",
@@ -54,7 +72,9 @@ __all__ = [
     "ProjectionVerificationReport",
     "RelationAssertion",
     "SourceLocator",
+    "apply_geo_overlay",
     "compile_run_projection",
+    "geographic_placements",
     "load_projection_bundle",
     "verify_projection_bundle",
     "write_projection_bundle",

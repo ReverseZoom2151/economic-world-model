@@ -200,6 +200,21 @@ class EvidenceQuery:
 
 
 @dataclass(frozen=True, slots=True)
+class GeoAnchorQuery:
+    """Typed filters over explicit geographic anchors."""
+
+    ids: tuple[str, ...] = ()
+    bases: tuple[str, ...] = ()
+    valid_at: TimeBound | None = None
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "ids", _text_tuple(self.ids, "ids"))
+        object.__setattr__(self, "bases", _text_tuple(self.bases, "bases"))
+        if self.valid_at is not None:
+            _bound_family(self.valid_at)
+
+
+@dataclass(frozen=True, slots=True)
 class PathFilter:
     """Typed edge direction and node constraints for graph traversal."""
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
+from math import isfinite
 from numbers import Real
 from types import MappingProxyType
 from typing import Any
@@ -12,6 +13,9 @@ from typing import Any
 from ewm.core.provenance.serialization import canonical_json
 
 from .model import (
+    GEO_ANCHOR_BASES,
+    GEO_COORDINATE_REFERENCE_SYSTEMS,
+    GEO_EVIDENCE_CLASSIFICATIONS,
     Measurement,
     OntologyObject,
     OntologyProjection,
@@ -146,6 +150,15 @@ _REQUIRED_PROPERTIES: Mapping[str, tuple[str, ...]] = MappingProxyType(
     {
         "residual": ("value", "norm", "tolerance", "solver", "stopping_rule", "status"),
         "claim": ("evidence_classification",),
+        "geo_anchor": (
+            "crs",
+            "latitude",
+            "longitude",
+            "anchor_basis",
+            "evidence_classification",
+            "validity",
+            "uncertainty_km",
+        ),
     }
 )
 
@@ -1003,6 +1016,110 @@ def _validate_readiness(projection: OntologyProjection) -> list[SchemaViolation]
     return violations
 
 
+def _geo_number(value: object) -> float | None:
+    if isinstance(value, bool) or not isinstance(value, Real):
+        return None
+    converted = float(value)
+    return converted if isfinite(converted) else None
+
+
+def _valid_geo_bound(value: object) -> bool:
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return bool(value.strip())
+    return _geo_number(value) is not None
+
+
+def _valid_geo_interval(value: object) -> bool:
+    if not isinstance(value, Mapping) or frozenset(value) != {"start", "end"}:
+        return False
+    start = value["start"]
+    end = value["end"]
+    if not _valid_geo_bound(start) or not _valid_geo_bound(end):
+        return False
+    bounds = tuple(bound for bound in (start, end) if bound is not None)
+    if len(bounds) == 2:
+        numeric = all(_geo_number(bound) is not None for bound in bounds)
+        textual = all(isinstance(bound, str) for bound in bounds)
+        if numeric:
+            start_number = _geo_number(bounds[0])
+            end_number = _geo_number(bounds[1])
+            return (
+                start_number is not None
+                and end_number is not None
+                and start_number <= end_number
+            )
+        if textual:
+            return str(bounds[0]) <= str(bounds[1])
+        return False
+    return True
+
+
+def _allowed_geo_text(value: object, allowed: frozenset[str]) -> bool:
+    return isinstance(value, str) and value in allowed
+
+
+def _validate_geography(projection: OntologyProjection) -> list[SchemaViolation]:
+    violations: list[SchemaViolation] = []
+    for anchor in (
+        item for item in projection.objects if item.ref.kind == "geo_anchor"
+    ):
+        properties = anchor.properties
+        checks = (
+            (
+                _allowed_geo_text(
+                    properties.get("crs"), GEO_COORDINATE_REFERENCE_SYSTEMS
+                ),
+                "invalid_geo_crs",
+                "geo anchors must use a supported coordinate reference system",
+            ),
+            (
+                (latitude := _geo_number(properties.get("latitude"))) is not None
+                and -90.0 <= latitude <= 90.0,
+                "invalid_geo_latitude",
+                "geo anchor latitude must be finite and lie in [-90, 90]",
+            ),
+            (
+                (longitude := _geo_number(properties.get("longitude"))) is not None
+                and -180.0 <= longitude <= 180.0,
+                "invalid_geo_longitude",
+                "geo anchor longitude must be finite and lie in [-180, 180]",
+            ),
+            (
+                _allowed_geo_text(properties.get("anchor_basis"), GEO_ANCHOR_BASES),
+                "invalid_geo_basis",
+                "geo anchor basis must be observed, declared, or externally supplied",
+            ),
+            (
+                _allowed_geo_text(
+                    properties.get("evidence_classification"),
+                    GEO_EVIDENCE_CLASSIFICATIONS,
+                ),
+                "invalid_geo_evidence",
+                "geo overlay evidence must retain researcher_declared classification",
+            ),
+            (
+                _valid_geo_interval(properties.get("validity")),
+                "invalid_geo_validity",
+                "geo anchor validity must be an ordered type-consistent interval",
+            ),
+            (
+                (uncertainty := _geo_number(properties.get("uncertainty_km")))
+                is not None
+                and uncertainty >= 0.0,
+                "invalid_geo_uncertainty",
+                "geo anchor uncertainty_km must be finite and non-negative",
+            ),
+        )
+        for valid, code, message in checks:
+            if not valid:
+                violations.append(
+                    _violation(5, code, message, anchor.ref.id, anchor.sources)
+                )
+    return violations
+
+
 def validate_projection(projection: OntologyProjection) -> tuple[SchemaViolation, ...]:
     """Return every schema violation in deterministic scientific-invariant order."""
 
@@ -1022,6 +1139,7 @@ def validate_projection(projection: OntologyProjection) -> tuple[SchemaViolation
         _validate_interventions,
         _validate_claims,
         _validate_readiness,
+        _validate_geography,
     )
     violations = (
         violation

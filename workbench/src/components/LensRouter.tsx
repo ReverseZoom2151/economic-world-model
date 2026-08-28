@@ -10,6 +10,7 @@ import type {
 import { CompareLens } from "../lenses/compare/CompareLens";
 import { DdgeLens } from "../lenses/ddge/DdgeLens";
 import { EvidenceLens } from "../lenses/evidence/EvidenceLens";
+import { GlobeLens } from "../lenses/globe/GlobeLens";
 import { LearningLens } from "../lenses/learning/LearningLens";
 import { LineageLens } from "../lenses/lineage/LineageLens";
 import { MarketLens } from "../lenses/market/MarketLens";
@@ -29,6 +30,7 @@ const DESCRIPTIONS: Readonly<Record<InvestigationLens, string>> = {
   evidence: "Claims, evidence classifications, protocols, sources, and limitations.",
   lineage: "Derivation paths from runtime records back to artifacts and code.",
   scene: "Deterministic semantic lanes, ontology layers, and declared temporal depth.",
+  globe: "Explicit sourced coordinates, validity, uncertainty, and bounded geographic flows.",
 };
 
 function title(lens: InvestigationLens): string {
@@ -206,6 +208,26 @@ export function LensRouter({ dataSource }: LensRouterProps) {
           selectedId={state.objectId}
           camera={state.camera ?? CANONICAL_SCENE_CAMERA}
           onCameraChange={(camera) => dispatch({ type: "set-camera", camera })}
+          onSelect={(objectId) => dispatch({ type: "select-object", objectId })}
+        />
+      </section>
+    );
+  }
+  if (state.runId !== null && state.lens === "globe") {
+    const comparisonRunId =
+      state.comparison === null
+        ? null
+        : state.comparison.leftRunId === state.runId
+          ? state.comparison.rightRunId
+          : state.comparison.leftRunId;
+    return (
+      <section className="lens-slot" aria-label="Active analytical lens">
+        <GlobeLens
+          dataSource={dataSource}
+          runId={state.runId}
+          comparisonRunId={comparisonRunId}
+          selectedId={state.objectId}
+          time={state.timeWindow?.end ?? null}
           onSelect={(objectId) => dispatch({ type: "select-object", objectId })}
         />
       </section>

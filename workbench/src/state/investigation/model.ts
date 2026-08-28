@@ -8,6 +8,7 @@ export const INVESTIGATION_LENSES = [
   "evidence",
   "lineage",
   "scene",
+  "globe",
 ] as const;
 
 export type InvestigationLens = (typeof INVESTIGATION_LENSES)[number];

@@ -23,9 +23,11 @@ from .experiments import (
 )
 from .ontology import (
     DEFAULT_PROFILES,
+    GeoOverlayError,
     ProjectionCompilationError,
     ProjectionVerificationError,
     ProjectionVerificationReport,
+    apply_geo_overlay,
     compile_run_projection,
     verify_projection_bundle,
     write_projection_bundle,
@@ -68,6 +70,11 @@ def _parser() -> argparse.ArgumentParser:
     )
     project_parser.add_argument("--run-dir", type=Path, required=True)
     project_parser.add_argument("--output", type=Path, required=True)
+    project_parser.add_argument(
+        "--geo-overlay",
+        type=Path,
+        help="optional explicit ewm.geo-overlay.v1 sidecar outside the sealed run",
+    )
     ontology_verify_parser = ontology_commands.add_parser(
         "verify",
         help="verify one sealed ontology projection bundle",
@@ -131,17 +138,34 @@ def _projection_verification_data(
     }
 
 
-def _ontology_project(run_dir: Path, output: Path) -> int:
+def _ontology_project(
+    run_dir: Path,
+    output: Path,
+    geo_overlay: Path | None = None,
+) -> int:
     try:
         compilation = compile_run_projection(run_dir, adapters=DEFAULT_PROFILES)
+        application = (
+            apply_geo_overlay(compilation.projection, geo_overlay)
+            if geo_overlay is not None
+            else None
+        )
+        projection = (
+            application.projection if application is not None else compilation.projection
+        )
         bundle = write_projection_bundle(
             output,
-            compilation.projection,
+            projection,
             compilation.provenance,
             source_run_dir=run_dir,
         )
         report = verify_projection_bundle(bundle)
-    except (OSError, ProjectionCompilationError, ProjectionVerificationError) as error:
+    except (
+        OSError,
+        GeoOverlayError,
+        ProjectionCompilationError,
+        ProjectionVerificationError,
+    ) as error:
         _print_json(
             {
                 "error": str(error),
@@ -150,20 +174,27 @@ def _ontology_project(run_dir: Path, output: Path) -> int:
                 "operation": "ontology.project",
                 "output": str(output),
                 "run_dir": str(run_dir),
+                **(
+                    {"geo_overlay": str(geo_overlay)}
+                    if geo_overlay is not None
+                    else {}
+                ),
             }
         )
         return 1
-    _print_json(
-        {
-            "adapter_identity": report.adapter_identity,
-            "bundle_dir": str(bundle),
-            "bundle_sha256": report.bundle_sha256,
-            "ok": True,
-            "operation": "ontology.project",
-            "projection_digest": report.projection_digest,
-            "source_run_hash": report.source_run_hash,
-        }
-    )
+    result: dict[str, object] = {
+        "adapter_identity": report.adapter_identity,
+        "bundle_dir": str(bundle),
+        "bundle_sha256": report.bundle_sha256,
+        "ok": True,
+        "operation": "ontology.project",
+        "projection_digest": report.projection_digest,
+        "source_run_hash": report.source_run_hash,
+    }
+    if application is not None:
+        result["geo_overlay_digest"] = application.overlay_digest
+        result["geo_anchor_count"] = application.anchor_count
+    _print_json(result)
     return 0
 
 
@@ -218,7 +249,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     if arguments.command == "ontology":
         if arguments.ontology_command == "project":
-            return _ontology_project(Path(arguments.run_dir), Path(arguments.output))
+            return _ontology_project(
+                Path(arguments.run_dir),
+                Path(arguments.output),
+                (
+                    Path(arguments.geo_overlay)
+                    if arguments.geo_overlay is not None
+                    else None
+                ),
+            )
         return _ontology_verify(Path(arguments.bundle))
     run = run_experiment(
         str(arguments.experiment),
