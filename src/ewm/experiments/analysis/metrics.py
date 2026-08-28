@@ -1,4 +1,4 @@
-"""Conversion and validation helpers for experiment measurements."""
+"""Conversion and validation of experiment measurements."""
 
 from __future__ import annotations
 

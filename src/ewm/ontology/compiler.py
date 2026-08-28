@@ -14,7 +14,7 @@ from typing import Any, cast
 import numpy as np
 
 from ewm.experiments import ArtifactVerificationError, VerificationReport, verify_run
-from ewm.experiments.verification import PAYLOAD_FILENAMES
+from ewm.experiments.runs.verification import PAYLOAD_FILENAMES
 
 from .identity import make_ontology_ref
 from .model import (

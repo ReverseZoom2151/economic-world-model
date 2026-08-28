@@ -45,8 +45,8 @@ from .catalog.models import (
     ScenarioPlugin,
     ScenarioRegistry,
 )
-from .credit import credit_paper_target_report, run_credit_regimes
-from .fx import replicated_fx_comparisons
+from .labs.credit import credit_paper_target_report, run_credit_regimes
+from .labs.fx import replicated_fx_comparisons
 
 __all__ = [
     "EXPERIMENTS",

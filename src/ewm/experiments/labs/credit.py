@@ -1,4 +1,4 @@
-"""Solver orchestration for the AI-mediated credit regime experiment."""
+"""Solver orchestration for the credit-regime laboratory."""
 
 from __future__ import annotations
 

@@ -262,7 +262,7 @@ pages = "62-64, 70"
 summary = "A heterogeneous credit market closes GenAI adoption, selective outcomes, and lender retraining."
 status = "blocked-external"
 claim = "qualitative-reconstruction"
-implementation = ["src/ewm/scenarios/credit/provenance.py", "src/ewm/scenarios/credit/model.py", "src/ewm/experiments/credit.py", "src/ewm/experiments/protocols.py", "src/ewm/experiments/protocol_runner.py", "src/ewm/protocols/credit-mechanism-v1.toml"]
+implementation = ["src/ewm/scenarios/credit/provenance.py", "src/ewm/scenarios/credit/model.py", "src/ewm/experiments/labs/credit.py", "src/ewm/experiments/studies/protocols.py", "src/ewm/experiments/studies/protocol_runner.py", "src/ewm/protocols/credit-mechanism-v1.toml"]
 evidence = ["tests/scenarios/test_credit_paper_targets.py", "tests/scenarios/test_credit.py", "tests/integration/test_locked_protocol_smoke.py"]
 limitation = "The PDF omits necessary simulation and learner parameters and contains no URL for the stated accompanying code, so exact numerical replication is not currently identifiable. The prospectively locked local quick protocol fails its solver-residual tolerance in all four fixed-seed replications, remains diagnostic-only, and authorizes no claim."
 
@@ -308,7 +308,7 @@ pages = "66-68"
 summary = "Standard assumptions give competitive prices and allocations for each feasible aggregate state."
 status = "partial"
 claim = "paper-inspired"
-implementation = ["src/ewm/scenarios/production/model.py", "src/ewm/experiments/production.py"]
+implementation = ["src/ewm/scenarios/production/model.py", "src/ewm/experiments/labs/production.py"]
 evidence = ["tests/oracles/production_oracle.py", "tests/integration/test_independent_numerical_oracles.py", "tests/scenarios/test_production.py", "examples/production.py"]
 limitation = "The package instantiates Equations D.1-D.7 with disclosed CRRA, continuation-value, finite-distribution, and decreasing-returns Cobb-Douglas choices that Cong does not specify. A package-independent objective oracle cross-checks this package-authored bounded instance, but neither numerical result is a paper target or a proof of Proposition D.1 in general."
 
@@ -497,7 +497,7 @@ pages = "17-19"
 summary = "Evaluation declares trajectory-level metrics and structured reports."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/domain/specs.py", "src/ewm/core/assurance/evaluation.py", "src/ewm/experiments/evaluation.py", "src/ewm/api.py"]
+implementation = ["src/ewm/core/domain/specs.py", "src/ewm/core/assurance/evaluation.py", "src/ewm/experiments/analysis/evaluation.py", "src/ewm/api.py"]
 evidence = ["tests/unit/test_specs.py", "tests/integration/test_layered_evaluation.py"]
 
 [[item]]
@@ -564,7 +564,7 @@ pages = "12, 19"
 summary = "world.evaluate reads trajectory logs and returns component-level diagnostics without mutation."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/assurance/evaluation.py", "src/ewm/core/runtime/world.py", "src/ewm/experiments/evaluation.py"]
+implementation = ["src/ewm/core/assurance/evaluation.py", "src/ewm/core/runtime/world.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/integration/test_han_runtime_protocol.py", "tests/integration/test_layered_evaluation.py"]
 limitation = "The five-layer report is available through the experiment evaluator over a world event snapshot; world.evaluate retains its compact backward-compatible protocol report."
 
@@ -658,7 +658,7 @@ pages = "18"
 summary = "Evaluate action validity, role consistency, belief calibration, and behavioral diversity."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/assurance/evaluation.py", "src/ewm/experiments/evaluation.py"]
+implementation = ["src/ewm/core/assurance/evaluation.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/integration/test_layered_evaluation.py"]
 limitation = "Action validity is derived from events and the other declared agent metrics accept provenance-bearing evidence; the current laboratories do not measure belief calibration or behavioral diversity."
 
@@ -670,7 +670,7 @@ pages = "18"
 summary = "Evaluate constraint violations, clearing error, accounting consistency, and settlement."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/mechanism.py", "src/ewm/core/runtime/world.py", "src/ewm/experiments/evaluation.py"]
+implementation = ["src/ewm/scenarios/fx/mechanism.py", "src/ewm/core/runtime/world.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/properties/test_fx_accounting.py", "tests/scenarios/test_fx.py", "tests/integration/test_layered_evaluation.py"]
 limitation = "Constraint rate is event-derived and clearing, accounting, and settlement evidence can be consolidated; generic mechanism-specific invariant adapters remain scenario supplied."
 
@@ -682,7 +682,7 @@ pages = "18"
 summary = "Evaluate adaptation gain, stability, drift, policy change, and mechanism recalibration."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/coevolution.py", "src/ewm/experiments/evaluation.py"]
+implementation = ["src/ewm/core/runtime/coevolution.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/unit/test_coevolution.py", "tests/integration/test_layered_evaluation.py"]
 limitation = "Stability, component drift, and update counts are event-derived; adaptation gain and policy change remain explicit external measurements."
 
@@ -694,7 +694,7 @@ pages = "18"
 summary = "Evaluate state and trend errors plus correction magnitudes against observed evidence."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/experiments/evaluation.py"]
+implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/unit/test_alignment.py", "tests/integration/test_layered_evaluation.py", "examples/offline_alignment.py"]
 limitation = "Target error and correction magnitude are emitted for offline observations; trend error and repeated external validation remain unmeasured."
 
@@ -706,7 +706,7 @@ pages = "18"
 summary = "Evaluate runtime, memory, parallel efficiency, and scaling with agents, markets, and horizons."
 status = "partial"
 claim = "conformance"
-implementation = ["scripts/benchmark_experiments.py", "src/ewm/experiments/evaluation.py"]
+implementation = ["scripts/benchmark_experiments.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/integration/test_benchmark_harness.py", "tests/integration/test_layered_evaluation.py"]
 limitation = "Runtime, memory, and scaling evidence can be attached to the layered report; benchmark collection remains a separate explicit local operation."
 
@@ -730,7 +730,7 @@ pages = "19-20"
 summary = "Data engineering versions collection, cleaning, alignment, and training inputs used to strengthen predictive and reasoning models."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/experiments/artifacts.py", "src/ewm/experiments/source_verification.py", "src/ewm/experiments/protocols.py"]
+implementation = ["src/ewm/experiments/runs/artifacts.py", "src/ewm/experiments/assurance/source_verification.py", "src/ewm/experiments/studies/protocols.py"]
 evidence = ["tests/integration/test_artifact_integrity.py", "tests/unit/test_source_verification.py", "tests/unit/test_locked_protocols.py"]
 limitation = "The package verifies sources and seals experiment artifacts, but it lacks a reusable economic dataset contract covering schema, cleaning, temporal splits, leakage checks, transformations, and model-training lineage."
 

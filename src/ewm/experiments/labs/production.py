@@ -1,4 +1,4 @@
-"""Orchestration for the competitive production-economy instantiation."""
+"""Orchestration for the production-economy laboratory."""
 
 from __future__ import annotations
 

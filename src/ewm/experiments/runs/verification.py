@@ -1,4 +1,4 @@
-"""Fail-closed verification for sealed and legacy experiment bundles."""
+"""Fail-closed verification of sealed experiment bundles."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Seed ownership, run hashing, timing, execution, and artifact creation."""
+"""Run identity, timing, execution, and artifact creation."""
 
 from __future__ import annotations
 
@@ -13,9 +13,9 @@ from time import perf_counter
 from ewm._version import __version__
 from ewm.core import ExperimentResult
 
+from ..registry import experiment_spec
 from .artifacts import write_artifacts
 from .identity import build_run_identity, identity_sha256
-from .registry import experiment_spec
 
 
 @dataclass(frozen=True, slots=True)

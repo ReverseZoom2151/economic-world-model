@@ -1,4 +1,4 @@
-"""Local verification of paper sources locked by the source registry."""
+"""Verification of paper sources locked by the source registry."""
 
 from __future__ import annotations
 

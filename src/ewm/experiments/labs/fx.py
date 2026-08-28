@@ -1,4 +1,4 @@
-"""Replicated comparative statics for the synthetic FX laboratory."""
+"""Replicated comparative statics for the FX laboratory."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import numpy as np
 
 from ewm.scenarios.fx import FXSimulationConfig, run_fx_simulation
 
-from .statistics import PairedEstimate, paired_estimate
+from ..analysis.statistics import PairedEstimate, paired_estimate
 
 _METRICS = ("mean_price", "rejected_orders", "total_volume", "volatility")
 

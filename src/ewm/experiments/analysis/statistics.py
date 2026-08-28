@@ -1,4 +1,4 @@
-"""Small paired-effect summaries used by synthetic experiment runners."""
+"""Paired-effect summaries for synthetic experiment runners."""
 
 from __future__ import annotations
 

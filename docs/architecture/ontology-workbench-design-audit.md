@@ -21,7 +21,7 @@ Current repository evidence:
 
 - `src/ewm/core`, `src/ewm/equilibrium`, `src/ewm/scenarios`, and `src/ewm/experiments`;
 - `tests/test_architecture.py`;
-- `src/ewm/experiments/verification.py` and `src/ewm/experiments/identity.py`;
+- `src/ewm/experiments/runs/verification.py` and `src/ewm/experiments/runs/identity.py`;
 - `src/ewm/core/provenance/serialization.py`;
 - `docs/mathematical-contract.md`, `docs/paper-traceability.md`, `docs/replication.md`,
   `docs/capability-matrix.md`, and `docs/limitations.md`;
@@ -101,7 +101,8 @@ tests.
 ### Existing verifier limits
 
 The first design draft described oversized bundles as an existing verifier failure. Inspection of
-`src/ewm/experiments/verification.py` contradicted that wording. The verifier checks exact filenames,
+`src/ewm/experiments/runs/verification.py` contradicted that wording. The verifier checks exact
+filenames,
 regular files, hashes, JSON structure, finite numbers, event sequence, NPZ entry names, and object
 dtype. It does not cap file size, event count, uncompressed NPZ size, or archive expansion ratio.
 

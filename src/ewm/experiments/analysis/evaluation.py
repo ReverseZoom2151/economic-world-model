@@ -1,4 +1,4 @@
-"""Five-layer EWM evaluation over immutable versioned event snapshots."""
+"""Layered EWM evaluation over immutable event snapshots."""
 
 from __future__ import annotations
 

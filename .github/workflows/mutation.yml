@@ -37,7 +37,7 @@ jobs:
           python -m pip install -e ".[dev,mutation]"
 
       - name: Run configured mutation target
-        run: mutmut run "ewm.experiments.statistics.x__validate_confidence*"
+        run: mutmut run "ewm.experiments.analysis.statistics.x__validate_confidence*"
 
       - name: Require every bounded mutant to be killed
         run: |

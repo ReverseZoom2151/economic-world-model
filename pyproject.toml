@@ -30,7 +30,7 @@ dependencies = [
 
 [project.scripts]
 ewm = "ewm.cli:main"
-ewm-run-protocol = "ewm.experiments.protocol_cli:main"
+ewm-run-protocol = "ewm.experiments.studies.protocol_cli:main"
 
 [project.optional-dependencies]
 dev = [
@@ -114,7 +114,7 @@ skip_covered = true
 
 [tool.mutmut]
 source_paths = ["src/ewm"]
-only_mutate = ["src/ewm/experiments/statistics.py"]
+only_mutate = ["src/ewm/experiments/analysis/statistics.py"]
 pytest_add_cli_args_test_selection = ["tests/unit/test_statistics.py"]
 pytest_add_cli_args = ["-q"]
 mutate_only_covered_lines = false

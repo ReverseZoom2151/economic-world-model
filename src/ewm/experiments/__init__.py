@@ -1,6 +1,8 @@
 """Discoverable, reproducible experiment execution."""
 
-from .claims import (
+from ewm._internal.imports import register_module_aliases
+
+from .analysis.claims import (
     ClaimAuthorization,
     ClaimEvidence,
     ClaimKind,
@@ -9,7 +11,18 @@ from .claims import (
     authorize_claims,
     authorize_validated_claims,
 )
-from .credit import (
+from .analysis.evaluation import LAYER_METRICS, MetricEvidence, evaluate_layered
+from .analysis.statistics import (
+    BinomialEstimate,
+    HolmCorrection,
+    PairedEstimate,
+    RobustPairedEstimate,
+    holm_correction,
+    paired_estimate,
+    robust_paired_estimate,
+    wilson_interval,
+)
+from .labs.credit import (
     CreditOracleReport,
     CreditOrderingComparison,
     CreditPaperTargetReport,
@@ -18,9 +31,8 @@ from .credit import (
     credit_paper_target_report,
     run_credit_regimes,
 )
-from .evaluation import LAYER_METRICS, MetricEvidence, evaluate_layered
-from .fx import replicated_fx_comparisons
-from .production import solve_production_equilibrium
+from .labs.fx import replicated_fx_comparisons
+from .labs.production import solve_production_equilibrium
 from .registry import (
     EXPERIMENTS,
     SCENARIO_DESCRIPTIONS,
@@ -31,19 +43,31 @@ from .registry import (
     ScenarioRegistry,
     experiment_spec,
 )
-from .replay import RunReplayError, verify_and_replay_run
-from .runner import ExperimentRun, run_experiment
-from .statistics import (
-    BinomialEstimate,
-    HolmCorrection,
-    PairedEstimate,
-    RobustPairedEstimate,
-    holm_correction,
-    paired_estimate,
-    robust_paired_estimate,
-    wilson_interval,
+from .runs.replay import RunReplayError, verify_and_replay_run
+from .runs.runner import ExperimentRun, run_experiment
+from .runs.verification import ArtifactVerificationError, VerificationReport, verify_run
+
+register_module_aliases(
+    __name__,
+    {
+        "artifacts": "runs.artifacts",
+        "claims": "analysis.claims",
+        "credit": "labs.credit",
+        "evaluation": "analysis.evaluation",
+        "fx": "labs.fx",
+        "identity": "runs.identity",
+        "metrics": "analysis.metrics",
+        "production": "labs.production",
+        "protocol_cli": "studies.protocol_cli",
+        "protocol_runner": "studies.protocol_runner",
+        "protocols": "studies.protocols",
+        "replay": "runs.replay",
+        "runner": "runs.runner",
+        "source_verification": "assurance.source_verification",
+        "statistics": "analysis.statistics",
+        "verification": "runs.verification",
+    },
 )
-from .verification import ArtifactVerificationError, VerificationReport, verify_run
 
 __all__ = [
     "EXPERIMENTS",

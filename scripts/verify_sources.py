@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from ewm.experiments.source_verification import verification_failed, verify_sources
+from ewm.experiments.assurance.source_verification import verification_failed, verify_sources
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE_DIR = ROOT / "references" / "local"

@@ -1,4 +1,4 @@
-"""Verified artifact reconstruction and deterministic experiment replay."""
+"""Verified artifact reconstruction and experiment replay."""
 
 from __future__ import annotations
 

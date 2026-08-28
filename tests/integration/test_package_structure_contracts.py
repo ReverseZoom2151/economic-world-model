@@ -6,6 +6,7 @@ from importlib import import_module
 from pathlib import Path
 
 import pytest
+from ewm.experiments.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
 
 import ewm
 from ewm.capabilities.readiness import (
@@ -14,7 +15,6 @@ from ewm.capabilities.readiness import (
 )
 from ewm.conformance import build_report as build_package_conformance_report
 from ewm.core import World
-from ewm.experiments.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
 from ewm.experiments.registry import ExperimentSpec, ScenarioPlugin, ScenarioRegistry
 from ewm.ontology.profiles import DEFAULT_PROFILES
 from ewm.scenarios.fx.validation import (
@@ -132,6 +132,7 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
             "ewm.equilibrium.solvers.fixed_point",
             "FixedPointConfig",
         ),
+        ("ewm.experiments.runner", "ewm.experiments.runs.runner", "ExperimentRun"),
     ),
 )
 def test_legacy_modules_alias_the_single_canonical_implementation(
@@ -151,6 +152,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
     (
         ("ewm.core", {"__init__.py"}),
         ("ewm.equilibrium", {"__init__.py"}),
+        ("ewm.experiments", {"__init__.py", "registry.py"}),
     ),
 )
 def test_large_packages_keep_only_true_entry_points_loose(

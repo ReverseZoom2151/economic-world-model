@@ -38,7 +38,7 @@ from ewm.experiments import (
     RolloutResult,
     ScenarioConfig,
 )
-from ewm.experiments.runner import ExperimentRun, run_experiment
+from ewm.experiments.runs.runner import ExperimentRun, run_experiment
 from ewm.scenarios.credit import CreditRegime
 
 

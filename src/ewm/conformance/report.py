@@ -29,13 +29,13 @@ from ewm.capabilities.readiness import (
     run_han_l3_l6_readiness,
 )
 from ewm.core.assurance.evidence import EvidenceStatus, ValidatedEvidenceArtifact
-from ewm.experiments.protocol_runner import run_locked_protocol
-from ewm.experiments.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
-from ewm.experiments.source_verification import (
+from ewm.experiments.assurance.source_verification import (
     SourceVerification,
     verification_failed,
     verify_sources,
 )
+from ewm.experiments.studies.protocol_runner import run_locked_protocol
+from ewm.experiments.studies.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
 from ewm.scenarios.fx.validation import (
     DEFAULT_HAN_L1_L2_PROTOCOL,
     HanValidationReport,

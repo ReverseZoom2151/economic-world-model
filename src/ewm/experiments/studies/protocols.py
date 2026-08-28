@@ -1,4 +1,4 @@
-"""Typed contracts for prospectively locked local scientific protocols."""
+"""Contracts for prospectively locked scientific protocols."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import numpy as np
 
 ProtocolMode = Literal["quick", "full"]
 OutcomeKind = Literal["paired_continuous", "binary"]
-DEFAULT_PROTOCOL_PATH = Path(__file__).resolve().parents[1] / "protocols" / (
+DEFAULT_PROTOCOL_PATH = Path(__file__).resolve().parents[2] / "protocols" / (
     "credit-mechanism-v1.toml"
 )
 

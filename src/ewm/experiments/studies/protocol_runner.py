@@ -1,4 +1,4 @@
-"""Execution of the shipped, prospectively locked local credit protocol."""
+"""Execution of the prospectively locked credit protocol."""
 
 from __future__ import annotations
 
@@ -9,14 +9,14 @@ import numpy as np
 
 from ewm.scenarios.credit import CreditRegime, cong_qualitative_reconstruction
 
-from .credit import run_credit_regimes
+from ..analysis.statistics import holm_correction, robust_paired_estimate, wilson_interval
+from ..labs.credit import run_credit_regimes
 from .protocols import (
     ProtocolIssue,
     ProtocolMode,
     ScientificProtocol,
     audit_protocol_execution,
 )
-from .statistics import holm_correction, robust_paired_estimate, wilson_interval
 
 MetricSeries = dict[str, list[float]]
 

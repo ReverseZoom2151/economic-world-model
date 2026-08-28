@@ -1,4 +1,4 @@
-"""Installed command-line entry point for locked local scientific protocols."""
+"""Command entry point for locked local scientific protocols."""
 
 from __future__ import annotations
 

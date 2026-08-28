@@ -1,4 +1,4 @@
-"""Canonical, collision-resistant identities for experiment runs."""
+"""Canonical collision-resistant identities for experiment runs."""
 
 from __future__ import annotations
 

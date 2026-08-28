@@ -1,4 +1,4 @@
-"""Executable authorization boundaries for high-stakes model claims."""
+"""Authorization boundaries for high-stakes model claims."""
 
 from __future__ import annotations
 

@@ -14,9 +14,11 @@
 | `workbench/` | Read-only investigation services and portable exports |
 | `protocols/` | Installed scientific protocol resources with stable paths |
 
-Within experiments, `experiments/catalog/` owns catalog models, scenario adapters, and default
-assembly. The historical `ewm.experiments.registry` module retains executor functions whose module
-names are embedded in ontology provenance.
+Within experiments, `experiments/catalog/` owns discovery, `experiments/runs/` owns the sealed run
+lifecycle, `experiments/analysis/` owns measurements and claim boundaries, `experiments/labs/` owns
+economy-specific studies, `experiments/studies/` owns locked protocols, and
+`experiments/assurance/` verifies external sources. The historical `ewm.experiments.registry`
+module retains executor functions whose module names are embedded in ontology provenance.
 
 Within core, `core/domain/` owns economic declarations and records, `core/runtime/` owns world
 execution, `core/assurance/` owns coherence and evidence checks, and `core/provenance/` owns

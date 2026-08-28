@@ -1,4 +1,4 @@
-"""Atomic deterministic artifact serialization for research runs."""
+"""Deterministic artifact serialization for research runs."""
 
 from __future__ import annotations
 
@@ -20,6 +20,7 @@ from numpy.typing import NDArray
 
 from ewm.core import ExperimentResult
 
+from ..analysis.metrics import jsonable, scalar_metrics
 from .identity import (
     ARTIFACT_SCHEMA,
     JsonValue,
@@ -28,7 +29,6 @@ from .identity import (
     canonical_json_bytes,
     identity_sha256,
 )
-from .metrics import jsonable, scalar_metrics
 from .verification import (
     PAYLOAD_FILENAMES,
     ArtifactVerificationError,

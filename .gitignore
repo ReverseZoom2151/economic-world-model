@@ -19,8 +19,8 @@ htmlcov/
 .ruff_cache/
 /mutants/
 
-# Generated research runs
-runs/
+# Generated research runs at the repository root
+/runs/
 
 # Editors and operating systems
 .DS_Store
