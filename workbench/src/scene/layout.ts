@@ -124,8 +124,8 @@ export function layoutOntologyScene(
     const occupancyKey = item.base.join("|");
     const ordinal = occupancy.get(occupancyKey) ?? 0;
     occupancy.set(occupancyKey, ordinal + 1);
-    const column = ordinal % 5;
-    const row = Math.floor(ordinal / 5);
+    const angle = ordinal * 2.399963229728653;
+    const radius = ordinal === 0 ? 0 : 0.62 * Math.sqrt(ordinal);
     return {
       id: item.id,
       kind: item.kind,
@@ -134,7 +134,11 @@ export function layoutOntologyScene(
       lane: item.lane,
       color: item.color,
       shape: item.shape,
-      position: [item.base[0] + column * 0.24, item.base[1] + row * 0.24, item.base[2]],
+      position: [
+        item.base[0] + Math.cos(angle) * radius,
+        item.base[1] + Math.sin(angle) * radius * 0.46,
+        item.base[2],
+      ],
       depthBasis: item.depthBasis,
     };
   });

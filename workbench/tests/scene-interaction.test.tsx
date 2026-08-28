@@ -42,6 +42,8 @@ describe("ontology scene interaction", () => {
       />,
     );
 
+    expect(await screen.findByRole("heading", { name: "Ontology graph" })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "3D" }));
     expect(await screen.findByText("3D rendering unavailable")).toBeVisible();
     expect(screen.getByText("No investigation data were discarded.")).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Select Household" }));
@@ -49,7 +51,7 @@ describe("ontology scene interaction", () => {
     expect(screen.queryByRole("img", { name: "3D ontology scene" })).not.toBeInTheDocument();
   });
 
-  it("exposes projection, layer isolation, focus, and canonical reset as DOM controls", async () => {
+  it("retains the legacy camera control contract for serialized scene state", async () => {
     const user = userEvent.setup();
     const onCameraChange = vi.fn();
     const onLayersChange = vi.fn();

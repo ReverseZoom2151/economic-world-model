@@ -5,7 +5,9 @@ import type { SceneNode } from "./layout";
 interface InstancedNodesProps {
   readonly nodes: ReadonlyArray<SceneNode>;
   readonly selectedId: string | null;
+  readonly highlightedNodeIds: ReadonlySet<string>;
   readonly onSelect: (id: string) => void;
+  readonly onHover: (id: string | null) => void;
 }
 
 function SharedGeometry({ shape }: { readonly shape: SceneNode["shape"] }) {
@@ -31,7 +33,13 @@ const SHAPES: ReadonlyArray<SceneNode["shape"]> = [
   "triangle",
 ];
 
-export function InstancedNodes({ nodes, selectedId, onSelect }: InstancedNodesProps) {
+export function InstancedNodes({
+  nodes,
+  selectedId,
+  highlightedNodeIds,
+  onSelect,
+  onHover,
+}: InstancedNodesProps) {
   return (
     <>
       {SHAPES.map((shape) => {
@@ -45,12 +53,23 @@ export function InstancedNodes({ nodes, selectedId, onSelect }: InstancedNodesPr
               <Instance
                 key={node.id}
                 position={node.position}
-                color={selectedId === node.id ? "#11130f" : node.color}
-                scale={selectedId === node.id ? 1.45 : 1}
+                color={
+                  selectedId === node.id
+                    ? "#11130f"
+                    : highlightedNodeIds.has(node.id)
+                      ? "#c7f24a"
+                      : node.color
+                }
+                scale={selectedId === node.id ? 1.55 : highlightedNodeIds.has(node.id) ? 1.25 : 1}
                 onClick={(event) => {
                   event.stopPropagation();
                   onSelect(node.id);
                 }}
+                onPointerOver={(event) => {
+                  event.stopPropagation();
+                  onHover(node.id);
+                }}
+                onPointerOut={() => onHover(null)}
               />
             ))}
           </Instances>

@@ -1,16 +1,21 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import type { CameraState } from "../state/investigation";
+import type { GraphDensity } from "../visuals/graph/model";
 import { InstancedNodes } from "./InstancedNodes";
 import type { SceneLayout } from "./layout";
 import { RelationLines } from "./RelationLines";
+import { SceneLabels } from "./SceneLabels";
 
 interface OntologySceneProps {
   readonly layout: SceneLayout;
   readonly cameraState: CameraState;
   readonly selectedId: string | null;
+  readonly highlightedNodeIds: ReadonlySet<string>;
+  readonly highlightedRelationIds: ReadonlySet<string>;
+  readonly density: GraphDensity;
   readonly onCameraChange: (camera: CameraState) => void;
   readonly onSelect: (id: string) => void;
 }
@@ -50,10 +55,14 @@ export function OntologyScene({
   layout,
   cameraState,
   selectedId,
+  highlightedNodeIds,
+  highlightedRelationIds,
+  density,
   onCameraChange,
   onSelect,
 }: OntologySceneProps) {
   const orthographic = cameraState.projection === "orthographic";
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   return (
     <div className="ontology-scene" role="img" aria-label="3D ontology scene">
       <Canvas
@@ -69,12 +78,28 @@ export function OntologyScene({
         }}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
       >
-        <color attach="background" args={["#f3f3eb"]} />
-        <ambientLight intensity={1.5} />
-        <directionalLight position={[8, 12, 10]} intensity={1.8} />
-        <gridHelper args={[42, 42, "#b9bbb1", "#d8d9d1"]} raycast={() => null} />
-        <RelationLines relations={layout.relations} />
-        <InstancedNodes nodes={layout.nodes} selectedId={selectedId} onSelect={onSelect} />
+        <color attach="background" args={["#171a16"]} />
+        <ambientLight intensity={1.8} />
+        <directionalLight position={[8, 12, 10]} intensity={2.1} />
+        <gridHelper args={[42, 42, "#454b40", "#282d26"]} raycast={() => null} />
+        <RelationLines
+          relations={layout.relations}
+          highlightedRelationIds={highlightedRelationIds}
+        />
+        <InstancedNodes
+          nodes={layout.nodes}
+          selectedId={selectedId}
+          highlightedNodeIds={highlightedNodeIds}
+          onSelect={onSelect}
+          onHover={setHoveredId}
+        />
+        <SceneLabels
+          nodes={layout.nodes}
+          selectedId={selectedId}
+          hoveredId={hoveredId}
+          highlightedNodeIds={highlightedNodeIds}
+          density={density}
+        />
         <CameraRig state={cameraState} onChange={onCameraChange} />
       </Canvas>
     </div>
