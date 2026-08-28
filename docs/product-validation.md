@@ -1,6 +1,6 @@
 # Local product validation
 
-**Document version:** 1.5<br>
+**Document version:** 1.6<br>
 **Last reviewed:** 2026-08-28<br>
 **Scope:** Current release 0.2.0 audit with the measured 0.1.0 baseline preserved below
 
@@ -41,6 +41,22 @@ themselves establish that an authored finite instance is a paper target or a rea
 | Property, mutation, and security | 3 seeded property tests passed; 11 scoped mutants killed with 0 unresolved; pip-audit and Bandit passed |
 | Public examples | All 8 documented examples passed |
 | Isolated performance | All 8 experiment-preset cells completed with stable run hashes |
+
+### Current remote audit evidence
+
+The pushed audit commit is
+[`93b7cd81e0c207aa2787098f4b5f19f2542b45b3`](https://github.com/ReverseZoom2151/economic-world-model/commit/93b7cd81e0c207aa2787098f4b5f19f2542b45b3).
+GitHub independently completed the following workflows successfully against that exact source tree:
+
+- [CI run 33166250829](https://github.com/ReverseZoom2151/economic-world-model/actions/runs/33166250829), including both supported Python versions, branch coverage, distributions, clean installation, conformance, the locked protocol, and quick scientific stress
+- [Security run 33166250867](https://github.com/ReverseZoom2151/economic-world-model/actions/runs/33166250867), including dependency and source scanning
+- [Bounded property run 33166456820](https://github.com/ReverseZoom2151/economic-world-model/actions/runs/33166456820)
+- [Bounded mutation run 33166458727](https://github.com/ReverseZoom2151/economic-world-model/actions/runs/33166458727)
+- [Release dry-run 33166460627](https://github.com/ReverseZoom2151/economic-world-model/actions/runs/33166460627), which built and installed the distributions without creating a tag, GitHub release, or package-index upload
+
+The paper PDFs remained ignored and were not supplied to GitHub Actions. Remote conformance
+therefore checked the locked registry and executable evidence, while byte and page verification of
+the two locally supplied source files remains local audit evidence.
 
 ### Current performance baseline
 
