@@ -11,6 +11,10 @@ import {
 } from "../src/state/investigation";
 
 describe("investigation state", () => {
+  it("opens on the task-first overview", () => {
+    expect(initialInvestigationState.lens).toBe("overview");
+  });
+
   it("synchronizes every cross-lens selection through one typed reducer", () => {
     const actions = [
       { type: "select-run", runId: "run-a" },

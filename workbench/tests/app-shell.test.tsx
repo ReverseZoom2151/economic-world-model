@@ -6,25 +6,34 @@ import { App } from "../src/app/App";
 import { createFixtureDataSource, deferredDataSource } from "../src/testing/fixtures";
 
 describe("investigation shell", () => {
-  it("keeps the explorer, analytical lens, evidence inspector, and timeline synchronized", async () => {
+  it("starts from a run overview and reveals contextual tools inside researcher workflows", async () => {
     const user = userEvent.setup();
     render(<App dataSource={createFixtureDataSource()} />);
 
     expect(await screen.findByRole("heading", { name: "Ontology Research Workbench" })).toBeVisible();
-    expect(screen.getByRole("navigation", { name: "Analytical lenses" })).toBeVisible();
+    expect(screen.getByRole("navigation", { name: "Primary research workflows" })).toBeVisible();
+    expect(
+      await screen.findByRole("heading", { name: "Read the economy from evidence to consequence." }),
+    ).toBeVisible();
+    expect(screen.queryByRole("region", { name: "Object explorer" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Event timeline" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Understand the world" }));
     expect(screen.getByRole("region", { name: "Object explorer" })).toBeVisible();
-    expect(screen.getByRole("region", { name: "Evidence inspector" })).toBeVisible();
-    expect(screen.getByRole("region", { name: "Event timeline" })).toBeVisible();
+    expect(screen.queryByRole("region", { name: "Evidence inspector" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Inspect Household 01" }));
+    expect(await screen.findByRole("region", { name: "Evidence inspector" })).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: "Learning" }));
     expect(
       await screen.findByRole("heading", { name: "Behavior-to-learning closure" }),
     ).toBeVisible();
+    await user.click(screen.getByText("Advanced analysis"));
     await user.click(screen.getByRole("button", { name: "DDGE" }));
     expect(await screen.findByRole("heading", { name: "DDGE diagnostics" })).toBeVisible();
-    await user.click(screen.getByRole("button", { name: "3D Scene" }));
+    await user.click(screen.getByRole("button", { name: "Graph" }));
     expect(
-      await screen.findByRole("heading", { name: "Deterministic ontology scene" }),
+      await screen.findByRole("heading", { name: "Ontology graph" }),
     ).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Evidence" }));
     expect(screen.getByRole("heading", { name: "Evidence lens" })).toBeVisible();

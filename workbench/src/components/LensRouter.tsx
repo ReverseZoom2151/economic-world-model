@@ -14,13 +14,16 @@ import { GlobeLens } from "../lenses/globe/GlobeLens";
 import { LearningLens } from "../lenses/learning/LearningLens";
 import { LineageLens } from "../lenses/lineage/LineageLens";
 import { MarketLens } from "../lenses/market/MarketLens";
+import { OverviewLens } from "../lenses/overview/OverviewLens";
 import { RuntimeLens } from "../lenses/runtime/RuntimeLens";
 import { SceneLens } from "../lenses/scene/SceneLens";
 import { WorldLens } from "../lenses/world/WorldLens";
 import { CANONICAL_SCENE_CAMERA } from "../scene/camera";
 import { useInvestigation, type InvestigationLens } from "../state/investigation";
+import type { RunSummary, SystemContract } from "../data/InvestigationDataSource";
 
 const DESCRIPTIONS: Readonly<Record<InvestigationLens, string>> = {
+  overview: "Run identity, integrity, coverage, and task-first research entry points.",
   world: "Declared agents, institutions, markets, data, and model boundaries.",
   runtime: "Observed states, actions, transitions, settlements, and event order.",
   market: "Orders, clearing, prices, volumes, constraints, and rejections.",
@@ -39,6 +42,8 @@ function title(lens: InvestigationLens): string {
 
 interface LensRouterProps {
   readonly dataSource: InvestigationDataSource;
+  readonly selectedRun: RunSummary | null;
+  readonly system: SystemContract;
 }
 
 interface PrimaryLensData {
@@ -48,6 +53,7 @@ interface PrimaryLensData {
   readonly events: ReadonlyArray<OntologyObjectContract>;
   readonly measurements: ReadonlyArray<MeasurementContract>;
   readonly coverage: ReadonlyArray<CoverageContract>;
+  readonly bounded: boolean;
   readonly failed: boolean;
 }
 
@@ -58,6 +64,7 @@ const EMPTY_DATA: PrimaryLensData = {
   events: [],
   measurements: [],
   coverage: [],
+  bounded: false,
   failed: false,
 };
 
@@ -83,6 +90,7 @@ async function loadLens(
       events: [],
       measurements: [],
       coverage: [],
+      bounded: objects.next_cursor !== null || relations.next_cursor !== null,
     };
   }
   if (lens === "runtime") {
@@ -96,6 +104,7 @@ async function loadLens(
       events: events.items,
       measurements: [],
       coverage: [],
+      bounded: events.next_cursor !== null || relations.next_cursor !== null,
     };
   }
   if (lens === "market") {
@@ -114,6 +123,7 @@ async function loadLens(
       ),
       measurements: measurements.items,
       coverage: [],
+      bounded: measurements.next_cursor !== null || events.next_cursor !== null,
     };
   }
   const kinds =
@@ -145,10 +155,11 @@ async function loadLens(
     events: [],
     measurements: [],
     coverage: run.coverage ?? [],
+    bounded: objects.next_cursor !== null || relations.next_cursor !== null,
   };
 }
 
-export function LensRouter({ dataSource }: LensRouterProps) {
+export function LensRouter({ dataSource, selectedRun, system }: LensRouterProps) {
   const { state, dispatch } = useInvestigation();
   const requestKey = `${state.runId ?? ""}|${state.lens}`;
   const [result, setResult] = useState<PrimaryLensData>(EMPTY_DATA);
@@ -173,6 +184,18 @@ export function LensRouter({ dataSource }: LensRouterProps) {
       active = false;
     };
   }, [dataSource, requestKey, state.lens, state.runId]);
+
+  if (state.lens === "overview" && selectedRun !== null) {
+    return (
+      <section className="lens-slot" aria-label="Active analytical lens">
+        <OverviewLens
+          run={selectedRun}
+          system={system}
+          onOpen={(lens) => dispatch({ type: "set-lens", lens })}
+        />
+      </section>
+    );
+  }
 
   if (state.runId !== null && state.lens === "compare") {
     return (
@@ -258,6 +281,7 @@ export function LensRouter({ dataSource }: LensRouterProps) {
             objects={result.objects}
             relations={result.relations}
             selectedId={state.objectId}
+            bounded={result.bounded}
             onSelect={(objectId) => dispatch({ type: "select-object", objectId })}
           />
         </section>
@@ -271,6 +295,7 @@ export function LensRouter({ dataSource }: LensRouterProps) {
             relations={result.relations}
             timeWindow={state.timeWindow}
             selectedId={state.objectId}
+            bounded={result.bounded}
             onSelect={(objectId) => dispatch({ type: "select-object", objectId })}
           />
         </section>
@@ -279,7 +304,11 @@ export function LensRouter({ dataSource }: LensRouterProps) {
     if (state.lens === "market") {
       return (
         <section className="lens-slot" aria-label="Active analytical lens">
-          <MarketLens measurements={result.measurements} rejections={result.events} />
+          <MarketLens
+            measurements={result.measurements}
+            rejections={result.events}
+            bounded={result.bounded}
+          />
         </section>
       );
     }

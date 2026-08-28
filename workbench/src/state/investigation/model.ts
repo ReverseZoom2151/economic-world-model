@@ -1,4 +1,5 @@
 export const INVESTIGATION_LENSES = [
+  "overview",
   "world",
   "runtime",
   "market",
@@ -52,7 +53,7 @@ export const initialInvestigationState: InvestigationState = Object.freeze({
   relationId: null,
   timeWindow: null,
   comparison: null,
-  lens: "world",
+  lens: "overview",
   camera: null,
   filters: Object.freeze({ kinds: [], layers: [], query: "" }),
 });
