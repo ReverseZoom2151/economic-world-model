@@ -31,7 +31,7 @@ pages = "15"
 summary = "Learned transition and observation kernels generate next states and outcomes."
 status = "implemented"
 claim = "source-definition"
-implementation = ["src/ewm/core/runtime/kernels.py", "src/ewm/core/domain/protocols.py", "src/ewm/core/runtime/world.py"]
+implementation = ["src/ewm/core/runtime/execution/kernels.py", "src/ewm/core/domain/protocols.py", "src/ewm/core/runtime/execution/world.py"]
 evidence = ["tests/unit/core/runtime/test_kernels.py", "tests/unit/core/runtime/test_world.py"]
 limitation = "The explicit kernel records cover validated finite categorical support and caller-defined probability rows; the universal approximation claim in Theorem A.2 remains outside this implementation scope."
 
@@ -43,7 +43,7 @@ pages = "14-15"
 summary = "An EWM declares stochastic transition and observation laws whose learned parameters may span both agent-side and environment-side components."
 status = "implemented"
 claim = "source-definition"
-implementation = ["src/ewm/core/runtime/kernels.py", "src/ewm/core/domain/protocols.py", "src/ewm/core/runtime/world.py"]
+implementation = ["src/ewm/core/runtime/execution/kernels.py", "src/ewm/core/domain/protocols.py", "src/ewm/core/runtime/execution/world.py"]
 evidence = ["tests/unit/core/runtime/test_kernels.py", "tests/unit/core/runtime/test_world.py"]
 limitation = "The package exposes finite categorical and callable kernels and enforces caller-declared feasibility; it does not infer whether an arbitrary learned kernel has economic validity."
 
@@ -55,7 +55,7 @@ pages = "16"
 summary = "Interventions modify declared feasible sets, coherence, information, kernels, objectives, or constraints."
 status = "implemented"
 claim = "source-definition"
-implementation = ["src/ewm/core/domain/definition.py", "src/ewm/core/runtime/interventions.py", "src/ewm/core/domain/records.py", "src/ewm/api.py"]
+implementation = ["src/ewm/core/domain/definition.py", "src/ewm/core/runtime/dynamics/interventions.py", "src/ewm/core/domain/records.py", "src/ewm/api.py"]
 evidence = ["tests/integration/experiments/test_comparisons.py", "tests/unit/core/domain/test_definition.py", "tests/unit/core/runtime/test_interventions.py"]
 limitation = "The core operation is an atomic compare-and-set replacement on canonical component mappings; scenario authors bind those targets to their simulator configuration."
 
@@ -175,7 +175,7 @@ pages = "46, 48"
 summary = "Projection of candidate next states into the feasible correspondence preserves feasibility inductively."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/domain/protocols.py", "src/ewm/core/assurance/reconciliation.py", "src/ewm/core/runtime/world.py"]
+implementation = ["src/ewm/core/domain/protocols.py", "src/ewm/core/assurance/reconciliation.py", "src/ewm/core/runtime/execution/world.py"]
 evidence = ["tests/unit/core/assurance/test_reconciliation.py"]
 
 [[item]]
@@ -250,7 +250,7 @@ pages = "61"
 summary = "DDGE computation alternates inner solution, data generation, learning, and joint residual checks."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/equilibrium/solvers/ddge.py", "src/ewm/equilibrium/analysis/correspondence.py", "src/ewm/scenarios/credit/model.py"]
+implementation = ["src/ewm/equilibrium/solvers/ddge.py", "src/ewm/equilibrium/analysis/correspondence.py", "src/ewm/scenarios/credit/economy/model.py"]
 evidence = ["tests/scenarios/test_credit.py", "tests/unit/equilibrium/test_fixed_point.py", "tests/unit/equilibrium/test_correspondence.py"]
 limitation = "Joint certificates are available for finite declared candidate sets; numerical search still covers single-valued outer maps."
 
@@ -262,7 +262,7 @@ pages = "62-64, 70"
 summary = "A heterogeneous credit market closes GenAI adoption, selective outcomes, and lender retraining."
 status = "blocked-external"
 claim = "qualitative-reconstruction"
-implementation = ["src/ewm/scenarios/credit/provenance.py", "src/ewm/scenarios/credit/model.py", "src/ewm/experiments/labs/credit.py", "src/ewm/experiments/studies/protocols.py", "src/ewm/experiments/studies/protocol_runner.py", "src/ewm/protocols/credit-mechanism-v1.toml"]
+implementation = ["src/ewm/scenarios/credit/learning/provenance.py", "src/ewm/scenarios/credit/economy/model.py", "src/ewm/experiments/labs/credit.py", "src/ewm/experiments/studies/protocols.py", "src/ewm/experiments/studies/protocol_runner.py", "src/ewm/protocols/credit-mechanism-v1.toml"]
 evidence = ["tests/scenarios/test_credit_paper_targets.py", "tests/scenarios/test_credit.py", "tests/integration/experiments/test_locked_protocol_smoke.py"]
 limitation = "The PDF omits necessary simulation and learner parameters and contains no URL for the stated accompanying code, so exact numerical replication is not currently identifiable. The prospectively locked local quick protocol fails its solver-residual tolerance in all four fixed-seed replications, remains diagnostic-only, and authorizes no claim."
 
@@ -329,7 +329,7 @@ pages = "3"
 summary = "The EWM transition maps state and joint action to predicted next state."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/world.py"]
+implementation = ["src/ewm/core/runtime/execution/world.py"]
 evidence = ["tests/unit/core/runtime/test_world.py", "tests/integration/runtime/test_han_runtime_protocol.py"]
 
 [[item]]
@@ -340,7 +340,7 @@ pages = "4"
 summary = "State groups aggregate variables, private states, beliefs, and institutions."
 status = "partial"
 claim = "source-definition"
-implementation = ["src/ewm/core/domain/records.py", "src/ewm/scenarios/fx/model.py"]
+implementation = ["src/ewm/core/domain/records.py", "src/ewm/scenarios/fx/economy/model.py"]
 evidence = ["tests/scenarios/test_fx.py"]
 limitation = "Scenario states contain these ideas but no reusable validated grouped-state schema exists."
 
@@ -352,7 +352,7 @@ pages = "4"
 summary = "Agent beliefs update from prior beliefs, private state, aggregates, controls, and institutions."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/agents.py", "src/ewm/capabilities/cognition.py"]
+implementation = ["src/ewm/scenarios/fx/economy/agents.py", "src/ewm/capabilities/engineering/cognition.py"]
 evidence = ["tests/scenarios/test_fx.py", "tests/unit/test_cognition.py"]
 
 [[item]]
@@ -363,7 +363,7 @@ pages = "4"
 summary = "Policies map information and beliefs into economic actions."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/domain/protocols.py", "src/ewm/scenarios/fx/agents.py", "src/ewm/capabilities/cognition.py"]
+implementation = ["src/ewm/core/domain/protocols.py", "src/ewm/scenarios/fx/economy/agents.py", "src/ewm/capabilities/engineering/cognition.py"]
 evidence = ["tests/unit/core/runtime/test_world.py", "tests/scenarios/test_fx.py", "tests/unit/test_cognition.py"]
 
 [[item]]
@@ -374,7 +374,7 @@ pages = "4"
 summary = "Private agent states update from prior states and actions."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/mechanism.py"]
+implementation = ["src/ewm/scenarios/fx/economy/mechanism.py"]
 evidence = ["tests/properties/test_fx_accounting.py"]
 
 [[item]]
@@ -385,7 +385,7 @@ pages = "4"
 summary = "The environment aggregates agent states, actions, and beliefs into the next aggregate state."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/mechanism.py"]
+implementation = ["src/ewm/scenarios/fx/economy/mechanism.py"]
 evidence = ["tests/scenarios/test_fx.py", "tests/properties/test_fx_accounting.py"]
 
 [[item]]
@@ -396,7 +396,7 @@ pages = "4"
 summary = "Institutions may update endogenously from world and agent states."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/coevolution.py", "src/ewm/capabilities/institutions.py", "src/ewm/core/runtime/world.py"]
+implementation = ["src/ewm/core/runtime/dynamics/coevolution.py", "src/ewm/capabilities/engineering/institutions.py", "src/ewm/core/runtime/execution/world.py"]
 evidence = ["tests/unit/core/runtime/test_coevolution.py", "tests/unit/test_institutions.py"]
 limitation = "Controlled parameters and governed institutional transitions are implemented, but no endogenous agent-driven institutional experiment has established the paper's L5 behavior."
 
@@ -408,7 +408,7 @@ pages = "11-12"
 summary = "Stateful economic actors observe permitted signals and produce typed feasible actions."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/domain/agents.py", "src/ewm/core/domain/specs.py", "src/ewm/capabilities/cognition.py"]
+implementation = ["src/ewm/core/domain/agents.py", "src/ewm/core/domain/specs.py", "src/ewm/capabilities/engineering/cognition.py"]
 evidence = ["tests/unit/core/runtime/test_world.py", "tests/unit/core/domain/test_specs.py", "tests/unit/test_cognition.py"]
 
 [[item]]
@@ -419,7 +419,7 @@ pages = "11-12"
 summary = "The runtime publishes observations, enforces constraints, schedules, clears, settles, and logs."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/world.py", "src/ewm/core/domain/constraints.py", "src/ewm/core/runtime/events.py", "src/ewm/scenarios/fx/runtime.py"]
+implementation = ["src/ewm/core/runtime/execution/world.py", "src/ewm/core/domain/constraints.py", "src/ewm/core/runtime/records/events.py", "src/ewm/scenarios/fx/execution/runtime.py"]
 evidence = ["tests/unit/core/runtime/test_world.py", "tests/properties/test_fx_accounting.py", "tests/scenarios/test_fx_world.py"]
 
 [[item]]
@@ -430,7 +430,7 @@ pages = "12"
 summary = "Agent and environment improvements form a bidirectional controlled loop."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/coevolution.py", "src/ewm/core/runtime/world.py"]
+implementation = ["src/ewm/core/runtime/dynamics/coevolution.py", "src/ewm/core/runtime/execution/world.py"]
 evidence = ["tests/unit/core/runtime/test_coevolution.py"]
 
 [[item]]
@@ -441,7 +441,7 @@ pages = "12"
 summary = "External evidence monitors discrepancy, attributes error, and applies versioned bounded correction."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/core/runtime/world.py"]
+implementation = ["src/ewm/capabilities/engineering/alignment.py", "src/ewm/core/runtime/execution/world.py"]
 evidence = ["tests/unit/test_alignment.py", "examples/offline_alignment.py"]
 limitation = "The correction protocol is implemented against timestamped offline evidence; no live external-data contract or repeated holdout validation establishes real-time alignment."
 
@@ -508,7 +508,7 @@ pages = "12-13"
 summary = "world.reset initializes state and views."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/world.py", "src/ewm/scenarios/fx/runtime.py"]
+implementation = ["src/ewm/core/runtime/execution/world.py", "src/ewm/scenarios/fx/execution/runtime.py"]
 evidence = ["tests/unit/core/runtime/test_world.py", "tests/scenarios/test_fx_world.py"]
 
 [[item]]
@@ -519,7 +519,7 @@ pages = "12-14"
 summary = "world.run_agents maps role-specific observations to typed actions."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/world.py", "src/ewm/core/domain/protocols.py", "src/ewm/scenarios/fx/runtime.py"]
+implementation = ["src/ewm/core/runtime/execution/world.py", "src/ewm/core/domain/protocols.py", "src/ewm/scenarios/fx/execution/runtime.py"]
 evidence = ["tests/unit/core/runtime/test_world.py", "tests/integration/runtime/test_han_runtime_protocol.py", "tests/scenarios/test_fx_world.py"]
 limitation = "parallel=True is accepted and logged, but version 0.1 executes serially for deterministic identity and RNG ownership."
 
@@ -531,7 +531,7 @@ pages = "12, 15"
 summary = "world.step checks feasibility, schedules, clears, settles, updates state, and logs."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/world.py", "src/ewm/core/domain/protocols.py", "src/ewm/scenarios/fx/runtime.py"]
+implementation = ["src/ewm/core/runtime/execution/world.py", "src/ewm/core/domain/protocols.py", "src/ewm/scenarios/fx/execution/runtime.py"]
 evidence = ["tests/unit/core/runtime/test_world.py", "tests/integration/runtime/test_han_runtime_protocol.py", "tests/scenarios/test_fx_world.py"]
 
 [[item]]
@@ -542,7 +542,7 @@ pages = "12, 16"
 summary = "world.coevolve updates declared agent and environment components from transition feedback."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/coevolution.py", "src/ewm/core/runtime/world.py", "src/ewm/core/domain/protocols.py"]
+implementation = ["src/ewm/core/runtime/dynamics/coevolution.py", "src/ewm/core/runtime/execution/world.py", "src/ewm/core/domain/protocols.py"]
 evidence = ["tests/unit/core/runtime/test_coevolution.py"]
 
 [[item]]
@@ -553,7 +553,7 @@ pages = "12, 18"
 summary = "world.align compares simulation with external evidence and applies bounded corrections."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/core/runtime/world.py", "src/ewm/core/domain/protocols.py"]
+implementation = ["src/ewm/capabilities/engineering/alignment.py", "src/ewm/core/runtime/execution/world.py", "src/ewm/core/domain/protocols.py"]
 evidence = ["tests/unit/test_alignment.py", "tests/integration/examples/test_alignment_example.py"]
 
 [[item]]
@@ -564,7 +564,7 @@ pages = "12, 19"
 summary = "world.evaluate reads trajectory logs and returns component-level diagnostics without mutation."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/assurance/evaluation.py", "src/ewm/core/runtime/world.py", "src/ewm/experiments/analysis/evaluation.py"]
+implementation = ["src/ewm/core/assurance/evaluation.py", "src/ewm/core/runtime/execution/world.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/integration/runtime/test_han_runtime_protocol.py", "tests/integration/experiments/test_layered_evaluation.py"]
 limitation = "The five-layer report is available through the experiment evaluator over a world event snapshot; world.evaluate retains its compact backward-compatible protocol report."
 
@@ -576,7 +576,7 @@ pages = "12"
 summary = "world.log records events from every runtime call."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/events.py", "src/ewm/core/runtime/world.py", "src/ewm/scenarios/fx/runtime.py"]
+implementation = ["src/ewm/core/runtime/records/events.py", "src/ewm/core/runtime/execution/world.py", "src/ewm/scenarios/fx/execution/runtime.py"]
 evidence = ["tests/unit/core/runtime/test_world.py", "tests/unit/test_alignment.py", "tests/unit/test_institutions.py", "tests/integration/runtime/test_han_runtime_protocol.py", "tests/scenarios/test_fx_world.py"]
 
 [[item]]
@@ -587,7 +587,7 @@ pages = "7"
 summary = "Fixed rule-based agents interact in a fixed institutional world."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx", "src/ewm/scenarios/fx/validation.py", "src/ewm/scenarios/fx/han-l1-l2-validation-v1.toml", "src/ewm/capabilities/levels.py"]
+implementation = ["src/ewm/scenarios/fx", "src/ewm/scenarios/fx/execution/validation.py", "src/ewm/scenarios/fx/han-l1-l2-validation-v1.toml", "src/ewm/capabilities/assessment/levels.py"]
 evidence = ["tests/scenarios/test_fx.py", "tests/properties/test_fx_accounting.py", "tests/unit/capabilities/test_capability_levels.py", "tests/conformance/test_han_l1_l2_validation.py"]
 
 [[item]]
@@ -598,7 +598,7 @@ pages = "7"
 summary = "Symbolic or rule-based agent policies adapt over time while the cognitive substrate and institutions remain fixed."
 status = "implemented"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/agents.py", "src/ewm/scenarios/fx/validation.py", "src/ewm/scenarios/fx/han-l1-l2-validation-v1.toml", "src/ewm/capabilities/levels.py"]
+implementation = ["src/ewm/scenarios/fx/economy/agents.py", "src/ewm/scenarios/fx/execution/validation.py", "src/ewm/scenarios/fx/han-l1-l2-validation-v1.toml", "src/ewm/capabilities/assessment/levels.py"]
 evidence = ["tests/scenarios/test_fx.py", "tests/unit/capabilities/test_capability_levels.py", "tests/conformance/test_han_l1_l2_validation.py"]
 limitation = "The awarded level is synthetic systems conformance from a fixed two-arm, two-seed compiled FX validation; it is not empirical validation or a prospective behavioral study."
 
@@ -610,7 +610,7 @@ pages = "7-8"
 summary = "Language-model agents use explicit beliefs, expectations, memory, tools, and language-mediated reasoning."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/cognition.py", "src/ewm/capabilities/levels.py"]
+implementation = ["src/ewm/capabilities/engineering/cognition.py", "src/ewm/capabilities/assessment/levels.py"]
 evidence = ["tests/unit/test_cognition.py", "tests/unit/capabilities/test_capability_levels.py", "examples/cognitive_agent.py"]
 limitation = "The provider-neutral substrate passes deterministic protocol tests, but fake-backend conformance does not establish language-model behavioral fidelity or award L3."
 
@@ -622,7 +622,7 @@ pages = "8"
 summary = "Agents persistently expand strategies, skills, tools, memories, or routines."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/evolution.py", "src/ewm/capabilities/levels.py"]
+implementation = ["src/ewm/capabilities/engineering/evolution.py", "src/ewm/capabilities/assessment/levels.py"]
 evidence = ["tests/unit/test_capability_evolution.py", "tests/unit/capabilities/test_capability_levels.py"]
 limitation = "The artifact-neutral registry enforces evaluated promotion, persistence, and rollback, but no agent has yet proposed and empirically improved a capability in a language-model experiment, so L4 is not awarded."
 
@@ -634,7 +634,7 @@ pages = "8"
 summary = "Policies, rules, contracts, governance, and constraints evolve endogenously."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/institutions.py", "src/ewm/capabilities/levels.py", "src/ewm/core/runtime/world.py"]
+implementation = ["src/ewm/capabilities/engineering/institutions.py", "src/ewm/capabilities/assessment/levels.py", "src/ewm/core/runtime/execution/world.py"]
 evidence = ["tests/unit/test_institutions.py", "tests/unit/capabilities/test_capability_levels.py"]
 limitation = "The runtime enforces authority, feasibility, accounting, safety, acceptance, audit, and rollback boundaries, but deterministic conformance tests do not demonstrate endogenous institutional emergence or award L5."
 
@@ -646,7 +646,7 @@ pages = "8"
 summary = "The world repeatedly compares with new observations and corrects agents, parameters, mechanisms, rules, or transitions."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/capabilities/levels.py", "src/ewm/core/runtime/world.py"]
+implementation = ["src/ewm/capabilities/engineering/alignment.py", "src/ewm/capabilities/assessment/levels.py", "src/ewm/core/runtime/execution/world.py"]
 evidence = ["tests/unit/test_alignment.py", "tests/unit/capabilities/test_capability_levels.py", "examples/offline_alignment.py"]
 limitation = "Timestamp, discrepancy, attribution, bounded correction, provenance, and restoration semantics are implemented offline. L6 remains withheld without a live external-data contract, repeated out-of-sample evidence, and measured drift and correction performance."
 
@@ -670,7 +670,7 @@ pages = "18"
 summary = "Evaluate constraint violations, clearing error, accounting consistency, and settlement."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/scenarios/fx/mechanism.py", "src/ewm/core/runtime/world.py", "src/ewm/experiments/analysis/evaluation.py"]
+implementation = ["src/ewm/scenarios/fx/economy/mechanism.py", "src/ewm/core/runtime/execution/world.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/properties/test_fx_accounting.py", "tests/scenarios/test_fx.py", "tests/integration/experiments/test_layered_evaluation.py"]
 limitation = "Constraint rate is event-derived and clearing, accounting, and settlement evidence can be consolidated; generic mechanism-specific invariant adapters remain scenario supplied."
 
@@ -682,7 +682,7 @@ pages = "18"
 summary = "Evaluate adaptation gain, stability, drift, policy change, and mechanism recalibration."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/coevolution.py", "src/ewm/experiments/analysis/evaluation.py"]
+implementation = ["src/ewm/core/runtime/dynamics/coevolution.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/unit/core/runtime/test_coevolution.py", "tests/integration/experiments/test_layered_evaluation.py"]
 limitation = "Stability, component drift, and update counts are event-derived; adaptation gain and policy change remain explicit external measurements."
 
@@ -694,7 +694,7 @@ pages = "18"
 summary = "Evaluate state and trend errors plus correction magnitudes against observed evidence."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/alignment.py", "src/ewm/experiments/analysis/evaluation.py"]
+implementation = ["src/ewm/capabilities/engineering/alignment.py", "src/ewm/experiments/analysis/evaluation.py"]
 evidence = ["tests/unit/test_alignment.py", "tests/integration/experiments/test_layered_evaluation.py", "examples/offline_alignment.py"]
 limitation = "Target error and correction magnitude are emitted for offline observations; trend error and repeated external validation remain unmeasured."
 
@@ -718,7 +718,7 @@ pages = "19-20"
 summary = "Feature engineering converts raw economic traces into curated structured observation signals for agents."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/domain/specs.py", "src/ewm/core/runtime/world.py", "src/ewm/scenarios/fx/runtime.py"]
+implementation = ["src/ewm/core/domain/specs.py", "src/ewm/core/runtime/execution/world.py", "src/ewm/scenarios/fx/execution/runtime.py"]
 evidence = ["tests/unit/core/domain/test_specs.py", "tests/scenarios/test_fx_world.py"]
 limitation = "Worlds expose typed information channels and scenario-authored observations, but the package lacks a reusable raw-trace feature pipeline with transformations, units, missingness policy, and lineage."
 
@@ -742,7 +742,7 @@ pages = "19-20"
 summary = "Prompt engineering elicits role-conditioned economic reasoning and typed decisions from language-model agents."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/cognition.py", "src/ewm/core/domain/specs.py"]
+implementation = ["src/ewm/capabilities/engineering/cognition.py", "src/ewm/core/domain/specs.py"]
 evidence = ["tests/unit/test_cognition.py", "examples/cognitive_agent.py"]
 limitation = "Provider-neutral requests carry roles, objectives, beliefs, observations, tools, and typed actions, but prompts are not versioned templates with declared examples, reasoning procedures, output contracts, and decision provenance."
 
@@ -754,7 +754,7 @@ pages = "19, 21"
 summary = "Context engineering equips agents with bounded memory, retrieval, tools, reflection, provenance, and time-aware external information."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/capabilities/cognition.py", "src/ewm/core/domain/specs.py", "src/ewm/capabilities/alignment.py"]
+implementation = ["src/ewm/capabilities/engineering/cognition.py", "src/ewm/core/domain/specs.py", "src/ewm/capabilities/engineering/alignment.py"]
 evidence = ["tests/unit/test_cognition.py", "tests/unit/core/domain/test_specs.py", "tests/unit/test_alignment.py"]
 limitation = "Bounded memory and deterministic tools are implemented, while retrieval, reflection, temporal freshness rules, and provenance-preserving context assembly remain absent from the reusable agent runtime."
 
@@ -766,6 +766,6 @@ pages = "19, 21"
 summary = "Environment engineering builds executable worlds with agents, markets, institutions, rules, feedback, co-evolution, and real-world alignment."
 status = "partial"
 claim = "conformance"
-implementation = ["src/ewm/core/runtime/world.py", "src/ewm/core/runtime/coevolution.py", "src/ewm/scenarios/fx/runtime.py", "src/ewm/capabilities/institutions.py", "src/ewm/capabilities/alignment.py"]
+implementation = ["src/ewm/core/runtime/execution/world.py", "src/ewm/core/runtime/dynamics/coevolution.py", "src/ewm/scenarios/fx/execution/runtime.py", "src/ewm/capabilities/engineering/institutions.py", "src/ewm/capabilities/engineering/alignment.py"]
 evidence = ["tests/integration/runtime/test_han_runtime_protocol.py", "tests/scenarios/test_fx_world.py", "tests/unit/core/runtime/test_coevolution.py", "tests/unit/test_institutions.py", "tests/unit/test_alignment.py"]
 limitation = "Fixed and adaptive executable worlds are implemented through L2. End-to-end L3 cognitive execution, persistent L4 improvement, endogenous L5 institutional experiments, and repeated external L6 correction evidence remain incomplete or externally blocked."

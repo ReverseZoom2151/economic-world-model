@@ -179,11 +179,11 @@ def test_executable_economic_primitives_are_registered_at_their_source_scope() -
             "tests/unit/core/assurance/test_coherence.py",
         ),
         "cong-eq-2.1-2.2": (
-            "src/ewm/core/runtime/kernels.py",
+            "src/ewm/core/runtime/execution/kernels.py",
             "tests/unit/core/runtime/test_kernels.py",
         ),
         "cong-def-2.4": (
-            "src/ewm/core/runtime/interventions.py",
+            "src/ewm/core/runtime/dynamics/interventions.py",
             "tests/unit/core/runtime/test_interventions.py",
         ),
     }
@@ -236,7 +236,7 @@ def test_locked_credit_failure_and_synthetic_han_validation_are_explicit() -> No
     assert "authorizes no claim" in credit["limitation"]
 
     assert l2["status"] == "implemented"
-    assert "src/ewm/scenarios/fx/validation.py" in l2["implementation"]
+    assert "src/ewm/scenarios/fx/execution/validation.py" in l2["implementation"]
     assert "tests/conformance/test_han_l1_l2_validation.py" in l2["evidence"]
     assert "synthetic" in l2["limitation"]
     assert "empirical" in l2["limitation"]
@@ -254,7 +254,7 @@ def test_compiled_fx_runtime_is_bound_to_han_runtime_claims() -> None:
         "han-runtime-log",
     ):
         item = items[item_id]
-        assert "src/ewm/scenarios/fx/runtime.py" in item["implementation"]
+        assert "src/ewm/scenarios/fx/execution/runtime.py" in item["implementation"]
         assert "tests/scenarios/test_fx_world.py" in item["evidence"]
 
 
