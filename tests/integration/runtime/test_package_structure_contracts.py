@@ -228,6 +228,36 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
             "HanValidationProtocol",
         ),
         (
+            "ewm.scenarios.credit.model",
+            "ewm.scenarios.credit.economy.model",
+            "CreditDDGEProblem",
+        ),
+        (
+            "ewm.scenarios.credit.population",
+            "ewm.scenarios.credit.economy.population",
+            "generate_population",
+        ),
+        (
+            "ewm.scenarios.credit.presets",
+            "ewm.scenarios.credit.economy.presets",
+            "CreditConfig",
+        ),
+        (
+            "ewm.scenarios.credit.learner",
+            "ewm.scenarios.credit.learning.learner",
+            "fit_credit_model",
+        ),
+        (
+            "ewm.scenarios.credit.oracles",
+            "ewm.scenarios.credit.learning.oracles",
+            "sensitivity_report",
+        ),
+        (
+            "ewm.scenarios.credit.provenance",
+            "ewm.scenarios.credit.learning.provenance",
+            "CONG_LAB_I_PROVENANCE",
+        ),
+        (
             "ewm.equilibrium.fixed_point",
             "ewm.equilibrium.solvers.fixed_point",
             "FixedPointConfig",
@@ -257,6 +287,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
         ("ewm.equilibrium", {"__init__.py"}),
         ("ewm.experiments", {"__init__.py", "registry.py"}),
         ("ewm.ontology", {"__init__.py"}),
+        ("ewm.scenarios.credit", {"__init__.py"}),
         ("ewm.scenarios.fx", {"__init__.py"}),
     ),
 )

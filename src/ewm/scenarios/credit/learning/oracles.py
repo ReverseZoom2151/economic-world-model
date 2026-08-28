@@ -6,9 +6,9 @@ from dataclasses import dataclass, replace
 
 import numpy as np
 
+from ..economy.population import assemble_features, generate_population
+from ..economy.presets import CreditConfig
 from .learner import adoption_mask, fit_initial_model
-from .population import assemble_features, generate_population
-from .presets import CreditConfig
 
 
 @dataclass(frozen=True, slots=True)

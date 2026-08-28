@@ -10,7 +10,7 @@ import numpy as np
 from numpy.typing import NDArray
 from sklearn.metrics import roc_auc_score
 
-from .learner import (
+from ..learning.learner import (
     CreditModel,
     adoption_mask,
     fit_credit_model,

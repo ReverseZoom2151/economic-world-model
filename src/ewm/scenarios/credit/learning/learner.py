@@ -8,8 +8,8 @@ import numpy as np
 from numpy.typing import NDArray
 from sklearn.linear_model import LogisticRegression
 
-from .population import CreditPopulation, assemble_features, generate_population
-from .presets import CreditConfig
+from ..economy.population import CreditPopulation, assemble_features, generate_population
+from ..economy.presets import CreditConfig
 
 
 @dataclass(frozen=True, slots=True)
