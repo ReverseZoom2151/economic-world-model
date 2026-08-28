@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import tarfile
 import zipfile
@@ -26,11 +27,18 @@ REQUIRED_SDIST_FILES = {
     "SECURITY.md",
     "SUPPORT.md",
     "pyproject.toml",
+    "scripts/check_frontend_build.py",
     "src/ewm/_version.py",
+    "src/ewm/workbench/static/index.html",
+    "src/ewm/workbench/static/manifest.json",
+    "workbench/package-lock.json",
+    "workbench/package.json",
 }
 REQUIRED_WHEEL_FILES = {
     "ewm/_version.py",
     "ewm/protocols/credit-mechanism-v1.toml",
+    "ewm/workbench/static/index.html",
+    "ewm/workbench/static/manifest.json",
 }
 
 
@@ -60,6 +68,35 @@ def _wheel_metadata(archive: zipfile.ZipFile) -> bytes:
     return archive.read(metadata_paths[0])
 
 
+def _workbench_assets(manifest_bytes: bytes, *, prefix: str) -> set[str]:
+    try:
+        manifest = json.loads(manifest_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"workbench manifest is invalid: {error}") from error
+    if not isinstance(manifest, dict) or "index.html" not in manifest:
+        raise RuntimeError("workbench manifest must contain an index.html entry")
+    assets: set[str] = set()
+    for key, entry in manifest.items():
+        if not isinstance(entry, dict):
+            raise RuntimeError(f"workbench manifest entry {key!r} must be an object")
+        for field in ("file", "css", "assets"):
+            value = entry.get(field, ())
+            paths = (value,) if isinstance(value, str) else value
+            if not isinstance(paths, list | tuple):
+                raise RuntimeError(f"workbench manifest entry {key!r}.{field} is invalid")
+            for path in paths:
+                if (
+                    not isinstance(path, str)
+                    or not path
+                    or path.startswith("/")
+                    or ".." in path.split("/")
+                    or "://" in path
+                ):
+                    raise RuntimeError(f"workbench manifest asset path is invalid: {path!r}")
+                assets.add(f"{prefix}/{path}")
+    return assets
+
+
 def validate_distributions(dist_dir: Path, project_root: Path) -> tuple[Path, Path]:
     """Validate filenames, package data, source files, and core metadata."""
 
@@ -73,6 +110,13 @@ def validate_distributions(dist_dir: Path, project_root: Path) -> tuple[Path, Pa
         missing_wheel = sorted(REQUIRED_WHEEL_FILES - wheel_names)
         if missing_wheel:
             raise RuntimeError(f"wheel is missing required files: {missing_wheel}")
+        wheel_assets = _workbench_assets(
+            archive.read("ewm/workbench/static/manifest.json"),
+            prefix="ewm/workbench/static",
+        )
+        missing_assets = sorted(wheel_assets - wheel_names)
+        if missing_assets:
+            raise RuntimeError(f"wheel is missing workbench assets: {missing_assets}")
         metadata = BytesParser(policy=default).parsebytes(_wheel_metadata(archive))
 
     if metadata["Name"] != PROJECT_NAME:
@@ -92,16 +136,30 @@ def validate_distributions(dist_dir: Path, project_root: Path) -> tuple[Path, Pa
 
     with tarfile.open(source, mode="r:gz") as archive:
         members = archive.getnames()
-    roots = {name.split("/", maxsplit=1)[0] for name in members}
-    if len(roots) != 1:
-        raise RuntimeError(f"source distribution has unexpected roots: {sorted(roots)}")
-    root = roots.pop()
-    relative_members = {
-        name.removeprefix(f"{root}/") for name in members if name != root
-    }
+        roots = {name.split("/", maxsplit=1)[0] for name in members}
+        if len(roots) != 1:
+            raise RuntimeError(f"source distribution has unexpected roots: {sorted(roots)}")
+        root = roots.pop()
+        relative_members = {
+            name.removeprefix(f"{root}/") for name in members if name != root
+        }
+        manifest_member = archive.extractfile(
+            f"{root}/src/ewm/workbench/static/manifest.json"
+        )
+        if manifest_member is None:
+            raise RuntimeError("source distribution workbench manifest cannot be read")
+        source_assets = _workbench_assets(
+            manifest_member.read(),
+            prefix="src/ewm/workbench/static",
+        )
     missing_source = sorted(REQUIRED_SDIST_FILES - relative_members)
     if missing_source:
         raise RuntimeError(f"source distribution is missing required files: {missing_source}")
+    missing_source_assets = sorted(source_assets - relative_members)
+    if missing_source_assets:
+        raise RuntimeError(
+            f"source distribution is missing workbench assets: {missing_source_assets}"
+        )
     return wheel, source
 
 

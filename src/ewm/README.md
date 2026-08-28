@@ -31,8 +31,13 @@ execution. `equilibrium/analysis/` owns certificates, set-valued correspondences
 
 Within ontology, `ontology/graph/` owns immutable records, identities, vocabulary, and invariants.
 `ontology/projection/` owns compilation, publication, bundle identity, and verification.
-`ontology/profiles/` retains stable adapter class paths because their module-qualified names
-contribute to projection identity.
+`ontology/query/` owns immutable indexes and bounded reads, while `ontology/comparison/` owns
+scientific comparison preflight and explicit alignment. `ontology/profiles/` retains stable adapter
+class paths because their module-qualified names contribute to projection identity.
+
+Within workbench, the Python package owns the packaged static client and, in later layers, the local
+read-only service. The isolated TypeScript sources and lockfile live under repository-level
+`workbench/`; their reproducible output is committed under `workbench/static/` in the Python package.
 
 The evidence-bound files under `capabilities/` and `scenarios/fx/` remain in place for the Han v1
 protocols. Moving them requires an explicit v2 evidence migration, not an ordinary refactor.

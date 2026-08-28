@@ -19,6 +19,12 @@ htmlcov/
 .ruff_cache/
 /mutants/
 
+# Isolated frontend toolchain
+/workbench/node_modules/
+/workbench/coverage/
+/workbench/playwright-report/
+/workbench/test-results/
+
 # Generated research runs at the repository root
 /runs/
 

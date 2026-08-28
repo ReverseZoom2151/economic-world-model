@@ -78,6 +78,7 @@ include = [
   "/scripts",
   "/src",
   "/tests",
+  "/workbench",
   "/*.cff",
   "/*.md",
   "/LICENSE",

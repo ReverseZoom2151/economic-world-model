@@ -12,6 +12,7 @@ research audits. They remain flat because their paths are documented interfaces.
 | `benchmark_experiments.py` | Explicit local runtime and memory measurements |
 | `check_distribution.py` | Wheel and source-distribution contents |
 | `check_reproducible_build.py` | Repeated-build identity |
+| `check_frontend_build.py` | Locked workbench build and packaged-asset reproducibility |
 | `check_mutation_results.py` | Mutation-testing gate |
 
 Reusable behavior belongs in `src/ewm/`; scripts remain thin orchestration boundaries. In
