@@ -25,7 +25,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from ewm.core.provenance.serialization import canonical_json, content_digest
+from ewm._internal.canonical import canonical_json, content_digest
 from ewm.ontology.comparison import compare_projections
 from ewm.ontology.graph.identity import (
     coverage_entry_to_data,

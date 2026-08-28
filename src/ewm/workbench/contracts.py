@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
+from importlib import import_module
 from typing import Any, ClassVar, Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -85,19 +87,11 @@ class ErrorEnvelope(ContractModel):
 def openapi_document() -> dict[str, Any]:
     """Return the deterministic OpenAPI 3.1 contract used for client generation."""
 
-    from .api import ApprovedRunRegistry, create_workbench_app
-    from .security import SecurityPolicy
-
-    policy = SecurityPolicy(
-        session_token="contract-generation-token-with-adequate-entropy",
-        allowed_hosts=("127.0.0.1",),
-        allowed_origins=("http://127.0.0.1:8123",),
+    builder = cast(
+        Callable[[], dict[str, Any]],
+        import_module("ewm.workbench.openapi").build_openapi_document,
     )
-    document = create_workbench_app(ApprovedRunRegistry(()), policy).openapi()
-    return cast(
-        dict[str, Any],
-        json.loads(json.dumps(document, sort_keys=True, separators=(",", ":"))),
-    )
+    return builder()
 
 
 def _main() -> int:
