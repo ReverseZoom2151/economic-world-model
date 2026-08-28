@@ -21,6 +21,15 @@ LAYER_IMPORTS = {
         "ewm.experiments",
         "ewm.scenarios",
     ),
+    "ontology": (
+        "ewm._version",
+        "ewm.core",
+        "ewm.equilibrium",
+        "ewm.experiments",
+        "ewm.ontology",
+        "ewm.scenarios",
+    ),
+    "workbench": ("ewm._version", "ewm.ontology", "ewm.workbench"),
 }
 
 
@@ -53,6 +62,12 @@ def _is_allowed(module: str, allowed: tuple[str, ...]) -> bool:
     return not module.startswith("ewm") or any(
         module == prefix or module.startswith(f"{prefix}.") for prefix in allowed
     )
+
+
+def test_declared_architecture_layers_exist() -> None:
+    missing = sorted(layer for layer in LAYER_IMPORTS if not (PACKAGE / layer).is_dir())
+
+    assert not missing, f"declared architecture layers do not exist: {missing}"
 
 
 @pytest.mark.parametrize(("layer", "allowed"), LAYER_IMPORTS.items())
