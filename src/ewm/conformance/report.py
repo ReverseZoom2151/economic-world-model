@@ -23,7 +23,7 @@ from ewm.capabilities import (
     ValidatedCapabilityEvidence,
     assess_validated_capability,
 )
-from ewm.capabilities.readiness import (
+from ewm.capabilities.assessment.readiness import (
     han_l3_l6_artifacts,
     load_han_l3_l6_protocol,
     run_han_l3_l6_readiness,

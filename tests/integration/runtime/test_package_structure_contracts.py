@@ -6,13 +6,13 @@ from importlib import import_module
 from pathlib import Path
 
 import pytest
-from ewm.experiments.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
-
-import ewm
 from ewm.capabilities.readiness import (
     DEFAULT_HAN_L3_L6_PROTOCOL,
     load_han_l3_l6_protocol,
 )
+from ewm.experiments.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
+
+import ewm
 from ewm.conformance import build_report as build_package_conformance_report
 from ewm.core import World
 from ewm.experiments.registry import ExperimentSpec, ScenarioPlugin, ScenarioRegistry
@@ -126,6 +126,36 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
 @pytest.mark.parametrize(
     ("legacy_module", "canonical_module", "symbol"),
     (
+        (
+            "ewm.capabilities.alignment",
+            "ewm.capabilities.engineering.alignment",
+            "BoundedAlignment",
+        ),
+        (
+            "ewm.capabilities.cognition",
+            "ewm.capabilities.engineering.cognition",
+            "CognitiveAgent",
+        ),
+        (
+            "ewm.capabilities.evolution",
+            "ewm.capabilities.engineering.evolution",
+            "EvolutionRegistry",
+        ),
+        (
+            "ewm.capabilities.institutions",
+            "ewm.capabilities.engineering.institutions",
+            "GovernedInstitutions",
+        ),
+        (
+            "ewm.capabilities.levels",
+            "ewm.capabilities.assessment.levels",
+            "CapabilityLevel",
+        ),
+        (
+            "ewm.capabilities.readiness",
+            "ewm.capabilities.assessment.readiness",
+            "HanReadinessProtocol",
+        ),
         ("ewm.core.world", "ewm.core.runtime.world", "World"),
         (
             "ewm.equilibrium.fixed_point",
@@ -151,6 +181,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
 @pytest.mark.parametrize(
     ("package_name", "expected"),
     (
+        ("ewm.capabilities", {"__init__.py"}),
         ("ewm.core", {"__init__.py"}),
         ("ewm.equilibrium", {"__init__.py"}),
         ("ewm.experiments", {"__init__.py", "registry.py"}),

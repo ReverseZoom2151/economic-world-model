@@ -24,7 +24,7 @@ from ewm.core import (
 from ewm.core.evidence import EvidenceStatus, ValidatedEvidenceArtifact
 from ewm.core.records import freeze_value
 
-from .alignment import (
+from ..engineering.alignment import (
     AbsoluteErrorMetric,
     AlignmentContext,
     BoundedAlignment,
@@ -32,14 +32,14 @@ from .alignment import (
     ExternalObservation,
     FunctionalCorrectionPlanner,
 )
-from .cognition import (
+from ..engineering.cognition import (
     ActionSchema,
     CognitiveAgent,
     FunctionalCognitiveTool,
     ModelRequest,
     ModelResponse,
 )
-from .evolution import (
+from ..engineering.evolution import (
     CapabilityKind,
     CapabilityManifest,
     EvolutionProposal,
@@ -47,7 +47,7 @@ from .evolution import (
     GateEvidence,
     PromotionPolicy,
 )
-from .institutions import (
+from ..engineering.institutions import (
     GovernedInstitutions,
     InstitutionCheck,
     InstitutionKind,
@@ -67,7 +67,7 @@ from .levels import (
 
 HAN_L3_L6_PROTOCOL_SCHEMA = "ewm.han-l3-l6-readiness.protocol.v1"
 HAN_L3_L6_REPORT_SCHEMA = "ewm.han-l3-l6-readiness.report.v1"
-DEFAULT_HAN_L3_L6_PROTOCOL = Path(__file__).with_name("han-l3-l6-readiness-v1.toml")
+DEFAULT_HAN_L3_L6_PROTOCOL = Path(__file__).parents[1] / "han-l3-l6-readiness-v1.toml"
 _CLASSIFICATION = "evidence_readiness_only"
 _OPERATORS = frozenset({"eq", "gte", "lte"})
 _PROBES = frozenset({"alignment", "cognition", "evolution", "institution"})
@@ -162,11 +162,16 @@ def _require_exact_keys(
 
 def _source_sha256(source_files: tuple[str, ...]) -> str:
     digest = hashlib.sha256()
-    directory = Path(__file__).parent
+    directory = Path(__file__).parents[1]
     for name in sorted(source_files):
         path = Path(name)
-        if path.name != name or path.suffix != ".py":
-            raise ValueError("readiness source files must be local Python filenames")
+        if (
+            path.is_absolute()
+            or path.suffix != ".py"
+            or path.as_posix() != name
+            or any(part in {"", ".", ".."} for part in path.parts)
+        ):
+            raise ValueError("readiness source files must be safe local Python paths")
         source = directory / name
         if not source.is_file():
             raise FileNotFoundError(f"readiness source file is missing: {name}")

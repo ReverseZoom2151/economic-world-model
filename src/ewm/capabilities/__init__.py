@@ -1,57 +1,8 @@
 """Optional capability substrates layered above the deterministic EWM core."""
 
-from .alignment import (
-    AbsoluteErrorMetric,
-    AlignmentContext,
-    AlignmentMetric,
-    AlignmentProvenance,
-    AlignmentReport,
-    AlignmentRestoreReport,
-    AlignmentSnapshot,
-    AppliedCorrection,
-    BoundedAlignment,
-    CorrectionPlanner,
-    CorrectionProposal,
-    ExternalDataAdapter,
-    ExternalObservation,
-    FunctionalCorrectionPlanner,
-)
-from .cognition import (
-    ActionSchema,
-    CognitiveActionError,
-    CognitiveAgent,
-    CognitiveDecision,
-    CognitiveTool,
-    DecisionProvenance,
-    FunctionalCognitiveTool,
-    LanguageModelBackend,
-    MemoryEntry,
-    ModelRequest,
-    ModelResponse,
-)
-from .evolution import (
-    EVOLUTION_SCHEMA_VERSION,
-    CapabilityKind,
-    CapabilityManifest,
-    EvolutionProposal,
-    EvolutionRegistry,
-    GateEvidence,
-    PromotionPolicy,
-    PromotionReport,
-    RollbackReport,
-)
-from .institutions import (
-    GovernedInstitutions,
-    InstitutionCheck,
-    InstitutionKind,
-    InstitutionManifest,
-    InstitutionPolicy,
-    InstitutionProposal,
-    InstitutionSnapshot,
-    InstitutionTransitionReport,
-    InstitutionValidator,
-)
-from .levels import (
+from ewm._internal.imports import register_module_aliases
+
+from .assessment.levels import (
     LEVEL_REQUIREMENTS,
     AxisAssessment,
     AxisEvidence,
@@ -67,6 +18,69 @@ from .levels import (
     assess_validated_capability,
     documented_prototype_evidence,
     requirement_gate,
+)
+from .engineering.alignment import (
+    AbsoluteErrorMetric,
+    AlignmentContext,
+    AlignmentMetric,
+    AlignmentProvenance,
+    AlignmentReport,
+    AlignmentRestoreReport,
+    AlignmentSnapshot,
+    AppliedCorrection,
+    BoundedAlignment,
+    CorrectionPlanner,
+    CorrectionProposal,
+    ExternalDataAdapter,
+    ExternalObservation,
+    FunctionalCorrectionPlanner,
+)
+from .engineering.cognition import (
+    ActionSchema,
+    CognitiveActionError,
+    CognitiveAgent,
+    CognitiveDecision,
+    CognitiveTool,
+    DecisionProvenance,
+    FunctionalCognitiveTool,
+    LanguageModelBackend,
+    MemoryEntry,
+    ModelRequest,
+    ModelResponse,
+)
+from .engineering.evolution import (
+    EVOLUTION_SCHEMA_VERSION,
+    CapabilityKind,
+    CapabilityManifest,
+    EvolutionProposal,
+    EvolutionRegistry,
+    GateEvidence,
+    PromotionPolicy,
+    PromotionReport,
+    RollbackReport,
+)
+from .engineering.institutions import (
+    GovernedInstitutions,
+    InstitutionCheck,
+    InstitutionKind,
+    InstitutionManifest,
+    InstitutionPolicy,
+    InstitutionProposal,
+    InstitutionSnapshot,
+    InstitutionTransitionReport,
+    InstitutionValidator,
+)
+
+register_module_aliases(
+    __name__,
+    {
+        "alignment": "engineering.alignment",
+        "cognition": "engineering.cognition",
+        "evolution": "engineering.evolution",
+        "institutions": "engineering.institutions",
+        "levels": "assessment.levels",
+        "readiness": "assessment.readiness",
+    },
 )
 
 __all__ = [

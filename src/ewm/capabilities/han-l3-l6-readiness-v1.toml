@@ -5,12 +5,12 @@ report_schema = "ewm.han-l3-l6-readiness.report.v1"
 classification = "evidence_readiness_only"
 seed = 73
 source_files = [
-  "alignment.py",
-  "cognition.py",
-  "evolution.py",
-  "institutions.py",
-  "levels.py",
-  "readiness.py",
+  "assessment/levels.py",
+  "assessment/readiness.py",
+  "engineering/alignment.py",
+  "engineering/cognition.py",
+  "engineering/evolution.py",
+  "engineering/institutions.py",
 ]
 
 [[requirement]]
