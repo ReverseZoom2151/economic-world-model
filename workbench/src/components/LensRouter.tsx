@@ -7,9 +7,12 @@ import type {
   OntologyObjectContract,
   RelationContract,
 } from "../data/InvestigationDataSource";
-import { MarketLens } from "../lenses/market/MarketLens";
+import { CompareLens } from "../lenses/compare/CompareLens";
 import { DdgeLens } from "../lenses/ddge/DdgeLens";
+import { EvidenceLens } from "../lenses/evidence/EvidenceLens";
 import { LearningLens } from "../lenses/learning/LearningLens";
+import { LineageLens } from "../lenses/lineage/LineageLens";
+import { MarketLens } from "../lenses/market/MarketLens";
 import { RuntimeLens } from "../lenses/runtime/RuntimeLens";
 import { WorldLens } from "../lenses/world/WorldLens";
 import { useInvestigation, type InvestigationLens } from "../state/investigation";
@@ -165,6 +168,32 @@ export function LensRouter({ dataSource }: LensRouterProps) {
       active = false;
     };
   }, [dataSource, requestKey, state.lens, state.runId]);
+
+  if (state.runId !== null && state.lens === "compare") {
+    return (
+      <section className="lens-slot" aria-label="Active analytical lens">
+        <CompareLens dataSource={dataSource} activeRunId={state.runId} />
+      </section>
+    );
+  }
+  if (state.runId !== null && state.lens === "evidence") {
+    return (
+      <section className="lens-slot" aria-label="Active analytical lens">
+        <EvidenceLens dataSource={dataSource} runId={state.runId} />
+      </section>
+    );
+  }
+  if (state.runId !== null && state.lens === "lineage") {
+    return (
+      <section className="lens-slot" aria-label="Active analytical lens">
+        <LineageLens
+          dataSource={dataSource}
+          runId={state.runId}
+          selectedId={state.objectId}
+        />
+      </section>
+    );
+  }
 
   if (state.runId !== null && isImplementedLens(state.lens)) {
     if (result.key !== requestKey) {

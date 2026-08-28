@@ -136,9 +136,14 @@ export interface ComparisonResultContract {
 }
 
 export interface PathResultContract {
-  readonly paths: ReadonlyArray<Readonly<Record<string, unknown>>>;
+  readonly paths: ReadonlyArray<PathContract>;
   readonly visited_records: number;
   readonly truncated: boolean;
+}
+
+export interface PathContract {
+  readonly nodes: ReadonlyArray<OntologyRefContract>;
+  readonly relations: ReadonlyArray<RelationContract>;
 }
 
 export interface InvestigationDataSource {

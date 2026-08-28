@@ -1153,6 +1153,365 @@ select:focus-visible {
   font-size: 0.68rem;
 }
 
+.comparison-selector,
+.lineage-controls {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) 2rem minmax(10rem, 1fr);
+  gap: 1rem;
+  align-items: end;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid var(--ink);
+}
+
+.comparison-selector > div,
+.comparison-selector label,
+.lineage-controls label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.comparison-selector > span,
+.lineage-controls > span {
+  align-self: center;
+  text-align: center;
+}
+
+.comparison-selector span,
+.lineage-controls span,
+.comparison-preflight header p,
+.aligned-comparison > header p,
+.claim-card header p {
+  margin: 0;
+  color: var(--quiet);
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.comparison-selector select,
+.lineage-controls select {
+  width: 100%;
+  padding: 0.55rem;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.comparison-preflight,
+.aligned-comparison,
+.claim-audit,
+.lineage-path {
+  margin-top: 1.5rem;
+}
+
+.comparison-preflight > header,
+.aligned-comparison > header,
+.claim-card > header,
+.supporting-evidence article > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+.comparison-preflight h3,
+.aligned-comparison h3,
+.claim-card h3 {
+  margin: 0.25rem 0 0;
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-weight: 500;
+}
+
+.comparison-verdict {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid currentcolor;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.comparison-verdict--accepted {
+  color: #17654a;
+}
+
+.comparison-verdict--rejected,
+.missing-source {
+  color: #8c2f2f;
+}
+
+.comparison-note {
+  color: var(--quiet);
+  font-size: 0.7rem;
+}
+
+.comparison-issues,
+.source-locators,
+.limitation-list,
+.lineage-path ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.comparison-issues li {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.68rem;
+}
+
+.comparison-issues li > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.comparison-issues small,
+.comparison-withheld p,
+.evidence-absence,
+.source-locator-empty {
+  color: var(--quiet);
+}
+
+.comparison-withheld {
+  display: grid;
+  min-height: 10rem;
+  place-content: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: center;
+}
+
+.aligned-grid,
+.supporting-evidence {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1px;
+  padding: 1px;
+  background: var(--rule);
+}
+
+.aligned-grid > article,
+.supporting-evidence > article {
+  min-width: 0;
+  padding: 1rem;
+  background: var(--paper);
+}
+
+.aligned-grid__title {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.aligned-grid__title span,
+.aligned-grid__title code {
+  color: var(--quiet);
+  font-size: 0.6rem;
+}
+
+.aligned-values {
+  display: grid;
+  grid-template-columns: 1fr 2rem 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.aligned-values > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.aligned-values > div:last-child {
+  text-align: right;
+}
+
+.aligned-values > span {
+  text-align: center;
+}
+
+.aligned-values strong {
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.aligned-grid dl {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.7rem;
+  margin: 0;
+}
+
+.aligned-grid dt {
+  color: var(--quiet);
+  font-size: 0.52rem;
+  text-transform: uppercase;
+}
+
+.aligned-grid dd {
+  overflow-wrap: anywhere;
+  margin: 0.2rem 0 0;
+  font-size: 0.66rem;
+}
+
+.unaligned-records {
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.66rem;
+}
+
+.unaligned-records li {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.5fr) 1fr;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.claim-audit {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.claim-card {
+  padding: 1rem;
+  border: 1px solid var(--ink);
+}
+
+.claim-card code,
+.supporting-evidence code {
+  overflow-wrap: anywhere;
+  font-size: 0.58rem;
+}
+
+.evidence-classification {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  color: var(--quiet);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+}
+
+.evidence-classification > span {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.claim-card__section {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.claim-card__section:last-child {
+  border-bottom: 0;
+}
+
+.claim-card__section h4 {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.limitation-list li {
+  padding: 0.45rem 0;
+  border-top: 1px solid var(--rule);
+  font-size: 0.68rem;
+}
+
+.supporting-evidence h5 {
+  margin: 0.25rem 0;
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.missing-source {
+  padding: 0.5rem;
+  border: 1px solid currentcolor;
+  font-size: 0.65rem;
+}
+
+.source-locators {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.source-locators li {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.55rem;
+  border-left: 2px solid var(--signal);
+  background: var(--wash);
+}
+
+.source-locators li > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.62rem;
+}
+
+.source-locators code,
+.source-locators small {
+  overflow-wrap: anywhere;
+  font-size: 0.58rem;
+}
+
+.lineage-path > ol > li {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.6fr) 1.4fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.lineage-node,
+.lineage-relation {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.8rem;
+  border-top: 1px solid var(--ink);
+}
+
+.lineage-node span,
+.lineage-relation small {
+  color: var(--quiet);
+  font-size: 0.58rem;
+}
+
+.lineage-node strong,
+.lineage-relation strong {
+  overflow-wrap: anywhere;
+  font-size: 0.72rem;
+}
+
+.lineage-path > footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--ink);
+  color: var(--quiet);
+  font-size: 0.58rem;
+}
+
+.lineage-path--empty {
+  display: grid;
+  min-height: 12rem;
+  place-content: center;
+  padding: 1rem;
+  border: 1px solid var(--rule);
+  text-align: center;
+}
+
 .sparse-fallback,
 .lens-loading {
   display: grid;
@@ -1234,6 +1593,12 @@ select:focus-visible {
 
   .provenance-strip {
     flex-wrap: wrap;
+  }
+
+  .comparison-selector,
+  .lineage-controls,
+  .lineage-path > ol > li {
+    grid-template-columns: 1fr;
   }
 }
 
