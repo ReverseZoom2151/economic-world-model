@@ -9,6 +9,7 @@ from ewm.capabilities.readiness import (
     DEFAULT_HAN_L3_L6_PROTOCOL,
     load_han_l3_l6_protocol,
 )
+from ewm.conformance import build_report as build_package_conformance_report
 from ewm.core import World
 from ewm.experiments.protocols import DEFAULT_PROTOCOL_PATH, load_protocol
 from ewm.experiments.registry import ExperimentSpec, ScenarioPlugin, ScenarioRegistry
@@ -17,7 +18,12 @@ from ewm.scenarios.fx.validation import (
     DEFAULT_HAN_L1_L2_PROTOCOL,
     load_han_l1_l2_protocol,
 )
-from scripts.run_conformance import DEFAULT_SOURCE_DIR as CONFORMANCE_SOURCE_DIR
+from scripts.run_conformance import (
+    DEFAULT_SOURCE_DIR as CONFORMANCE_SOURCE_DIR,
+)
+from scripts.run_conformance import (
+    build_report as build_script_conformance_report,
+)
 from scripts.verify_sources import DEFAULT_SOURCE_DIR as VERIFICATION_SOURCE_DIR
 
 ROOT_EXPORTS = (
@@ -107,3 +113,8 @@ def test_local_paper_sources_have_one_ignored_reference_location() -> None:
 
     assert CONFORMANCE_SOURCE_DIR.as_posix().endswith(expected)
     assert VERIFICATION_SOURCE_DIR == CONFORMANCE_SOURCE_DIR
+
+
+def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -> None:
+    assert build_package_conformance_report.__module__ == "ewm.conformance.report"
+    assert build_script_conformance_report.__module__ == "scripts.run_conformance"

@@ -14,4 +14,6 @@ research audits. They remain flat because their paths are documented interfaces.
 | `check_reproducible_build.py` | Repeated-build identity |
 | `check_mutation_results.py` | Mutation-testing gate |
 
-Reusable behavior belongs in `src/ewm/`; scripts should remain thin orchestration boundaries.
+Reusable behavior belongs in `src/ewm/`; scripts remain thin orchestration boundaries. In
+particular, `run_conformance.py` delegates report construction to `ewm.conformance` while preserving
+the documented command path.

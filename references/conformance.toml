@@ -9,7 +9,7 @@ command = "python scripts/run_conformance.py"
 cong_evidence = "tests/conformance/test_cong_conformance.py"
 han_evidence = "tests/conformance/test_han_conformance.py"
 claim_boundary_evidence = "tests/conformance/test_claim_boundaries.py"
-reporter = "scripts/run_conformance.py"
+reporter = "src/ewm/conformance/report.py"
 
 [[item]]
 id = "cong-def-2.1"

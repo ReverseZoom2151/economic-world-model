@@ -7,6 +7,7 @@
 | `core/` | Shared declarations, records, economic runtime, coherence, and provenance primitives |
 | `equilibrium/` | Inner equilibrium, DDGE, fixed points, damping, certificates, and diagnostics |
 | `capabilities/` | Han L3-L6 cognition, evolution, institutions, alignment, and evidence gates |
+| `conformance/` | Installable paper-level report construction and evidence orchestration |
 | `scenarios/` | Economy-owned models, presets, agents, mechanisms, and validation protocols |
 | `experiments/` | Experiment execution, artifacts, analysis, studies, and discovery |
 | `ontology/` | Immutable graph records, schema validation, bundles, compilation, and profiles |
