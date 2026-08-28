@@ -27,8 +27,8 @@ testing implementation contracts. It is not an empirically calibrated economy, a
 deployment system.
 
 [Quick start](#quick-start) | [Mathematical core](#mathematical-core) |
-[Evidence](#evidence) | [Architecture](#architecture) | [Limitations](#limitations) |
-[Documentation](#documentation)
+[Evidence](#evidence) | [Ontology and workbench](#ontology-and-workbench) |
+[Architecture](#architecture) | [Limitations](#limitations) | [Documentation](#documentation)
 
 ## Quick start
 
@@ -82,6 +82,21 @@ ewm run credit.regimes --preset smoke --seed 42 --output runs
 ```
 
 Research presets increase numerical scale. They do not add empirical validity.
+
+Project a verified run into the canonical ontology and compile a portable investigation:
+
+```bash
+ewm ontology project --run-dir runs/<run_hash> --output projections/fx-smoke
+ewm ontology verify --bundle projections/fx-smoke
+ewm snapshot export runs/<run_hash> \
+  --selection selection.json \
+  --output investigations/fx-smoke.html
+ewm snapshot verify investigations/fx-smoke.html
+```
+
+The source run remains sealed. Projections and snapshots are derived, content-addressed artifacts.
+The [ontology guide](docs/ontology.md), [workbench guide](docs/workbench.md), and [snapshot
+guide](docs/snapshots.md) define the selection files, local interface, and verification boundary.
 
 ## Mathematical core
 
@@ -179,6 +194,32 @@ ewm-run-protocol --quick
 Its current nonzero exit status preserves the prespecified failure. Outcome summaries remain useful
 for diagnosis, but they authorize no inference or scientific claim.
 
+## Ontology and workbench
+
+The canonical ontology projects only verified `ewm.run.v2` bundles. It separates schema, economic
+declarations, runtime occurrences, learning and equilibrium, research and evidence, and provenance.
+Fourteen fail-closed invariants preserve identity, sourcing, relation direction, DDGE roles,
+certification, intervention semantics, and claim authorization.
+
+The local research workbench reads immutable projections through a loopback-only API. Its World,
+Runtime, Market, Learning, DDGE, Compare, Evidence, Lineage, 3D Scene, and Globe lenses share one
+selection and evidence model. Three-dimensional coordinates use semantic lane, ontology layer, and
+time. The globe renders an object only through an explicit sourced `GeoAnchor`; built-in scenarios
+show an unavailable state unless a researcher supplies a validated overlay.
+
+Portable `ewm.investigation.v1` snapshots embed the selected evidence and the same client in one
+offline HTML file. Their digests detect corruption. Authenticity requires a full-file digest obtained
+through a separate trusted channel; the file contains no digital signature.
+
+Install the optional local service dependencies with:
+
+```bash
+python -m pip install -e ".[workbench]"
+```
+
+Node is needed only to modify or test the frontend. The built client ships inside the Python wheel.
+All interface paths are local and read-only, and portable snapshots make no network requests.
+
 ## Architecture
 
 The repository is a modular monolith. Scenario modules own economic assumptions. Shared layers own
@@ -188,12 +229,16 @@ runtime contracts, fixed-point search, artifacts, and evidence boundaries.
 flowchart LR
     API[Public API and CLI] --> EXP[Experiment registry]
     API --> CORE[Typed core and compiler]
+    API --> ONT[Verified ontology projection]
     EXP --> SCN[Scenario economics]
     EXP --> EQ[Equilibrium solvers]
     EXP --> EVID[Evidence and artifact gates]
     SCN --> CORE
     EQ --> CORE
     CORE --> EVT[Canonical events and owned RNGs]
+    EVT --> ONT
+    EVID --> ONT
+    ONT --> WB[Local workbench or offline snapshot]
 ```
 
 The compiled FX path uses the same economic mechanism as the direct simulation while adding strict
@@ -221,6 +266,10 @@ canonical event chain but intentionally cannot be exported for replay.
 - Full replay provenance has a measurable runtime cost. On the recorded local 0.2 audit,
   `fx.rollout` research runs had a 4.22-second p50 and replicated FX research comparisons had a
   94.93-second p50. These are research baselines, not service-level objectives.
+- The workbench is local, read-only, single-user, and bounded. It has no cloud service, graph
+  database, live data ingestion, ontology authoring, collaboration, or inferred geography.
+- Snapshot checks detect malformed or changed bytes but do not authenticate an author. A separately
+  obtained digest provides file comparison, not a digital signature.
 - Credit, FX, forecasting, and production outputs must not guide lending, trading, employment,
   pricing, regulatory, or public-policy decisions.
 
@@ -231,6 +280,11 @@ See [Limitations and non-goals](docs/limitations.md) for the complete boundary.
 | Document | Use it for |
 |---|---|
 | [Experiment guide](docs/experiments.md) | Registry, CLI, v2 artifacts, verification, replay, and metric interpretation |
+| [Ontology guide](docs/ontology.md) | Six layers, fourteen invariants, verified projection, coverage, identity, and DDGE status |
+| [Workbench guide](docs/workbench.md) | Installation, eight workflows, API, 2D and 3D controls, globe, security, and troubleshooting |
+| [Snapshot guide](docs/snapshots.md) | Portable selection, limits, offline behavior, integrity, authenticity, and sharing |
+| [Ontology extension guide](docs/ontology-extension-guide.md) | Versioned profile contract, sources, coverage, registration, and tests |
+| [Workbench release audit](docs/workbench-release-audit.md) | Requirement-level implementation and release evidence |
 | [Mathematical contract](docs/mathematical-contract.md) | Formal objects, theorem obligations, equations, and scenario mechanics |
 | [Replication guide](docs/replication.md) | Source locks, claim classes, exact commands, targets, and tolerances |
 | [Paper traceability](docs/paper-traceability.md) | Source identity, registry policy, code-independent oracles, and evidence gates |
@@ -247,4 +301,4 @@ The formal ideas and paper-specific equations belong to the cited authors. This 
 independent implementation and is not an official release or endorsement by either paper's authors.
 Citation metadata is in [`CITATION.cff`](CITATION.cff).
 
-Documentation last reviewed: 2026-08-28.
+Documentation last reviewed: 2026-08-29.

@@ -6,6 +6,11 @@ from pathlib import Path
 ROOT = Path(__file__).parents[2]
 README = ROOT / "README.md"
 PRODUCT_VALIDATION = ROOT / "docs" / "product-validation.md"
+ONTOLOGY_GUIDE = ROOT / "docs" / "ontology.md"
+WORKBENCH_GUIDE = ROOT / "docs" / "workbench.md"
+SNAPSHOT_GUIDE = ROOT / "docs" / "snapshots.md"
+EXTENSION_GUIDE = ROOT / "docs" / "ontology-extension-guide.md"
+WORKBENCH_AUDIT = ROOT / "docs" / "workbench-release-audit.md"
 PUBLIC_MARKDOWN = (README, *sorted((ROOT / "docs").glob("*.md")))
 ALL_MARKDOWN = (README, *sorted((ROOT / "docs").rglob("*.md")))
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^]]+\]\(([^)]+)\)")
@@ -38,6 +43,14 @@ def test_public_documentation_matches_the_current_release_contract() -> None:
     assert "ewm.run.v2" in readme
     assert "ewm verify-run" in readme
     assert "ewm replay-run" in readme
+    for guide in (
+        "docs/ontology.md",
+        "docs/workbench.md",
+        "docs/snapshots.md",
+        "docs/ontology-extension-guide.md",
+        "docs/workbench-release-audit.md",
+    ):
+        assert guide in readme
 
     current_docs = tuple(path for path in PUBLIC_MARKDOWN if path != PRODUCT_VALIDATION)
     for path in current_docs:
@@ -51,6 +64,73 @@ def test_public_documentation_matches_the_current_release_contract() -> None:
 
     public_text = "\n".join(_text(path) for path in PUBLIC_MARKDOWN)
     assert "\N{EM DASH}" not in public_text
+
+
+def test_ontology_workbench_guides_state_the_scientific_and_operational_contracts() -> None:
+    ontology = _text(ONTOLOGY_GUIDE)
+    for layer in (
+        "Schema",
+        "Economic declaration",
+        "Runtime occurrence",
+        "Learning and equilibrium",
+        "Research and evidence",
+        "Provenance",
+    ):
+        assert layer in ontology
+    assert "fourteen invariants" in ontology
+    assert "verified `ewm.run.v2`" in ontology
+    for status in ("observed", "candidate", "numerically validated", "certified"):
+        assert status in ontology
+
+    workbench = _text(WORKBENCH_GUIDE)
+    for workflow in (
+        "Verify and open",
+        "Understand the world",
+        "Trace an episode",
+        "Follow behavior to learning",
+        "Assess DDGE",
+        "Compare runs",
+        "Audit a claim",
+        "Export an investigation",
+    ):
+        assert workflow in workbench
+    for rule in ("X axis", "Y axis", "Z axis", "GeoAnchor"):
+        assert rule in workbench
+    assert 'python -m pip install -e ".[workbench]"' in workbench
+    assert "no remote requests" in workbench
+
+    snapshots = _text(SNAPSHOT_GUIDE)
+    for bound in ("10,000 objects", "30,000 relations", "100,000 events", "50 MiB"):
+        assert bound in snapshots
+    assert "Corruption detection" in snapshots
+    assert "Authenticity" in snapshots
+    assert "not a digital signature" in snapshots
+
+    extension = _text(EXTENSION_GUIDE)
+    for requirement in (
+        "profile identity",
+        "source digest",
+        "coverage ledger",
+        "unknown versions fail closed",
+    ):
+        assert requirement in extension
+
+    audit = _text(WORKBENCH_AUDIT)
+    assert "Requirement-by-requirement evidence" in audit
+    assert "tests/ontology/graph/test_schema.py" in audit
+    assert "workbench/e2e/investigation-workflows.spec.ts" in audit
+    assert "scripts/check_frontend_build.py" in audit
+    assert "Incomplete" not in audit
+
+    limitations = _text(ROOT / "docs" / "limitations.md")
+    assert "Ontology and workbench limits" in limitations
+    assert "Reference performance environment" in limitations
+
+    traceability = _text(ROOT / "docs" / "paper-traceability.md")
+    assert "Ontology and workbench claim boundary" in traceability
+
+    replication = _text(ROOT / "docs" / "replication.md")
+    assert "Ontology and workbench reproduction" in replication
 
 
 def test_public_markdown_links_paths_and_code_fences_are_well_formed() -> None:

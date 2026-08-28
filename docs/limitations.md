@@ -1,7 +1,7 @@
 # Limitations and non-goals
 
-**Document version:** 1.1
-**Last reviewed:** 2026-08-28
+**Document version:** 1.2
+**Last reviewed:** 2026-08-29
 **Applies to:** `economic-world-model` release 0.2.0
 
 ## Research scope
@@ -132,6 +132,56 @@ compatibility is structural and read-only; those bundles remain unsealed.
 Deterministic `replay-run` support currently covers sealed v2 `fx.rollout` artifacts. Other
 experiments can be verified but not reconstructed through that command. Exact replay also depends on
 the supported package and numerical runtime encoded by the implementation.
+
+## Ontology and workbench limits
+
+The ontology is a read-only derived view over verified `ewm.run.v2` evidence. Legacy v1 bundles can
+be diagnosed but cannot be projected. Each scenario profile accepts exact experiment, package, and
+artifact-schema versions. Unknown versions fail closed rather than receiving a best-effort mapping.
+
+The five built-in profiles cover scalar, forecasting, FX, credit, and production experiments.
+Coverage records semantic gaps, but a gap cannot reconstruct a missing declaration or observation.
+Adapter-derived declarations come from installed package code and are not run-authored evidence.
+Passing fourteen schema invariants establishes structural consistency, not truth, causal validity,
+or completeness of the economic model.
+
+The workbench is local, read-only, single-user, and bounded. It has no hosted service, account
+system, collaboration, annotation persistence, ontology authoring, graph database, live telemetry,
+remote data ingestion, model-provider integration, or automatic claim generation. The HTTP snapshot
+endpoint returns an idempotent export plan; the explicit `ewm snapshot export` CLI performs file
+publication.
+
+The API caps collection reads and graph traversal. Portable snapshots default to 10,000 objects,
+30,000 relations, 100,000 events, and 50 MiB of complete HTML. Nested canonical data, GeoJSON feature
+count, source payload size, event lines, NPZ members, and request bodies also have hard limits. Large
+runs require smaller selections or offline analysis outside the workbench.
+
+The 3D scene encodes semantic lane, ontology layer, and time. Position is an investigation aid, not
+an estimated economic distance, causal effect, or embedding. WebGL availability and device limits
+can reduce the rendered subset; the 2D fallback remains authoritative for the selected records.
+
+The globe displays only objects linked to an explicit sourced `GeoAnchor`. Current built-in runs
+have no run-authored geographic identifiers and show an unavailable state unless a researcher adds
+a validated sidecar. A researcher-declared anchor retains that classification. Bundled simplified
+Natural Earth boundaries provide visual context and are not a source for an object's location,
+jurisdiction, policy status, or economic identity.
+
+Snapshot digests and Content Security Policy hashes detect changed or malformed bytes. They do not
+authenticate an author, institution, timestamp, or claim. A full-file digest obtained separately
+supports file comparison only; release 0.2.0 has no digital-signature or transparency-log protocol.
+
+### Reference performance environment
+
+The 29 August 2026 small-tier observation used WSL2 Linux 5.15 on x86_64, Python 3.12.3, and 64
+reported CPUs. The fixture was `fx.rollout` smoke at seed 73 with 242 objects, 335 relations, and 6
+measurements. Across three repeats, p95 projection time was 0.850 seconds, a bounded 200-object query
+was 0.000382 seconds, and standalone snapshot export was 2.398 seconds. Maximum traced Python memory
+was 20.9 MB for projection and 54.9 MB for export.
+
+These are observations from one machine and a small synthetic fixture. They are not service-level
+objectives and do not predict medium, large, browser-rendering, or concurrent workloads. The
+benchmark records interactive-open and 3D-frame budgets as targets because it does not measure those
+operations.
 
 ## Evaluation limits
 

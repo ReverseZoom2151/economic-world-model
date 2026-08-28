@@ -1,7 +1,7 @@
 # Running EWM experiments
 
-**Document version:** 1.1
-**Last reviewed:** 2026-08-28
+**Document version:** 1.2
+**Last reviewed:** 2026-08-29
 **Audience:** Researchers reproducing or extending release 0.2.0
 
 ## Install and discover
@@ -213,6 +213,43 @@ correction magnitude. Supplied measurements carry units, provenance, and sample 
 Absent measurements remain `not_measured` with value `None`, sample size zero, and no provenance.
 The evaluator rejects unknown metrics, wrong units, and attempts to override event-derived values.
 
+## Ontology projection and investigation
+
+Project only after a run passes sealed-bundle verification:
+
+```bash
+ewm verify-run runs/<run_hash>
+ewm ontology project --run-dir runs/<run_hash> --output projections/<name>
+ewm ontology verify --bundle projections/<name>
+```
+
+The projection is a derived artifact. It retains source-run, source-bundle, profile, and projection
+digests; it never changes or writes inside the run. Its coverage ledger records each supported field
+as `projected`, `omitted`, `rejected`, or `unavailable`.
+
+Create a portable investigation from an explicit JSON selection:
+
+```bash
+ewm snapshot export runs/<run_hash> \
+  --selection selection.json \
+  --output investigations/<name>.html
+ewm snapshot verify investigations/<name>.html
+```
+
+Snapshots work offline and include the same projection and profile identities. Their internal
+digests detect corruption but do not authenticate an author. Pass `--expected-sha256` only with a
+full-file digest obtained through a separate trusted channel.
+
+The optional local interface uses:
+
+```bash
+python -m pip install -e ".[workbench]"
+```
+
+The [ontology guide](ontology.md) defines the six layers and DDGE status distinctions. The
+[workbench guide](workbench.md) covers the eight investigation workflows and local API. The
+[snapshot guide](snapshots.md) covers selections, hard limits, offline behavior, and sharing.
+
 ## Reproducibility checklist
 
 1. Record the package commit and retain the manifest's source and runtime fingerprints.
@@ -233,6 +270,8 @@ coverage report
 python -m build
 python scripts/run_conformance.py
 python scripts/scientific_stress.py --quick
+python scripts/check_workbench_network.py
+python scripts/benchmark_workbench.py --tier small --repeats 3
 ```
 
 CI tests Python 3.11 and 3.12. The [replication guide](replication.md) defines paper-specific commands

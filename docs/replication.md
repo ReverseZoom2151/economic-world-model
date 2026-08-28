@@ -1,7 +1,7 @@
 # Replication guide
 
-**Document version:** 1.2
-**Last reviewed:** 2026-08-28
+**Document version:** 1.3
+**Last reviewed:** 2026-08-29
 **Scope:** Reproduce the package's paper claims, protocol checks, and disclosed numerical examples
 
 ## Claim vocabulary
@@ -288,6 +288,66 @@ Current runs use `ewm.run.v2`, which seals all five payloads and the canonical r
 `ewm.run.v1` bundles receive read-only structural verification and remain unsealed. Deterministic
 replay currently supports sealed v2 `fx.rollout` bundles only.
 
+## Ontology and workbench reproduction
+
+Create two independent projections of the same verified run and compare their published bytes:
+
+```bash
+ewm verify-run runs/<run_hash>
+ewm ontology project --run-dir runs/<run_hash> --output projections/a
+ewm ontology verify --bundle projections/a
+ewm ontology project --run-dir runs/<run_hash> --output projections/b
+ewm ontology verify --bundle projections/b
+diff -r projections/a projections/b
+```
+
+The source identity, profile digest, projection digest, manifest, and canonical payload must match.
+A changed source, adapter, or semantic mapping must produce a different identity rather than reuse an
+existing directory.
+
+Compile the same selection twice and compare the files and detached digests:
+
+```bash
+ewm snapshot export runs/<run_hash> --selection selection.json --output snapshots/a.html
+ewm snapshot export runs/<run_hash> --selection selection.json --output snapshots/b.html
+cmp snapshots/a.html snapshots/b.html
+cmp snapshots/a.html.sha256 snapshots/b.html.sha256
+ewm snapshot verify snapshots/a.html
+```
+
+The snapshot must retain the source bundle, profile, projection, and subset digests. Internal
+verification establishes canonical integrity and corruption detection. It does not establish
+authorship. Use `--expected-sha256` only when the expected full-file digest arrived through a
+separate trusted channel.
+
+Run the ontology, API, frontend, and offline-browser evidence:
+
+```bash
+python -m pytest tests/ontology tests/integration/ontology tests/workbench -q
+python -m pytest \
+  tests/conformance/test_ontology_paper_semantics.py \
+  tests/conformance/test_ontology_evidence_truthfulness.py -q
+python scripts/check_workbench_network.py
+python scripts/benchmark_workbench.py --tier small --repeats 3
+
+cd workbench
+npm ci
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npx playwright test
+```
+
+Playwright runs Chromium and Firefox. The portable investigation case disables network access and
+requires both browsers to read the same selected evidence. A corrupt embedded payload must refuse to
+render. The 3D and globe cases establish deterministic semantic placement and explicit geographic
+eligibility, not economic validity.
+
+The [workbench release audit](workbench-release-audit.md) maps each completion criterion to its exact
+test or command. [Limitations](limitations.md#ontology-and-workbench-limits) records unsupported use
+and the reference performance environment.
+
 ## Full local verification
 
 Run the release gates:
@@ -303,6 +363,10 @@ python scripts/verify_sources.py --require-all
 python scripts/run_conformance.py --require-sources
 python scripts/scientific_stress.py
 python scripts/benchmark_experiments.py
+python scripts/check_reproducible_build.py
+python scripts/check_frontend_build.py
+python scripts/check_workbench_network.py
+python scripts/benchmark_workbench.py --tier small --repeats 3
 ```
 
 The two strict source commands require the ignored paper PDFs to have been supplied locally. Remote

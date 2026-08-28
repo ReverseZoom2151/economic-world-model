@@ -8,6 +8,11 @@ directory; design records and historical execution plans have their own collecti
 | Guide | Purpose |
 |---|---|
 | [Experiments](experiments.md) | Run registry, artifacts, verification, replay, and metrics |
+| [Ontology](ontology.md) | Six layers, fourteen invariants, verified projection, identity, and evidence semantics |
+| [Workbench](workbench.md) | Installation, workflows, API, lenses, 3D scene, globe, and security |
+| [Snapshots](snapshots.md) | Deterministic offline export, limits, integrity, authenticity, and sharing |
+| [Ontology extension](ontology-extension-guide.md) | Profile sources, coverage, registration, and required tests |
+| [Workbench release audit](workbench-release-audit.md) | Requirement-level implementation and release evidence |
 | [Replication](replication.md) | Locked sources, numerical targets, tolerances, and exact commands |
 | [Limitations](limitations.md) | Scientific, empirical, numerical, and deployment boundaries |
 | [Product validation](product-validation.md) | Current audit plus explicitly labeled historical audits |

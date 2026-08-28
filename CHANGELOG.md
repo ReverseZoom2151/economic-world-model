@@ -5,6 +5,35 @@ and versions follow Semantic Versioning where practical during the alpha phase.
 
 ## [Unreleased]
 
+### Added
+
+- A canonical six-layer ontology with fourteen fail-closed invariants, deterministic identities,
+  verified projections, complete coverage ledgers, and versioned profiles for all registered
+  scenarios.
+- Bounded immutable queries, scientific comparison preflight, explicit geography overlays, and a
+  secured loopback API over approved projections.
+- A local React investigation workbench with coordinated World, Runtime, Market, Learning, DDGE,
+  Compare, Evidence, Lineage, deterministic 3D Scene, and explicit-anchor Globe lenses.
+- Deterministic `ewm.investigation.v1` offline HTML snapshots with canonical subset identities,
+  embedded integrity verification, Content Security Policy hashes, and detached full-file digests.
+- Researcher guides for the ontology, workbench, snapshots, profile extension, and requirement-level
+  release evidence.
+
+### Changed
+
+- Source and test packages now use responsibility-focused subpackages while retaining documented
+  compatibility imports.
+- CI now builds and tests the frontend, runs Chromium and Firefox workflows, audits locked npm
+  dependencies, checks reproducible frontend assets, and records bounded workbench benchmarks.
+
+### Security
+
+- Workbench transport requires loopback binding, approved hosts and origins, an in-memory header
+  token, no-store bootstrap, bounded bodies and queries, strict response contracts, and no browser
+  filesystem selection.
+- Portable snapshots block network connections and external resources; snapshot verification keeps
+  corruption detection separate from author authenticity.
+
 ## [0.2.0] - 2026-08-28
 
 ### Added

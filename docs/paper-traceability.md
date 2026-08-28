@@ -1,7 +1,7 @@
 # Paper traceability
 
-**Document version:** 1.5
-**Last reviewed:** 2026-08-28
+**Document version:** 1.6
+**Last reviewed:** 2026-08-29
 
 This repository is an adaptation of two specific source versions, not a claim of author-endorsed
 replication. The machine-readable registries in [`references/`](../references) make that distinction
@@ -127,6 +127,32 @@ result and one content-addressed `readiness:` artifact for each of the 16 offici
 requirements. Fixture execution, promotion, governance, and offline alignment remain below their
 required evidence classes. The harness awards zero higher capabilities, and its artifacts cannot be
 used as official `capability:` evidence.
+
+## Ontology and workbench claim boundary
+
+The six-layer ontology preserves Cong's distinctions among economic declaration, inner solution,
+generated data, learning, DDGE candidate, residual, and certificate. It also preserves Han et al.'s
+separation of agent, environment, co-evolution, alignment, evaluation, and capability evidence. The
+mapping is tested as conformance and source traceability. It is not a claim that either paper defines
+the repository's exact object IDs, projection bundle, query API, 3D coordinates, globe overlay, or
+snapshot file format.
+
+A projection begins with a verified sealed run. Runtime assertions trace to that run; declarations
+derived from compatible installed code retain `adapter_derived` origin and a source-digested profile.
+The coverage ledger leaves source gaps visible. A projection cannot promote a numerical candidate to
+a certificate, a qualitative reconstruction to exact replication, or local substrate to a higher
+Han capability.
+
+The 3D scene uses semantic lane, ontology layer, and time as declared axes. These coordinates are
+interface semantics rather than paper-derived economic geometry. The globe accepts only explicit
+sourced `GeoAnchor` records and performs no place inference. Portable snapshots preserve source,
+profile, projection, and selected-subset identities; their checksum and offline contracts are
+package engineering.
+
+Tests in `tests/conformance/test_ontology_paper_semantics.py` and
+`tests/conformance/test_ontology_evidence_truthfulness.py` enforce these distinctions. The
+[ontology guide](ontology.md) describes the mapping, and the [workbench release audit](workbench-release-audit.md)
+records its executable evidence.
 
 ## Package engineering is not paper correspondence
 
