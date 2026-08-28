@@ -10,6 +10,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite --host 127.0.0.1",
+    "generate:contracts": "node scripts/generate-contracts.mjs",
     "lint": "eslint . --max-warnings 0",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
