@@ -285,7 +285,7 @@ pages = "65-66, 72"
 summary = "For c = 1.8 and sigma = 0.5, the population update matches the source targets {-0.795, 0, +0.795}."
 status = "implemented"
 claim = "exact-replication"
-implementation = ["src/ewm/scenarios/forecasting/model.py", "src/ewm/scenarios/forecasting/oracles.py", "src/ewm/scenarios/forecasting/verification.py"]
+implementation = ["src/ewm/scenarios/forecasting/economy/model.py", "src/ewm/scenarios/forecasting/validation/oracles.py", "src/ewm/scenarios/forecasting/validation/verification.py"]
 evidence = ["tests/oracles/forecasting_oracle.py", "tests/integration/papers/test_independent_numerical_oracles.py", "tests/scenarios/test_forecasting.py", "tests/scenarios/test_forecasting_replication.py"]
 
 [[item]]
@@ -296,7 +296,7 @@ pages = "65-66, 72"
 summary = "Finite-sample target-matching paths use 4,000 observations and package-authored damping 0.5."
 status = "partial"
 claim = "paper-inspired"
-implementation = ["src/ewm/scenarios/forecasting/model.py", "src/ewm/scenarios/forecasting/presets.py", "src/ewm/scenarios/forecasting/verification.py"]
+implementation = ["src/ewm/scenarios/forecasting/economy/model.py", "src/ewm/scenarios/forecasting/economy/presets.py", "src/ewm/scenarios/forecasting/validation/verification.py"]
 evidence = ["tests/scenarios/test_forecasting.py", "tests/scenarios/test_forecasting_replication.py"]
 limitation = "Cong specifies 4,000 observations but does not state the finite-sample damping coefficient; the selected coefficient and resulting path are package-authored rather than an exact source replication."
 

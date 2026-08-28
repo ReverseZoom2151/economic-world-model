@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.optimize import brentq
 
-from .model import (
+from ..economy.model import (
     ForecastingConfig,
     population_update,
     simulate_series,

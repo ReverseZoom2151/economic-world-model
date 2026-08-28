@@ -8,13 +8,13 @@ from functools import lru_cache
 import numpy as np
 from scipy.optimize import brentq
 
-from .model import (
+from ..economy.model import (
     ForecastingConfig,
     finite_sample_retraining_path,
     population_update,
     simulate_series,
 )
-from .presets import paper_config, paper_finite_sample_config
+from ..economy.presets import paper_config, paper_finite_sample_config
 
 
 @lru_cache(maxsize=16)

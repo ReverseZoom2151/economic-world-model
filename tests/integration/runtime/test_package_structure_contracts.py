@@ -258,6 +258,26 @@ def test_conformance_script_is_a_compatibility_entry_point_for_package_logic() -
             "CONG_LAB_I_PROVENANCE",
         ),
         (
+            "ewm.scenarios.forecasting.model",
+            "ewm.scenarios.forecasting.economy.model",
+            "ForecastingProblem",
+        ),
+        (
+            "ewm.scenarios.forecasting.presets",
+            "ewm.scenarios.forecasting.economy.presets",
+            "paper_config",
+        ),
+        (
+            "ewm.scenarios.forecasting.oracles",
+            "ewm.scenarios.forecasting.validation.oracles",
+            "oracle_report",
+        ),
+        (
+            "ewm.scenarios.forecasting.verification",
+            "ewm.scenarios.forecasting.validation.verification",
+            "paper_replication_report",
+        ),
+        (
             "ewm.equilibrium.fixed_point",
             "ewm.equilibrium.solvers.fixed_point",
             "FixedPointConfig",
@@ -288,6 +308,7 @@ def test_legacy_modules_alias_the_single_canonical_implementation(
         ("ewm.experiments", {"__init__.py", "registry.py"}),
         ("ewm.ontology", {"__init__.py"}),
         ("ewm.scenarios.credit", {"__init__.py"}),
+        ("ewm.scenarios.forecasting", {"__init__.py"}),
         ("ewm.scenarios.fx", {"__init__.py"}),
     ),
 )

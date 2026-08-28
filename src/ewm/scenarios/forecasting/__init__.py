@@ -1,6 +1,8 @@
 """Self-fulfilling forecasting and learning-generated multiplicity."""
 
-from .model import (
+from ewm._internal.imports import register_module_aliases
+
+from .economy.model import (
     ForecastingConfig,
     ForecastingProblem,
     finite_sample_retraining_path,
@@ -9,18 +11,28 @@ from .model import (
     simulate_series,
     stationary_samples,
 )
-from .oracles import ForecastingOracleReport, oracle_report
-from .presets import (
+from .economy.presets import (
     paper_config,
     paper_finite_sample_config,
     research_config,
     smoke_config,
 )
-from .verification import (
+from .validation.oracles import ForecastingOracleReport, oracle_report
+from .validation.verification import (
     ForecastingReplicationReport,
     paper_population_roots,
     paper_replication_report,
     sample_first_autocorrelation,
+)
+
+register_module_aliases(
+    __name__,
+    {
+        "model": "economy.model",
+        "presets": "economy.presets",
+        "oracles": "validation.oracles",
+        "verification": "validation.verification",
+    },
 )
 
 __all__ = [
