@@ -11,6 +11,7 @@ interface RuntimeLensProps {
   readonly relations: ReadonlyArray<RelationContract>;
   readonly timeWindow: TimeWindow | null;
   readonly selectedId: string | null;
+  readonly bounded?: boolean;
   readonly onSelect: (id: string) => void;
 }
 
@@ -19,6 +20,7 @@ export function RuntimeLens({
   relations,
   timeWindow,
   selectedId,
+  bounded = false,
   onSelect,
 }: RuntimeLensProps) {
   const visible = events.filter((event) => {
@@ -37,7 +39,7 @@ export function RuntimeLens({
         </div>
         <strong>
           {timeWindow === null
-            ? "All projected events"
+            ? `${visible.length} loaded event${visible.length === 1 ? "" : "s"}${bounded ? " · bounded page" : ""}`
             : `Sequence ${timeWindow.start}–${timeWindow.end}`}
         </strong>
       </header>

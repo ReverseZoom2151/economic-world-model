@@ -26,8 +26,17 @@ export function DdgeLens({ objects, relations }: DdgeLensProps) {
         </div>
         <strong>{candidates.length} retained candidates</strong>
       </header>
+      <dl className="ddge-summary" aria-label="DDGE evidence summary">
+        <div><dt>Candidates</dt><dd>{candidates.length}</dd></div>
+        <div><dt>Residuals</dt><dd>{residuals.length}</dd></div>
+        <div><dt>Certificates</dt><dd>{certificates.length}</dd></div>
+        <div><dt>Correspondence</dt><dd>{correspondence === null ? "unavailable" : "projected"}</dd></div>
+      </dl>
       <CandidateBasins candidates={candidates} correspondence={correspondence} />
-      <ResidualHistory residuals={residuals} relations={relations} />
+      <details className="diagnostic-disclosure" open={residuals.length > 0 && residuals.length <= 6}>
+        <summary>Residual diagnostics · {residuals.length}</summary>
+        <ResidualHistory residuals={residuals} relations={relations} />
+      </details>
       <CertificatePanel
         candidates={candidates}
         certificates={certificates}

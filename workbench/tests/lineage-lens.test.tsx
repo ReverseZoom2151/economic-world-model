@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import type { OntologyObjectContract, PathResultContract, RelationContract } from "../src/data/InvestigationDataSource";
@@ -51,11 +52,14 @@ const pathResult: PathResultContract = {
 
 describe("lineage lens", () => {
   it("preserves relation direction and source identity along a bounded path", async () => {
+    const user = userEvent.setup();
     const source = createFixtureDataSource();
     vi.spyOn(source, "objects").mockResolvedValue({ items: objects, next_cursor: null });
     vi.spyOn(source, "paths").mockResolvedValue(pathResult);
 
     render(<LineageLens dataSource={source} runId="run-a" selectedId="action:1" />);
+
+    await user.selectOptions(await screen.findByLabelText("Lineage target"), "outcome:1");
 
     const path = await screen.findByRole("region", { name: "Lineage path" });
     expect(within(path).getByText("action:1")).toBeVisible();
@@ -74,11 +78,14 @@ describe("lineage lens", () => {
   });
 
   it("shows bounded-search and missing-path states without drawing an inferred edge", async () => {
+    const user = userEvent.setup();
     const source = createFixtureDataSource();
     vi.spyOn(source, "objects").mockResolvedValue({ items: objects, next_cursor: null });
     vi.spyOn(source, "paths").mockResolvedValue({ paths: [], visited_records: 200, truncated: true });
 
     render(<LineageLens dataSource={source} runId="run-a" selectedId="action:1" />);
+
+    await user.selectOptions(await screen.findByLabelText("Lineage target"), "outcome:1");
 
     expect(await screen.findByText("No directed lineage path was found.")).toBeVisible();
     expect(screen.getByText("Search stopped at the configured record limit.")).toBeVisible();

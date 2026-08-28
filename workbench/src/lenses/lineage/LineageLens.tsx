@@ -41,9 +41,9 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
         setObjectsLoad({ key: runId, status: "loaded", objects: page.items });
         const preferred = page.items.some((item) => item.ref.id === selectedId)
           ? (selectedId ?? "")
-          : (page.items[0]?.ref.id ?? "");
+          : "";
         setStartId(preferred);
-        setTargetId(page.items.find((item) => item.ref.id !== preferred)?.ref.id ?? "");
+        setTargetId("");
       })
       .catch(() => {
         if (active) setObjectsLoad({ key: runId, status: "failed" });
@@ -106,6 +106,7 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
           <label>
             <span>Start identity</span>
             <select aria-label="Lineage start" value={startId} onChange={(event) => setStartId(event.currentTarget.value)}>
+              <option value="">Choose a starting object</option>
               {objects.map((object) => <option key={object.ref.id} value={object.ref.id}>{label(object)}</option>)}
             </select>
           </label>
@@ -113,12 +114,20 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
           <label>
             <span>Target identity</span>
             <select aria-label="Lineage target" value={targetId} onChange={(event) => setTargetId(event.currentTarget.value)}>
+              <option value="">Choose a target object</option>
               {objects.filter((object) => object.ref.id !== startId).map((object) => (
                 <option key={object.ref.id} value={object.ref.id}>{label(object)}</option>
               ))}
             </select>
           </label>
         </div>
+      ) : null}
+      {objects.length >= 2 && (!startId || !targetId) ? (
+        <p className="lineage-prompt">
+          {selectedId === null
+            ? "Select a meaningful starting object, then choose the lineage target. No arbitrary path is drawn."
+            : "The selected object is the start. Choose a target to run the bounded path query."}
+        </p>
       ) : null}
       {startId && targetId && pathLoad.key !== pathKey ? <p className="lens-loading">Traversing bounded graph…</p> : null}
       {pathLoad.key === pathKey && pathLoad.status === "failed" ? (

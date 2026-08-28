@@ -8,9 +8,10 @@ import { marketMeasurementIssue } from "../../visuals/market/spec";
 interface MarketLensProps {
   readonly measurements: ReadonlyArray<MeasurementContract>;
   readonly rejections: ReadonlyArray<OntologyObjectContract>;
+  readonly bounded?: boolean;
 }
 
-export function MarketLens({ measurements, rejections }: MarketLensProps) {
+export function MarketLens({ measurements, rejections, bounded = false }: MarketLensProps) {
   const assessed = measurements.map((measurement) => ({
     measurement,
     issue: marketMeasurementIssue(measurement),
@@ -19,6 +20,9 @@ export function MarketLens({ measurements, rejections }: MarketLensProps) {
     .filter((entry) => entry.issue === null)
     .map((entry) => entry.measurement);
   const withheld = assessed.filter((entry) => entry.issue !== null);
+  const explainedRejections = rejections.filter(
+    (rejection) => typeof rejection.properties.reason === "string",
+  ).length;
   return (
     <article className="lens-surface market-lens">
       <header className="lens-heading">
@@ -28,6 +32,15 @@ export function MarketLens({ measurements, rejections }: MarketLensProps) {
         </div>
         <strong>{rejections.length} rejected</strong>
       </header>
+      <dl className="market-summary" aria-label="Loaded market outcome summary">
+        <div><dt>Measurements</dt><dd>{measurements.length}</dd></div>
+        <div><dt>Chart-ready</dt><dd>{chartable.length}</dd></div>
+        <div><dt>Rejections</dt><dd>{rejections.length}</dd></div>
+        <div><dt>Reasons recorded</dt><dd>{explainedRejections}</dd></div>
+      </dl>
+      {bounded ? (
+        <p className="bounded-notice" role="status">Summary covers the loaded bounded page.</p>
+      ) : null}
       {chartable.length === 0 ? (
         <p className="sparse-fallback">
           {measurements.length === 0
@@ -49,8 +62,8 @@ export function MarketLens({ measurements, rejections }: MarketLensProps) {
           </ul>
         </aside>
       ) : null}
-      <section className="rejection-ledger" aria-labelledby="market-rejections">
-        <h3 id="market-rejections">Market rejections</h3>
+      <details className="rejection-ledger" open={rejections.length > 0 && rejections.length <= 8}>
+        <summary id="market-rejections">Market rejections · {rejections.length}</summary>
         {rejections.length === 0 ? (
           <p>No rejected orders or settlements were projected.</p>
         ) : (
@@ -71,7 +84,7 @@ export function MarketLens({ measurements, rejections }: MarketLensProps) {
             ))}
           </ul>
         )}
-      </section>
+      </details>
     </article>
   );
 }

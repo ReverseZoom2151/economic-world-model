@@ -18,10 +18,13 @@ export function StateActionFlow({
   onSelect,
 }: StateActionFlowProps) {
   const ordered = orderedRuntimeEvents(events);
+  const [limit, setLimit] = useState(24);
+  const visible = ordered.slice(0, limit);
+  const remaining = ordered.length - visible.length;
   return (
     <div className="runtime-flow">
       <ol aria-label="State action transition flow">
-        {ordered.map((event) => (
+        {visible.map((event) => (
           <li key={event.ref.id} data-event-kind={event.ref.kind}>
             <span className="runtime-flow__sequence">
               {eventSequence(event)?.toString().padStart(3, "0") ?? "—"}
@@ -37,9 +40,15 @@ export function StateActionFlow({
           </li>
         ))}
       </ol>
+      {remaining > 0 ? (
+        <button type="button" className="expand-button" onClick={() => setLimit(ordered.length)}>
+          Show {remaining} more events
+        </button>
+      ) : null}
       <p className="runtime-flow__relations">
         {relations.length} typed transition{relations.length === 1 ? "" : "s"}
       </p>
     </div>
   );
 }
+import { useState } from "react";

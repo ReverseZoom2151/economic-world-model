@@ -36,43 +36,45 @@ export function ResidualHistory({ residuals, relations }: ResidualHistoryProps) 
   return (
     <section className="residual-history" aria-labelledby="residual-history-title">
       <h3 id="residual-history-title">Residual diagnostics</h3>
-      <div className="residual-table" role="table" aria-label="Scalar and vector residuals">
+      <ol className="residual-table" aria-label="Scalar and vector residuals">
         {residuals.map((residual) => (
-          <article role="row" key={residual.ref.id}>
-            <header>
-              <span>{candidateId(residual, relations)}</span>
-              <strong>{propertyText(residual, "status") ?? "status unavailable"}</strong>
-            </header>
-            <code>{residualValue(residual)}</code>
-            <dl>
-              <div>
-                <dt>Norm</dt>
-                <dd>
-                  {propertyNumber(residual, "norm") === null
-                    ? "unavailable"
-                    : formattedNumber(propertyNumber(residual, "norm")!)}
-                </dd>
-              </div>
-              <div>
-                <dt>Tolerance</dt>
-                <dd>
-                  {propertyNumber(residual, "tolerance") === null
-                    ? "unavailable"
-                    : formattedNumber(propertyNumber(residual, "tolerance")!)}
-                </dd>
-              </div>
-              <div>
-                <dt>Solver</dt>
-                <dd>{propertyText(residual, "solver") ?? "unavailable"}</dd>
-              </div>
-              <div>
-                <dt>Stopping rule</dt>
-                <dd>{propertyText(residual, "stopping_rule") ?? "unavailable"}</dd>
-              </div>
-            </dl>
-          </article>
+          <li key={residual.ref.id}>
+            <article>
+              <header>
+                <span>{candidateId(residual, relations)}</span>
+                <strong>{propertyText(residual, "status") ?? "status unavailable"}</strong>
+              </header>
+              <code>{residualValue(residual)}</code>
+              <dl>
+                <div>
+                  <dt>Norm</dt>
+                  <dd>
+                    {propertyNumber(residual, "norm") === null
+                      ? "unavailable"
+                      : formattedNumber(propertyNumber(residual, "norm")!)}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Tolerance</dt>
+                  <dd>
+                    {propertyNumber(residual, "tolerance") === null
+                      ? "unavailable"
+                      : formattedNumber(propertyNumber(residual, "tolerance")!)}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Solver</dt>
+                  <dd>{propertyText(residual, "solver") ?? "unavailable"}</dd>
+                </div>
+                <div>
+                  <dt>Stopping rule</dt>
+                  <dd>{propertyText(residual, "stopping_rule") ?? "unavailable"}</dd>
+                </div>
+              </dl>
+            </article>
+          </li>
         ))}
-      </div>
+      </ol>
     </section>
   );
 }
