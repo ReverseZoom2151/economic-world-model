@@ -1,6 +1,6 @@
 # Paper traceability
 
-**Document version:** 1.4
+**Document version:** 1.5
 **Last reviewed:** 2026-08-28
 
 This repository is an adaptation of two specific source versions, not a claim of author-endorsed
@@ -30,6 +30,10 @@ The locked sources are:
 [`conformance.toml`](../references/conformance.toml) maps the papers' definitions, equations,
 results, laboratories, components, runtime calls, capability levels, and evaluation layers to code,
 tests, and explicit limitations.
+
+The [paper implementation matrix](paper-implementation-matrix.md) renders every registered
+requirement as a readable row. It also records Han et al.'s five engineering waves as separate
+obligations: feature, data, prompt, context, and environment engineering.
 
 [`replication-targets.toml`](../references/replication-targets.toml) is the audited transcription
 boundary for numerical facts used in replication claims. Each target records its source and locator,

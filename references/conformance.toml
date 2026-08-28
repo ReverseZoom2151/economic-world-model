@@ -36,6 +36,18 @@ evidence = ["tests/unit/test_kernels.py", "tests/unit/test_world.py"]
 limitation = "The explicit kernel records cover validated finite categorical support and caller-defined probability rows; the universal approximation claim in Theorem A.2 remains outside this implementation scope."
 
 [[item]]
+id = "cong-def-2.3"
+source = "cong-2026"
+section = "Definition 2.3"
+pages = "14-15"
+summary = "An EWM declares stochastic transition and observation laws whose learned parameters may span both agent-side and environment-side components."
+status = "implemented"
+claim = "source-definition"
+implementation = ["src/ewm/core/kernels.py", "src/ewm/core/protocols.py", "src/ewm/core/world.py"]
+evidence = ["tests/unit/test_kernels.py", "tests/unit/test_world.py"]
+limitation = "The package exposes finite categorical and callable kernels and enforces caller-declared feasibility; it does not infer whether an arbitrary learned kernel has economic validity."
+
+[[item]]
 id = "cong-def-2.4"
 source = "cong-2026"
 section = "Definition 2.4"
@@ -143,6 +155,15 @@ source = "cong-2026"
 section = "Theorem A.2"
 pages = "45-48"
 summary = "Rich EWM classes approximate measurable policies, beliefs, and stochastic kernels in integrated metrics."
+status = "not-applicable"
+claim = "survey-only"
+
+[[item]]
+id = "cong-assumption-a.1"
+source = "cong-2026"
+section = "Assumption A.1"
+pages = "45-46"
+summary = "A compact metric domain, measurable targets, finite reference measures, and sufficiently rich model classes support the approximation theorem."
 status = "not-applicable"
 claim = "survey-only"
 
@@ -688,3 +709,63 @@ claim = "conformance"
 implementation = ["scripts/benchmark_experiments.py", "src/ewm/experiments/evaluation.py"]
 evidence = ["tests/integration/test_benchmark_harness.py", "tests/integration/test_layered_evaluation.py"]
 limitation = "Runtime, memory, and scaling evidence can be attached to the layered report; benchmark collection remains a separate explicit local operation."
+
+[[item]]
+id = "han-wave-feature"
+source = "han-et-al-2026"
+section = "Section 5.1 and Table 4"
+pages = "19-20"
+summary = "Feature engineering converts raw economic traces into curated structured observation signals for agents."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/core/specs.py", "src/ewm/core/world.py", "src/ewm/scenarios/fx/runtime.py"]
+evidence = ["tests/unit/test_specs.py", "tests/scenarios/test_fx_world.py"]
+limitation = "Worlds expose typed information channels and scenario-authored observations, but the package lacks a reusable raw-trace feature pipeline with transformations, units, missingness policy, and lineage."
+
+[[item]]
+id = "han-wave-data"
+source = "han-et-al-2026"
+section = "Section 5.2 and Table 4"
+pages = "19-20"
+summary = "Data engineering versions collection, cleaning, alignment, and training inputs used to strengthen predictive and reasoning models."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/experiments/artifacts.py", "src/ewm/experiments/source_verification.py", "src/ewm/experiments/protocols.py"]
+evidence = ["tests/integration/test_artifact_integrity.py", "tests/unit/test_source_verification.py", "tests/unit/test_locked_protocols.py"]
+limitation = "The package verifies sources and seals experiment artifacts, but it lacks a reusable economic dataset contract covering schema, cleaning, temporal splits, leakage checks, transformations, and model-training lineage."
+
+[[item]]
+id = "han-wave-prompt"
+source = "han-et-al-2026"
+section = "Section 5.3 and Table 4"
+pages = "19-20"
+summary = "Prompt engineering elicits role-conditioned economic reasoning and typed decisions from language-model agents."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/capabilities/cognition.py", "src/ewm/core/specs.py"]
+evidence = ["tests/unit/test_cognition.py", "examples/cognitive_agent.py"]
+limitation = "Provider-neutral requests carry roles, objectives, beliefs, observations, tools, and typed actions, but prompts are not versioned templates with declared examples, reasoning procedures, output contracts, and decision provenance."
+
+[[item]]
+id = "han-wave-context"
+source = "han-et-al-2026"
+section = "Section 5.4 and Table 4"
+pages = "19, 21"
+summary = "Context engineering equips agents with bounded memory, retrieval, tools, reflection, provenance, and time-aware external information."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/capabilities/cognition.py", "src/ewm/core/specs.py", "src/ewm/capabilities/alignment.py"]
+evidence = ["tests/unit/test_cognition.py", "tests/unit/test_specs.py", "tests/unit/test_alignment.py"]
+limitation = "Bounded memory and deterministic tools are implemented, while retrieval, reflection, temporal freshness rules, and provenance-preserving context assembly remain absent from the reusable agent runtime."
+
+[[item]]
+id = "han-wave-environment"
+source = "han-et-al-2026"
+section = "Section 5.5 and Table 4"
+pages = "19, 21"
+summary = "Environment engineering builds executable worlds with agents, markets, institutions, rules, feedback, co-evolution, and real-world alignment."
+status = "partial"
+claim = "conformance"
+implementation = ["src/ewm/core/world.py", "src/ewm/core/coevolution.py", "src/ewm/scenarios/fx/runtime.py", "src/ewm/capabilities/institutions.py", "src/ewm/capabilities/alignment.py"]
+evidence = ["tests/integration/test_han_runtime_protocol.py", "tests/scenarios/test_fx_world.py", "tests/unit/test_coevolution.py", "tests/unit/test_institutions.py", "tests/unit/test_alignment.py"]
+limitation = "Fixed and adaptive executable worlds are implemented through L2. End-to-end L3 cognitive execution, persistent L4 improvement, endogenous L5 institutional experiments, and repeated external L6 correction evidence remain incomplete or externally blocked."

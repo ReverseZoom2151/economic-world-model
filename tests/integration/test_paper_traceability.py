@@ -10,6 +10,7 @@ EXPECTED_SOURCES = {"cong-2026", "han-et-al-2026"}
 EXPECTED_ITEMS = {
     # Cong: definitions, formal results, algorithm, and laboratories.
     "cong-def-2.1",
+    "cong-def-2.3",
     "cong-eq-2.1-2.2",
     "cong-def-2.4",
     "cong-def-2.6",
@@ -21,6 +22,7 @@ EXPECTED_ITEMS = {
     "cong-theorem-3.5",
     "cong-prop-4.1",
     "cong-theorem-a.2",
+    "cong-assumption-a.1",
     "cong-prop-a.3",
     "cong-prop-a.4",
     "cong-eq-a.1",
@@ -70,6 +72,12 @@ EXPECTED_ITEMS = {
     "han-eval-coevolution",
     "han-eval-alignment",
     "han-eval-efficiency",
+    # Han: five engineering waves in Section 5 and Table 4.
+    "han-wave-feature",
+    "han-wave-data",
+    "han-wave-prompt",
+    "han-wave-context",
+    "han-wave-environment",
 }
 
 VALID_STATUSES = {
@@ -262,6 +270,26 @@ def test_traceability_guide_is_linked_from_readme() -> None:
 
     assert guide.exists()
     assert "docs/paper-traceability.md" in readme
+
+
+def test_requirement_matrix_covers_every_registered_item() -> None:
+    matrix = ROOT / "docs" / "paper-implementation-matrix.md"
+    assert matrix.is_file()
+    text = matrix.read_text(encoding="utf-8")
+    registry = _load("conformance.toml")
+
+    assert "67 auditable requirements" in text
+    assert "39 implemented" in text
+    assert "22 partial" in text
+    assert "2 blocked-external" in text
+    assert "4 not-applicable" in text
+    for item in registry["item"]:
+        assert f"`{item['id']}`" in text
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    guide = (ROOT / "docs" / "paper-traceability.md").read_text(encoding="utf-8")
+    assert "docs/paper-implementation-matrix.md" in readme
+    assert "paper-implementation-matrix.md" in guide
 
 
 def test_paper_level_conformance_suite_is_registered_and_local() -> None:

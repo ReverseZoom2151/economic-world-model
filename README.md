@@ -234,6 +234,7 @@ See [Limitations and non-goals](docs/limitations.md) for the complete boundary.
 | [Mathematical contract](docs/mathematical-contract.md) | Formal objects, theorem obligations, equations, and scenario mechanics |
 | [Replication guide](docs/replication.md) | Source locks, claim classes, exact commands, targets, and tolerances |
 | [Paper traceability](docs/paper-traceability.md) | Source identity, registry policy, code-independent oracles, and evidence gates |
+| [Paper implementation matrix](docs/paper-implementation-matrix.md) | Requirement-level status for both papers, including all five engineering waves and named completion boundaries |
 | [Capability matrix](docs/capability-matrix.md) | Han L1 to L6 requirements and the separate DDGE axis |
 | [Product validation](docs/product-validation.md) | Historical benchmarks plus the current 0.2.0 audit |
 | [Limitations and non-goals](docs/limitations.md) | Numerical, empirical, runtime, and deployment boundaries |
