@@ -5,7 +5,7 @@ from __future__ import annotations
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from ewm.ontology.identity import canonical_bytes, make_ontology_ref
+from ewm.ontology.graph.identity import canonical_bytes, make_ontology_ref
 
 _keys = st.dictionaries(
     keys=st.text(

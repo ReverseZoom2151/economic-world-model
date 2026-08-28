@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ewm.ontology.compiler import ProjectionCompilation
+from ewm.ontology.projection.compiler import ProjectionCompilation
 
 
 def test_forecasting_profile_preserves_roots_and_learned_coefficients(

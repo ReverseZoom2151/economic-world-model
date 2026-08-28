@@ -5,10 +5,10 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 import pytest
-from ewm.ontology.schema import validate_projection
 
 from ewm.ontology import OntologyObject, OntologyRef, RelationAssertion, SourceLocator
 from ewm.ontology.geography import geographic_placements
+from ewm.ontology.graph.schema import validate_projection
 from ewm.ontology.projection import seal_projection
 from ewm.ontology.query import GeoAnchorQuery, OntologyQueryService
 

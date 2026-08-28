@@ -9,7 +9,7 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from ewm.ontology import OntologyObject, OntologyProjection, OntologyRef, SourceLocator
-from ewm.ontology.schema import validate_projection
+from ewm.ontology.graph.schema import validate_projection
 
 _DIGEST = "a" * 64
 _LAYERS = {

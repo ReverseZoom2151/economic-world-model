@@ -10,17 +10,17 @@ import numpy as np
 import pytest
 
 from ewm.core import ExperimentResult
-from ewm.experiments.artifacts import write_artifacts
-from ewm.experiments.identity import build_run_identity, identity_sha256
+from ewm.experiments.runs.artifacts import write_artifacts
+from ewm.experiments.runs.identity import build_run_identity, identity_sha256
 from ewm.ontology import CoverageEntry, OntologyObject
-from ewm.ontology.compiler import (
+from ewm.ontology.graph.identity import make_ontology_ref
+from ewm.ontology.profiles.base import OntologyProfileContext, ProfileProjection
+from ewm.ontology.projection.compiler import (
     ProjectionCompilationError,
     SourcePreflightLimits,
     compile_run_projection,
     inspect_run_bundle,
 )
-from ewm.ontology.identity import make_ontology_ref
-from ewm.ontology.profiles.base import OntologyProfileContext, ProfileProjection
 
 
 @dataclass(frozen=True, slots=True)

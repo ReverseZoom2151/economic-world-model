@@ -5,9 +5,9 @@ from __future__ import annotations
 import pytest
 
 from ewm.ontology import OntologyObject, OntologyRef
-from ewm.ontology.compiler import ProjectionCompilation
+from ewm.ontology.graph.schema import validate_projection
 from ewm.ontology.projection import seal_projection
-from ewm.ontology.schema import validate_projection
+from ewm.ontology.projection.compiler import ProjectionCompilation
 
 pytestmark = pytest.mark.conformance
 

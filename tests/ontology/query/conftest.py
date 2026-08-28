@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-from ewm.ontology.schema import assert_valid_projection
 
 from ewm.ontology import (
     Measurement,
@@ -13,6 +12,7 @@ from ewm.ontology import (
     RelationAssertion,
     SourceLocator,
 )
+from ewm.ontology.graph.schema import assert_valid_projection
 
 _DIGEST = "a" * 64
 

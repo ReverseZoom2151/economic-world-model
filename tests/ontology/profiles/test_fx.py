@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ewm.ontology.compiler import ProjectionCompilation
+from ewm.ontology.projection.compiler import ProjectionCompilation
 
 
 def test_fx_profile_projects_clearing_transactions_and_rejections(

@@ -6,16 +6,16 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
-from ewm.experiments.artifacts import write_artifacts
-from ewm.experiments.identity import build_run_identity, identity_sha256
-from ewm.ontology.compiler import compile_run_projection
-from ewm.ontology.identity import make_ontology_ref
-from ewm.ontology.verification import load_projection_bundle, verify_projection_bundle
 
 from ewm.core import ExperimentResult
+from ewm.experiments.runs.artifacts import write_artifacts
+from ewm.experiments.runs.identity import build_run_identity, identity_sha256
 from ewm.ontology import CoverageEntry, OntologyObject
+from ewm.ontology.graph.identity import make_ontology_ref
 from ewm.ontology.profiles.base import OntologyProfileContext, ProfileProjection
 from ewm.ontology.projection import write_projection_bundle
+from ewm.ontology.projection.compiler import compile_run_projection
+from ewm.ontology.projection.verification import load_projection_bundle, verify_projection_bundle
 
 
 @dataclass(frozen=True, slots=True)

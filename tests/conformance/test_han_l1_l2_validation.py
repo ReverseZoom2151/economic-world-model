@@ -9,8 +9,8 @@ import pytest
 
 from ewm.capabilities import CapabilityLevel, LevelRequirement, assess_validated_capability
 from ewm.core import verify_event_chain
-from ewm.core.events import Event
-from ewm.scenarios.fx.validation import (
+from ewm.core.runtime.records.events import Event
+from ewm.scenarios.fx.execution.validation import (
     DEFAULT_HAN_L1_L2_PROTOCOL,
     HAN_L1_L2_PROTOCOL_SCHEMA,
     HAN_L1_L2_REPORT_SCHEMA,

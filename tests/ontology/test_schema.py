@@ -14,7 +14,7 @@ from ewm.ontology import (
     RelationAssertion,
     SourceLocator,
 )
-from ewm.ontology.schema import (
+from ewm.ontology.graph.schema import (
     OBJECT_SPECS,
     RELATION_SPECS,
     OntologyValidationError,

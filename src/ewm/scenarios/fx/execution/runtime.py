@@ -22,8 +22,8 @@ from ewm.core import (
     compile_world,
 )
 from ewm.core.records import freeze_value
+from ewm.core.runtime.execution.world import ProvenanceMode
 from ewm.core.specs import agent, constraints, environment, mechanism, scheduler, state
-from ewm.core.world import ProvenanceMode
 
 from ..economy.agents import bank_orders, firm_order, household_order
 from ..economy.mechanism import FXBatchMechanism

@@ -16,7 +16,7 @@ from ewm.capabilities import (
     assess_validated_capability,
     requirement_gate,
 )
-from ewm.capabilities.readiness import (
+from ewm.capabilities.assessment.readiness import (
     DEFAULT_HAN_L3_L6_PROTOCOL,
     HAN_L3_L6_PROTOCOL_SCHEMA,
     HAN_L3_L6_REPORT_SCHEMA,
@@ -27,7 +27,7 @@ from ewm.capabilities.readiness import (
     verify_han_l3_l6_report,
 )
 from ewm.core import content_digest
-from ewm.scenarios.fx.validation import run_han_l1_l2_validation
+from ewm.scenarios.fx.execution.validation import run_han_l1_l2_validation
 from scripts.run_conformance import validated_han_l1_l2_evidence
 
 pytestmark = pytest.mark.conformance

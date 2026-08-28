@@ -9,7 +9,7 @@ from ewm.core.agents import FunctionalAgent
 from ewm.core.constraints import ConstraintSet, FunctionalConstraint
 
 from ewm.core import Action
-from ewm.core.world import World
+from ewm.core.runtime.execution.world import World
 
 
 class CapturingSumMechanism:

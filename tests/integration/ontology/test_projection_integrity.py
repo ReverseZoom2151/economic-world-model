@@ -7,7 +7,6 @@ import json
 from pathlib import Path
 
 import pytest
-from ewm.ontology.verification import ProjectionVerificationError, verify_projection_bundle
 
 from ewm.core.serialization import content_digest
 from ewm.ontology import CoverageEntry, OntologyObject, OntologyRef, SourceLocator
@@ -15,6 +14,10 @@ from ewm.ontology.projection import (
     ProjectionBundleProvenance,
     seal_projection,
     write_projection_bundle,
+)
+from ewm.ontology.projection.verification import (
+    ProjectionVerificationError,
+    verify_projection_bundle,
 )
 
 _IDENTITY = "1" * 64

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from ewm.ontology.compiler import ProjectionCompilation
 from ewm.ontology.profiles import SCALAR_PROFILE
+from ewm.ontology.projection.compiler import ProjectionCompilation
 
 
 def test_scalar_profile_preserves_fixed_point_multiplicity_and_diagnostics(

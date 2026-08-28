@@ -10,7 +10,6 @@ from typing import Any
 
 import ewm.experiments.replay as replay_module
 import pytest
-from ewm.experiments.artifacts import PAYLOAD_FILENAMES
 
 import ewm
 from ewm.core import EVENT_GENESIS_HASH, Event, ReplayReport
@@ -19,6 +18,7 @@ from ewm.experiments import (
     RunReplayError,
     verify_and_replay_run,
 )
+from ewm.experiments.runs.artifacts import PAYLOAD_FILENAMES
 
 
 def _bundle_contents(run_dir: Path) -> dict[str, bytes]:

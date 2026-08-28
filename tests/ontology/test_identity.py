@@ -16,7 +16,7 @@ from ewm.ontology import (
     SourceLocator,
     identity,
 )
-from ewm.ontology.identity import (
+from ewm.ontology.graph.identity import (
     IdentityCollisionError,
     OntologyIdentityRegistry,
     canonical_bytes,

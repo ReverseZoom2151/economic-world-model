@@ -226,10 +226,10 @@ def test_registry_locks_current_scalar_and_forecasting_source_facts(
         assert target["classification"] == expected_classification, fact
         _assert_same_value(target.get("value"), expected_value, fact)
 
-    from ewm.scenarios.forecasting.presets import (
+    from ewm.scenarios.forecasting.economy.presets import (
         paper_config as forecasting_paper_config,
     )
-    from ewm.scenarios.forecasting.presets import paper_finite_sample_config
+    from ewm.scenarios.forecasting.economy.presets import paper_finite_sample_config
     from ewm.scenarios.scalar.model import paper_config as scalar_paper_config
 
     scalar = scalar_paper_config()

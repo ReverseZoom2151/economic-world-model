@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ewm.ontology.compiler import ProjectionCompilation
+from ewm.ontology.projection.compiler import ProjectionCompilation
 
 
 def test_credit_profile_preserves_regimes_and_locked_diagnostics(

@@ -9,12 +9,12 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from ewm.experiments.artifacts import PAYLOAD_FILENAMES, write_artifacts
-from ewm.experiments.identity import build_run_identity, identity_sha256
 
 import ewm
 from ewm.core import ExperimentResult
 from ewm.experiments import ArtifactVerificationError, verify_run
+from ewm.experiments.runs.artifacts import PAYLOAD_FILENAMES, write_artifacts
+from ewm.experiments.runs.identity import build_run_identity, identity_sha256
 
 EXPECTED_FILENAMES = {*PAYLOAD_FILENAMES, "manifest.json"}
 

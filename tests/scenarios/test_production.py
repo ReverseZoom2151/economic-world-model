@@ -9,7 +9,7 @@ from hypothesis import strategies as st
 from scipy.optimize import root
 
 from ewm.core import EquilibriumResult
-from ewm.experiments.production import solve_production_equilibrium
+from ewm.experiments.labs.production import solve_production_equilibrium
 from ewm.scenarios.production import (
     DistributionState,
     ProductionEconomy,

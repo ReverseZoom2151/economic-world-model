@@ -13,7 +13,7 @@ from ewm.ontology.projection import (
     seal_projection,
     write_projection_bundle,
 )
-from ewm.ontology.verification import (
+from ewm.ontology.projection.verification import (
     ProjectionVerificationError,
     load_projection_bundle,
     verify_projection_bundle,

@@ -9,11 +9,11 @@ import pytest
 import ewm
 from ewm._version import __version__
 from ewm.core import ExperimentResult
-from ewm.experiments.artifacts import write_artifacts
-from ewm.experiments.identity import build_run_identity, identity_sha256
-from ewm.experiments.production import solve_production_equilibrium
-from ewm.ontology.compiler import ProjectionCompilation, compile_run_projection
+from ewm.experiments.labs.production import solve_production_equilibrium
+from ewm.experiments.runs.artifacts import write_artifacts
+from ewm.experiments.runs.identity import build_run_identity, identity_sha256
 from ewm.ontology.profiles import DEFAULT_PROFILES
+from ewm.ontology.projection.compiler import ProjectionCompilation, compile_run_projection
 from ewm.scenarios.production import package_authored_example
 from ewm.scenarios.scalar import paper_config, scalar_verification_report
 

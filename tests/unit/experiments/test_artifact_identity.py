@@ -6,7 +6,8 @@ import math
 
 import numpy as np
 import pytest
-from ewm.experiments.identity import canonical_identity, identity_sha256
+
+from ewm.experiments.runs.identity import canonical_identity, identity_sha256
 
 
 @pytest.mark.parametrize("value", [math.nan, math.inf, -math.inf, np.float64(math.nan)])

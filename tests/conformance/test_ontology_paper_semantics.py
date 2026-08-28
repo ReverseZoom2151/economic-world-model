@@ -7,8 +7,8 @@ from collections.abc import Iterable
 import pytest
 
 from ewm.ontology import OntologyObject, OntologyProjection, OntologyRef, RelationAssertion
-from ewm.ontology.compiler import ProjectionCompilation
-from ewm.ontology.schema import OBJECT_SPECS, RELATION_SPECS
+from ewm.ontology.graph.schema import OBJECT_SPECS, RELATION_SPECS
+from ewm.ontology.projection.compiler import ProjectionCompilation
 
 pytestmark = pytest.mark.conformance
 

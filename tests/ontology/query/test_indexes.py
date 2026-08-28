@@ -5,9 +5,9 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 import pytest
-from ewm.ontology.schema import OntologyValidationError
 
 from ewm.ontology import OntologyObject, OntologyProjection
+from ewm.ontology.graph.schema import OntologyValidationError
 from ewm.ontology.query import build_indexes
 
 

@@ -7,9 +7,9 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from ewm.experiments.production import solve_production_equilibrium
 
 from ewm.equilibrium import FixedPointConfig, local_linear_certificate, solve_ddge
+from ewm.experiments.labs.production import solve_production_equilibrium
 from ewm.scenarios.forecasting import paper_config, paper_population_roots, population_update
 from ewm.scenarios.production import package_authored_example
 from ewm.scenarios.scalar import ScalarConfig, ScalarLearner, ScalarProblem, outer_update
