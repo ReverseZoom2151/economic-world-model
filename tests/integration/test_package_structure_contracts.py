@@ -17,6 +17,8 @@ from ewm.scenarios.fx.validation import (
     DEFAULT_HAN_L1_L2_PROTOCOL,
     load_han_l1_l2_protocol,
 )
+from scripts.run_conformance import DEFAULT_SOURCE_DIR as CONFORMANCE_SOURCE_DIR
+from scripts.verify_sources import DEFAULT_SOURCE_DIR as VERIFICATION_SOURCE_DIR
 
 ROOT_EXPORTS = (
     "ExperimentRun",
@@ -98,3 +100,10 @@ def test_ontology_profile_code_symbols_remain_identity_stable() -> None:
         "ewm.ontology.profiles.production.ProductionOntologyProfile",
         "ewm.ontology.profiles.scalar.ScalarOntologyProfile",
     )
+
+
+def test_local_paper_sources_have_one_ignored_reference_location() -> None:
+    expected = "references/local"
+
+    assert CONFORMANCE_SOURCE_DIR.as_posix().endswith(expected)
+    assert VERIFICATION_SOURCE_DIR == CONFORMANCE_SOURCE_DIR

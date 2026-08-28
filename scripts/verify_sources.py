@@ -9,6 +9,7 @@ from pathlib import Path
 from ewm.experiments.source_verification import verification_failed, verify_sources
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SOURCE_DIR = ROOT / "references" / "local"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -22,8 +23,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--source-dir",
         type=Path,
-        default=ROOT,
-        help="directory containing the untracked source PDFs (default: repository root)",
+        default=DEFAULT_SOURCE_DIR,
+        help="directory containing untracked source PDFs (default: references/local)",
     )
     parser.add_argument(
         "--require-all",

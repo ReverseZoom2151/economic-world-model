@@ -8,3 +8,6 @@ This directory is intentionally small and flat:
 
 The registries are scientific evidence contracts. Update them transactionally with their code,
 tests, and human-readable traceability documentation.
+
+Ignored local source copies belong in `references/local/`. Both source-verification commands use
+that directory by default; `--source-dir` remains available when papers live elsewhere.

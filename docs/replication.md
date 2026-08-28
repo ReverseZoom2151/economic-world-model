@@ -41,7 +41,7 @@ A package-authored entry cannot by itself satisfy a source-stated replication ta
 To inspect PDFs that you supplied in a local directory, run:
 
 ```bash
-python scripts/verify_sources.py --source-dir .
+python scripts/verify_sources.py
 ```
 
 The report compares observed bytes and PDF page structure with the expected registry values. An
@@ -52,7 +52,7 @@ structure mismatches fail closed.
 For a strict local source audit, require every registered PDF:
 
 ```bash
-python scripts/verify_sources.py --source-dir . --require-all
+python scripts/verify_sources.py --require-all
 ```
 
 The verifier neither downloads nor redistributes a source.
@@ -103,7 +103,7 @@ reporter changes. Compare it only when reproducing a specific commit.
 To combine conformance with a strict local PDF gate, run:
 
 ```bash
-python scripts/run_conformance.py --source-dir . --require-sources
+python scripts/run_conformance.py --require-sources
 ```
 
 Without `--require-sources`, `not_present` is reported but is not a conformance failure. Any source
@@ -299,8 +299,8 @@ coverage run -m pytest -q
 coverage report
 python -m build
 python scripts/run_conformance.py
-python scripts/verify_sources.py --source-dir . --require-all
-python scripts/run_conformance.py --source-dir . --require-sources
+python scripts/verify_sources.py --require-all
+python scripts/run_conformance.py --require-sources
 python scripts/scientific_stress.py
 python scripts/benchmark_experiments.py
 ```

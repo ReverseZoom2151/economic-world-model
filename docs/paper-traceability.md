@@ -153,7 +153,7 @@ the declared registry; it does not read an ignored PDF.
 Verify any locally supplied source PDFs against the registry:
 
 ```bash
-python scripts/verify_sources.py --source-dir .
+python scripts/verify_sources.py
 ```
 
 The JSON output distinguishes `verified`, `not_present`, `hash_mismatch`,
@@ -161,7 +161,7 @@ The JSON output distinguishes `verified`, `not_present`, `hash_mismatch`,
 this default metadata-friendly mode. For a strict local audit, require every source:
 
 ```bash
-python scripts/verify_sources.py --source-dir . --require-all
+python scripts/verify_sources.py --require-all
 ```
 
 Run the paper-level end-to-end suite and emit its evidence report:
@@ -176,7 +176,7 @@ complete conformance with `not_present` observations. To require local source by
 same run, use:
 
 ```bash
-python scripts/run_conformance.py --source-dir . --require-sources
+python scripts/run_conformance.py --require-sources
 ```
 
 The strict form fails for missing sources and for every verification mismatch. The report also

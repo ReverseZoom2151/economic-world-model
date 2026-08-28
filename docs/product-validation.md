@@ -102,8 +102,8 @@ ewm run fx.rollout --preset smoke --seed 42 --output runs
 ewm verify-run runs/<run_hash>
 ewm replay-run runs/<run_hash>
 ewm-run-protocol --quick
-python scripts/verify_sources.py --source-dir . --require-all
-python scripts/run_conformance.py --source-dir . --require-sources
+python scripts/verify_sources.py --require-all
+python scripts/run_conformance.py --require-sources
 python -m pytest tests/integration/test_independent_numerical_oracles.py -q
 python -m pytest tests/conformance/test_han_l1_l2_validation.py -q
 python -m pytest tests/conformance/test_han_l3_l6_readiness.py -q
@@ -258,8 +258,8 @@ Han capability level, separate DDGE and empirical-validity assessments, and unre
 
 The default command permits ignored PDFs to be absent and records `not_present`, so ordinary CI can
 test conformance without paper redistribution. Local release verification uses
-`python scripts/verify_sources.py --source-dir . --require-all` and
-`python scripts/run_conformance.py --source-dir . --require-sources`; both strict forms require every
+`python scripts/verify_sources.py --require-all` and
+`python scripts/run_conformance.py --require-sources`; both strict forms require every
 source and reject hash, page-count, and PDF-structure mismatches.
 
 The Cong conformance path traverses an EWM declaration, an inner equilibrium, generated data, a
@@ -403,9 +403,9 @@ python examples/extensions/cobweb.py
 python examples/production.py
 python examples/cognitive_agent.py
 python examples/offline_alignment.py
-python scripts/verify_sources.py --source-dir . --require-all
+python scripts/verify_sources.py --require-all
 python scripts/run_conformance.py
-python scripts/run_conformance.py --source-dir . --require-sources
+python scripts/run_conformance.py --require-sources
 python scripts/scientific_stress.py --quick
 python scripts/scientific_stress.py
 python scripts/benchmark_experiments.py

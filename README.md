@@ -163,8 +163,8 @@ Run the paper and evidence checks with:
 
 ```bash
 python scripts/run_conformance.py
-python scripts/verify_sources.py --source-dir . --require-all
-python scripts/run_conformance.py --source-dir . --require-sources
+python scripts/verify_sources.py --require-all
+python scripts/run_conformance.py --require-sources
 ```
 
 The strict source commands require both ignored local PDFs. The default conformance command records

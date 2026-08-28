@@ -44,6 +44,7 @@ from ewm.scenarios.fx.validation import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SOURCE_DIR = ROOT / "references" / "local"
 SCHEMA_VERSION = "ewm.conformance.v1"
 PAPER_REGISTRY = ROOT / "references" / "papers.toml"
 CAPABILITY_EVIDENCE_PATHS = (
@@ -402,7 +403,7 @@ def build_report(
 
     report, _ = _build_report(
         skip_tests=skip_tests,
-        source_dir=ROOT if source_dir is None else source_dir,
+        source_dir=DEFAULT_SOURCE_DIR if source_dir is None else source_dir,
     )
     return report
 
@@ -422,8 +423,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--source-dir",
         type=Path,
-        default=ROOT,
-        help="directory containing the untracked source PDFs (default: repository root)",
+        default=DEFAULT_SOURCE_DIR,
+        help="directory containing untracked source PDFs (default: references/local)",
     )
     parser.add_argument(
         "--require-sources",
