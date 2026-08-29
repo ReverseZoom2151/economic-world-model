@@ -174,7 +174,7 @@ export function deriveGraphView(
   const eligible = isolatedIds === null
     ? layered
     : layered.filter((object) => isolatedIds.has(object.ref.id));
-  const limit = options.density === "detail" ? 400 : 120;
+  const limit = options.density === "detail" ? 400 : 72;
   const degree = degreeById(typedRelations);
   const prioritized = [...eligible].sort((left, right) => {
     const leftPriority = pathNodeIds.has(left.ref.id) || left.ref.id === options.selectedId ? 1 : 0;
@@ -185,7 +185,18 @@ export function deriveGraphView(
       left.ref.id.localeCompare(right.ref.id)
     );
   });
-  const selectedObjects = prioritized.slice(0, limit);
+  const selectedObjects = options.density === "detail"
+    ? prioritized.slice(0, limit)
+    : prioritized.reduce<OntologyObjectContract[]>((selected, object) => {
+        if (selected.length >= limit) return selected;
+        const priority = pathNodeIds.has(object.ref.id) || object.ref.id === options.selectedId;
+        const group = `${object.layer}:${object.ref.kind}`;
+        const groupCount = selected.filter(
+          (candidate) => `${candidate.layer}:${candidate.ref.kind}` === group,
+        ).length;
+        if (priority || groupCount < 6) selected.push(object);
+        return selected;
+      }, []);
   const selectedIds = new Set(selectedObjects.map((object) => object.ref.id));
   return {
     objects: selectedObjects,

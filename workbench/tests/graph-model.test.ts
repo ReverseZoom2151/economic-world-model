@@ -101,4 +101,22 @@ describe("ontology graph model", () => {
       { lane: "models", count: 1, kinds: ["model_version"] },
     ]);
   });
+
+  it("limits repeated occurrence kinds in overview density", () => {
+    const repeated = Array.from({ length: 30 }, (_, index) =>
+      object(`witness-${index}`, "equilibrium_witness", "learning_equilibrium"),
+    );
+    const view = deriveGraphView(repeated, [], {
+      layers: [],
+      relationTypes: [],
+      selectedId: null,
+      isolate: false,
+      neighborhoodDepth: 1,
+      pathTargetId: null,
+      density: "overview",
+    });
+
+    expect(view.objects).toHaveLength(6);
+    expect(view.omittedObjects).toBe(24);
+  });
 });

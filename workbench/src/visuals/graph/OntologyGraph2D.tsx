@@ -102,7 +102,11 @@ export function OntologyGraph2D({
                 strokeOpacity={highlighted ? 0.95 : 0.48}
                 markerEnd="url(#graph-arrow)"
               >
-                <title>{relation.relation_type}: {relation.source.id} → {relation.target.id}</title>
+                <title>
+                  {relation.relation_type}: {ontologyObjectLabel(objectsById.get(relation.source.id)!)}
+                  {" → "}
+                  {ontologyObjectLabel(objectsById.get(relation.target.id)!)}
+                </title>
               </line>
             );
           })}

@@ -1,13 +1,8 @@
 import type { OntologyObjectContract } from "../../data/InvestigationDataSource";
-import { ontologyObjectLabel } from "../shared/objectLabel";
+import { ontologyObjectLabel, ontologyObjectSequence } from "../shared/objectLabel";
 
 export function eventSequence(event: OntologyObjectContract): number | null {
-  const context = event.properties.context;
-  if (typeof context !== "object" || context === null) {
-    return null;
-  }
-  const sequence = (context as Readonly<Record<string, unknown>>).event_sequence;
-  return typeof sequence === "number" && Number.isInteger(sequence) ? sequence : null;
+  return ontologyObjectSequence(event);
 }
 
 export function eventLabel(event: OntologyObjectContract): string {

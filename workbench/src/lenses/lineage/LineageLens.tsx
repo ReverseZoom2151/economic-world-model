@@ -100,7 +100,7 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
       {objects.length >= 2 ? (
         <div className="lineage-controls">
           <label>
-            <span>Start identity</span>
+            <span>Start object</span>
             <select aria-label="Lineage start" value={startId} onChange={(event) => setStartId(event.currentTarget.value)}>
               <option value="">Choose a starting object</option>
               {objects.map((object) => <option key={object.ref.id} value={object.ref.id}>{ontologyObjectLabel(object)}</option>)}
@@ -108,7 +108,7 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
           </label>
           <span aria-hidden="true">→</span>
           <label>
-            <span>Target identity</span>
+            <span>Target object</span>
             <select aria-label="Lineage target" value={targetId} onChange={(event) => setTargetId(event.currentTarget.value)}>
               <option value="">Choose a target object</option>
               {objects.filter((object) => object.ref.id !== startId).map((object) => (
@@ -129,7 +129,9 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
       {pathLoad.key === pathKey && pathLoad.status === "failed" ? (
         <p className="sparse-fallback" role="alert">The bounded path query failed.</p>
       ) : null}
-      {pathLoad.key === pathKey && pathLoad.status === "loaded" ? <LineagePath result={pathLoad.result} /> : null}
+      {pathLoad.key === pathKey && pathLoad.status === "loaded" ? (
+        <LineagePath result={pathLoad.result} objects={objects} />
+      ) : null}
     </section>
   );
 }

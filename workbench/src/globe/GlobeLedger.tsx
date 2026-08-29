@@ -51,9 +51,9 @@ export function GlobeLedger({
               <TechnicalDetails
                 summary="Anchor details"
                 details={[
-                  { label: "Subject identity", value: placement.subject.ref.id },
-                  { label: "Anchor identity", value: placement.anchor.ref.id },
-                  { label: "Source identity", value: source?.source_id },
+                  { label: "Subject record ID", value: placement.subject.ref.id },
+                  { label: "Anchor record ID", value: placement.anchor.ref.id },
+                  { label: "Source record ID", value: source?.source_id },
                 ]}
               />
             </li>

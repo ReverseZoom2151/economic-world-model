@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import type {
   OntologyObjectContract,
   RelationContract,
@@ -27,7 +29,7 @@ export function StateActionFlow({
         {visible.map((event) => (
           <li key={event.ref.id} data-event-kind={event.ref.kind}>
             <span className="runtime-flow__sequence">
-              {eventSequence(event)?.toString().padStart(3, "0") ?? "—"}
+              {eventSequence(event)?.toString().padStart(3, "0") ?? "n/a"}
             </span>
             <button
               type="button"
@@ -51,4 +53,3 @@ export function StateActionFlow({
     </div>
   );
 }
-import { useState } from "react";

@@ -163,6 +163,13 @@ export function GlobeLens({
       && visibleIds.has(`${flow.target.runId}:${flow.target.subject.ref.id}`)),
     [flows, visibleIds],
   );
+  const uncertaintyLabel = useMemo(() => {
+    const values = visiblePlacements.map((placement) => placement.uncertaintyKm);
+    if (values.length === 0) return "± n/a";
+    const minimum = Math.min(...values);
+    const maximum = Math.max(...values);
+    return minimum === maximum ? `± ${minimum} km` : `± ${minimum}–${maximum} km`;
+  }, [visiblePlacements]);
 
   return (
     <section className="analytical-lens globe-lens">
@@ -208,6 +215,7 @@ export function GlobeLens({
             activeCount={activePlacements.length}
             comparisonCount={comparisonPlacements.length}
             flowCount={visibleFlows.length}
+            uncertaintyLabel={uncertaintyLabel}
           />
           <GlobeControls
             kinds={kinds}

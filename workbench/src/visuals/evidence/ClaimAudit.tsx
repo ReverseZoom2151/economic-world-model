@@ -53,7 +53,7 @@ export function ClaimAudit({ claims, evidence, relations }: ClaimAuditProps) {
               </div>
               <Classification value={classification(claim)} />
             </header>
-            <TechnicalDetails details={[{ label: "Claim identity", value: claim.ref.id }]} />
+            <TechnicalDetails details={[{ label: "Claim record ID", value: claim.ref.id }]} />
             <div className="claim-card__section">
               <h4>Claim sources</h4>
               <SourceLocatorList sources={claim.sources} />
@@ -84,7 +84,7 @@ export function ClaimAudit({ claims, evidence, relations }: ClaimAuditProps) {
                         <Classification value={classification(item)} />
                       </header>
                       <TechnicalDetails
-                        details={[{ label: "Evidence identity", value: item.ref.id }]}
+                        details={[{ label: "Evidence record ID", value: item.ref.id }]}
                       />
                       {item.properties.source_file_status === "missing" ? (
                         <p className="missing-source" role="status">Source file reported missing.</p>

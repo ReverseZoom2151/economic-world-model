@@ -32,8 +32,7 @@ function candidateIdentity(
 
 function candidateLabel(identity: string): string {
   if (identity === "unlinked residual") return "Unlinked residual";
-  const tail = identity.split(":").filter(Boolean).at(-1) ?? "candidate";
-  return `Candidate ${tail.replace(/[_-]+/g, " ")}`;
+  return "Linked DDGE candidate";
 }
 
 export function ResidualHistory({ residuals, relations }: ResidualHistoryProps) {

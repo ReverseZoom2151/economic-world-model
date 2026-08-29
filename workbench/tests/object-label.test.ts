@@ -25,8 +25,22 @@ describe("ontology object labels", () => {
     expect(ontologyObjectLabel(object("market", { market: "spot_fx" }))).toBe("Spot Fx");
   });
 
-  it("retains a traceable identity suffix when no label field exists", () => {
+  it("keeps machine identities out of the primary label", () => {
     expect(ontologyObjectLabel(object("state_observation", {})))
-      .toBe("State Observation · 12345678");
+      .toBe("State Observation");
+  });
+
+  it("describes repeated runtime records with a readable event coordinate", () => {
+    expect(ontologyObjectLabel(object("mechanism_invocation", {
+      event_sequence: 42,
+      state_version: 21,
+    }))).toBe("Market clearing · Period 21");
+    expect(ontologyObjectLabel(object("transaction", { event_sequence: 42 })))
+      .toBe("Aggregate cleared trade · Event 42");
+  });
+
+  it("reads sequences from nested runtime events", () => {
+    expect(ontologyObjectLabel(object("step", { event: { kind: "run_agents", sequence: 9 } })))
+      .toBe("Run Agents · Event 9");
   });
 });

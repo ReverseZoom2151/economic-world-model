@@ -77,7 +77,7 @@ export function EvidenceInspector({ dataSource }: EvidenceInspectorProps) {
           <SourceLocatorList sources={object.sources} />
           <TechnicalDetails
             details={[
-              { label: "Object identity", value: object.ref.id },
+              { label: "Object record ID", value: object.ref.id },
               { label: "Object kind", value: object.ref.kind },
               { label: "Ontology layer", value: object.layer },
             ]}
