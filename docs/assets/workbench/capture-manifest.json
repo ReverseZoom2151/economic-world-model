@@ -1,4 +1,16 @@
 {
+  "schema": "ewm.showcase-capture.v2",
+  "capturedOn": "2026-08-29",
+  "sourceCommit": "54df5313ed82d23db48f69fe6570cb27205dd085",
+  "runId": "85814cfc1134cb6fc355",
+  "runIdentity": "85814cfc1134cb6fc35596af0567fc80525d5729b7c104d99470ee846e59a620",
+  "projectionDigest": "91a00ddafe8e2a309afd520bd49192a95bdf3edfd03c0cbbb8c36c3b88560a32",
+  "figma": {
+    "file": "https://www.figma.com/design/bvIJUuCscGMrEerMzznxJI",
+    "heroFrame": "2:2",
+    "openGraphFrame": "2:19",
+    "brandSystemFrame": "2:28"
+  },
   "baseUrl": "http://127.0.0.1:8765",
   "sourceSize": [
     1920,
@@ -15,50 +27,106 @@
     {
       "name": "economy",
       "focus": [
-        480,
-        150.984375
+        123.5,
+        279.96875
+      ]
+    },
+    {
+      "name": "economy-selected",
+      "focus": [
+        1110,
+        740
       ]
     },
     {
       "name": "simulation",
       "focus": [
-        800,
-        150.984375
+        123.5,
+        333.5625
       ]
     },
     {
       "name": "market-diagnostics",
       "focus": [
-        1120,
-        150.984375
+        123.5,
+        387.15625
       ]
     },
     {
       "name": "learning",
       "focus": [
-        1440,
-        150.984375
+        123.5,
+        440.75
+      ]
+    },
+    {
+      "name": "evidence",
+      "focus": [
+        123.5,
+        494.34375
+      ]
+    },
+    {
+      "name": "ddge",
+      "focus": [
+        123.5,
+        584.515625
+      ]
+    },
+    {
+      "name": "compare",
+      "focus": [
+        123.5,
+        638.109375
+      ]
+    },
+    {
+      "name": "lineage",
+      "focus": [
+        123.5,
+        728.28125
       ]
     },
     {
       "name": "graph-2d",
       "focus": [
-        259.1796875,
-        244.578125
+        123.5,
+        781.875
+      ]
+    },
+    {
+      "name": "graph-2d-neighborhood",
+      "focus": [
+        1040,
+        845
       ]
     },
     {
       "name": "graph-3d",
       "focus": [
-        470.8671875,
-        505.546875
+        616.8046875,
+        371.96875
+      ]
+    },
+    {
+      "name": "graph-3d-focus",
+      "focus": [
+        1060,
+        900
       ]
     },
     {
       "name": "globe",
       "focus": [
-        325.4609375,
-        244.578125
+        123.5,
+        835.46875
+      ]
+    },
+    {
+      "name": "mobile-overview",
+      "focus": [
+        195,
+        422
       ]
     }
   ]
