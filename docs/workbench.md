@@ -238,18 +238,27 @@ cd workbench
 npm run capture:showcase -- http://127.0.0.1:8765 ../docs/assets/workbench
 ```
 
-The script uses Playwright to execute every navigation workflow and writes 15 desktop states, a
-mobile overview, and `capture-manifest.json`. The manifest binds the images to the source commit,
-run identity, projection digest, viewport, and release-design frames. The committed
-`demo-config.json` records the six-minute, 30 fps scene sequence, cursor path, camera motion, and
-source images used for the 1,920 by 1,440 MP4. FFmpeg encodes the final H.264 asset and a smaller GIF
-plays directly in GitHub's README renderer.
+The script uses Playwright to execute a complete FX clearing audit and writes 17 desktop workflow
+and validation states, a mobile overview, and `capture-manifest.json`. The workflow asks whether the
+economy cleared without rejected orders or material accounting drift, then reaches a bounded result:
+execution passed inside the synthetic runtime while adaptive model closure remained unproven. The
+manifest binds every image to the source commit, run identity, projection digest, viewport, measured
+result, and release-design frames.
+
+The committed `demo-config.json` records the six-minute, 30 fps research narrative, cursor path,
+camera motion, and source images used for the 1,920 by 1,440 MP4. The video follows the question
+through economy scope, event order, market outcome, learning coverage, DDGE boundary, evidence,
+lineage, 2D and 3D ontology neighborhoods, geography, and conclusion. FFmpeg encodes the H.264 asset.
+A shorter cross-workflow GIF plays directly in GitHub's README renderer and links to the complete
+video.
 
 The [showcase record](assets/workbench/showcase-run.json) preserves the run identity, replay result,
 projection digest, and displayed metrics. The separate [geography declaration](assets/workbench/showcase-geography.md)
 states the limits of the illustrative coordinate overlay. The
-[Figma release showcase](https://www.figma.com/design/bvIJUuCscGMrEerMzznxJI) is the editable source
-for the committed hero, Open Graph composition, and visual-grammar sheet.
+[EWM design file](https://www.figma.com/design/G7201TNCRNk5AMdRMexznH) is the editable source for the
+foundations, editorial card components, four Renaissance-inspired artwork directions, workflow
+storyboard, exact product screens, README hero, and Open Graph composition. The [visual-system
+record](design/ewm-visual-system.md) documents its source influences and artwork provenance.
 
 ## Troubleshooting
 

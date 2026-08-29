@@ -34,31 +34,47 @@ deployment system.
 
 <p align="center">
   <a href="docs/assets/workbench/ewm-workbench-demo.mp4">
-    <img src="docs/assets/workbench/ewm-workbench-demo.gif" alt="Animated walkthrough of the Economic World Model research platform" width="100%">
+    <img src="docs/assets/workbench/ewm-workbench-demo.gif" alt="A guided Economic World Model investigation from research question to bounded conclusion" width="100%">
   </a>
 </p>
 
-<p align="center"><em>The preview plays inline. Open it for the complete six-minute, 1,440p walkthrough.</em></p>
+<p align="center"><em>The preview plays inline. Open it for the complete six-minute, 1,440p research workflow.</em></p>
 
-| Research platform overview | Selected economic world |
+The walkthrough answers one concrete question: **Did the FX economy clear without rejected orders
+or material accounting drift?** It scopes the declared economy, follows decisions through clearing
+and settlement, measures the outcome, audits the evidence and lineage, investigates the ontology in
+2D and 3D, checks the declared geographic boundary, and reaches a bounded conclusion.
+
+| Research question | Measured outcome |
 |---|---|
-| [![Verified EWM investigation overview](docs/assets/workbench/overview.png)](docs/assets/workbench/overview.png) | [![Declared economic world with synchronized selection](docs/assets/workbench/economy-selected.png)](docs/assets/workbench/economy-selected.png) |
-| **Bounded 2D ontology neighborhood** | **Semantic 3D ontology graph** |
+| [![FX clearing investigation entry point](docs/assets/workbench/overview.png)](docs/assets/workbench/overview.png) | [![FX market diagnostics with prices, volume, rejections, and accounting residuals](docs/assets/workbench/journey-03-market.png)](docs/assets/workbench/journey-03-market.png) |
+| **Bounded conclusion** | **Evidence and limits** |
+| [![Research conclusion separating execution evidence from unproven model closure](docs/assets/workbench/journey-10-conclusion.png)](docs/assets/workbench/journey-10-conclusion.png) | [![Synthetic evidence classification with source and limitations](docs/assets/workbench/journey-06-evidence.png)](docs/assets/workbench/journey-06-evidence.png) |
+| **2D ontology neighborhood** | **Semantic 3D neighborhood** |
 | [![Typed 2D ontology neighborhood](docs/assets/workbench/graph-2d-neighborhood.png)](docs/assets/workbench/graph-2d-neighborhood.png) | [![Semantic 3D ontology graph](docs/assets/workbench/graph-3d.png)](docs/assets/workbench/graph-3d.png) |
-| **Explicit economic geography** | **Auditable ontology lineage** |
-| [![Evidence-backed economic globe](docs/assets/workbench/globe.png)](docs/assets/workbench/globe.png) | [![Directed sourced ontology lineage](docs/assets/workbench/lineage.png)](docs/assets/workbench/lineage.png) |
+| **Focused 3D subgraph** | **Explicit economic geography** |
+| [![Three-node economic neighborhood framed in 3D](docs/assets/workbench/graph-3d-neighborhood.png)](docs/assets/workbench/graph-3d-neighborhood.png) | [![Declared geographic anchors with visible uncertainty](docs/assets/workbench/journey-09-globe.png)](docs/assets/workbench/journey-09-globe.png) |
 
 The showcase comes from a checksummed, replay-matched `fx.rollout` research run with seed 42: 500
 steps, 1,001 events, zero rejected orders, and maximum accounting residuals below
-$2.5\times10^{-10}$. The run is synthetic. Globe coordinates are separately disclosed,
-researcher-declared presentation anchors, not observed geography or calibration evidence. See the
+$2.5\times10^{-10}$. Execution therefore passes inside the synthetic runtime. Adaptive model
+closure remains unproven. Globe coordinates are separately disclosed, researcher-declared
+presentation anchors, not observed geography or calibration evidence. See the
 [showcase record](docs/assets/workbench/showcase-run.json), [capture manifest](docs/assets/workbench/capture-manifest.json),
 and [geography declaration](docs/assets/workbench/showcase-geography.md).
 
-The release visual system is maintained in the [EWM Figma showcase](https://www.figma.com/design/bvIJUuCscGMrEerMzznxJI).
-Its [Open Graph composition](docs/assets/workbench/figma-open-graph.png) and
-[brand-system sheet](docs/assets/workbench/figma-brand-system.png) document the Renaissance-economy
-imagery, Instrument Serif and Inter typography, parchment and ink surfaces, and lime evidence signal.
+<p align="center">
+  <a href="https://www.figma.com/design/G7201TNCRNk5AMdRMexznH?node-id=5-41">
+    <img src="docs/assets/workbench/figma-renaissance-series.png" alt="Four Renaissance-inspired editorial image directions for Economic World Model" width="100%">
+  </a>
+</p>
+
+The editable [EWM design file](https://www.figma.com/design/G7201TNCRNk5AMdRMexznH) contains the
+foundations, article-card components, four original Renaissance-inspired artwork directions,
+workflow storyboard, exact release product screens, README hero, and Open Graph composition. The
+[visual-system record](docs/design/ewm-visual-system.md) documents sources, tokens, card anatomy,
+artwork provenance, and the rule that readable labels lead while raw identifiers remain available
+inside technical disclosure.
 
 [Quick start](#quick-start) | [Mathematical core](#mathematical-core) |
 [Evidence](#evidence) | [Ontology and workbench](#ontology-and-workbench) |
