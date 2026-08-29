@@ -17,6 +17,10 @@ Build and solve economies where agents, markets, data, and learned models co-evo
 <a href="https://arxiv.org/abs/2608.06020v1">Han et al.: From Economic Agents to Agentic Economies: A Systems Blueprint for Economic World Models</a>
 </p>
 
+<p align="center">
+  <img src="docs/assets/workbench/figma-hero.png" alt="Economic World Model release artwork over a Renaissance harbor economy" width="100%">
+</p>
+
 Economic World Model is an auditable research implementation of selected definitions, protocols,
 and numerical targets from the two papers. Cong supplies the formal economy and the fixed point that
 closes behavior, generated data, and retraining. Han et al. supply the executable agent-world
@@ -26,25 +30,35 @@ Release 0.2.0 is a synthetic research alpha. It is suitable for studying declare
 testing implementation contracts. It is not an empirically calibrated economy, a policy model, or a
 deployment system.
 
+## See the model at work
+
 <p align="center">
   <a href="docs/assets/workbench/ewm-workbench-demo.mp4">
-    <img src="docs/assets/workbench/ewm-workbench-demo.gif" alt="Animated demonstration of the Economic World Model ontology research workbench" width="100%">
+    <img src="docs/assets/workbench/ewm-workbench-demo.gif" alt="Animated walkthrough of the Economic World Model research platform" width="100%">
   </a>
 </p>
 
-<p align="center"><em>The preview plays inline. Open it for the 1,440p, 60 fps MP4.</em></p>
+<p align="center"><em>The preview plays inline. Open it for the complete six-minute, 1,440p walkthrough.</em></p>
 
-| Synchronized 2D ontology graph | Synchronized 3D ontology graph |
+| Research platform overview | Selected economic world |
 |---|---|
-| [![Typed 2D ontology neighborhood](docs/assets/workbench/graph-2d.png)](docs/assets/workbench/graph-2d.png) | [![Semantic 3D ontology neighborhood](docs/assets/workbench/graph-3d.png)](docs/assets/workbench/graph-3d.png) |
-| **Explicit economic geography** | **Behavior-to-learning closure** |
-| [![Evidence-backed economic globe](docs/assets/workbench/globe.png)](docs/assets/workbench/globe.png) | [![Learning closure investigation](docs/assets/workbench/learning.png)](docs/assets/workbench/learning.png) |
+| [![Verified EWM investigation overview](docs/assets/workbench/overview.png)](docs/assets/workbench/overview.png) | [![Declared economic world with synchronized selection](docs/assets/workbench/economy-selected.png)](docs/assets/workbench/economy-selected.png) |
+| **Bounded 2D ontology neighborhood** | **Semantic 3D ontology graph** |
+| [![Typed 2D ontology neighborhood](docs/assets/workbench/graph-2d-neighborhood.png)](docs/assets/workbench/graph-2d-neighborhood.png) | [![Semantic 3D ontology graph](docs/assets/workbench/graph-3d.png)](docs/assets/workbench/graph-3d.png) |
+| **Explicit economic geography** | **Auditable ontology lineage** |
+| [![Evidence-backed economic globe](docs/assets/workbench/globe.png)](docs/assets/workbench/globe.png) | [![Directed sourced ontology lineage](docs/assets/workbench/lineage.png)](docs/assets/workbench/lineage.png) |
 
 The showcase comes from a checksummed, replay-matched `fx.rollout` research run with seed 42: 500
 steps, 1,001 events, zero rejected orders, and maximum accounting residuals below
 $2.5\times10^{-10}$. The run is synthetic. Globe coordinates are separately disclosed,
 researcher-declared presentation anchors, not observed geography or calibration evidence. See the
-[showcase record](docs/assets/workbench/showcase-run.json) and [geography declaration](docs/assets/workbench/showcase-geography.md).
+[showcase record](docs/assets/workbench/showcase-run.json), [capture manifest](docs/assets/workbench/capture-manifest.json),
+and [geography declaration](docs/assets/workbench/showcase-geography.md).
+
+The release visual system is maintained in the [EWM Figma showcase](https://www.figma.com/design/bvIJUuCscGMrEerMzznxJI).
+Its [Open Graph composition](docs/assets/workbench/figma-open-graph.png) and
+[brand-system sheet](docs/assets/workbench/figma-brand-system.png) document the Renaissance-economy
+imagery, Instrument Serif and Inter typography, parchment and ink surfaces, and lime evidence signal.
 
 [Quick start](#quick-start) | [Mathematical core](#mathematical-core) |
 [Evidence](#evidence) | [Ontology and workbench](#ontology-and-workbench) |

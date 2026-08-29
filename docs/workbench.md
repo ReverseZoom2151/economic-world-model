@@ -238,13 +238,18 @@ cd workbench
 npm run capture:showcase -- http://127.0.0.1:8765 ../docs/assets/workbench
 ```
 
-The script uses Playwright and writes eight stills plus `capture-manifest.json`. The committed
-`demo-config.json` records the 60 fps scene sequence, cursor path, camera motion, and source images
-used for the MP4. FFmpeg encodes the final H.264 asset and a smaller GIF plays directly in GitHub's
-README renderer. The [showcase record](assets/workbench/showcase-run.json) preserves the run
-identity, replay result, projection digest, and displayed metrics. The separate [geography
-declaration](assets/workbench/showcase-geography.md) states the limits of the illustrative coordinate
-overlay.
+The script uses Playwright to execute every navigation workflow and writes 15 desktop states, a
+mobile overview, and `capture-manifest.json`. The manifest binds the images to the source commit,
+run identity, projection digest, viewport, and release-design frames. The committed
+`demo-config.json` records the six-minute, 30 fps scene sequence, cursor path, camera motion, and
+source images used for the 1,920 by 1,440 MP4. FFmpeg encodes the final H.264 asset and a smaller GIF
+plays directly in GitHub's README renderer.
+
+The [showcase record](assets/workbench/showcase-run.json) preserves the run identity, replay result,
+projection digest, and displayed metrics. The separate [geography declaration](assets/workbench/showcase-geography.md)
+states the limits of the illustrative coordinate overlay. The
+[Figma release showcase](https://www.figma.com/design/bvIJUuCscGMrEerMzznxJI) is the editable source
+for the committed hero, Open Graph composition, and visual-grammar sheet.
 
 ## Troubleshooting
 
