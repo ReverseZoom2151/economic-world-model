@@ -98,7 +98,7 @@ try {
   await capture("journey-02-simulation", "Verify ordered decisions, clearing, and settlement events", focus);
 
   focus = await nextStep("Market outcomes");
-  await page.locator(".market-stat-grid").waitFor();
+  await page.locator(".market-metrics__grid").waitFor();
   await capture("journey-03-market", "Read price, volume, residual, and rejected-order outcomes", focus);
 
   focus = await nextStep("Behavior-to-learning closure");
@@ -150,6 +150,8 @@ try {
   );
 
   if ((await isolate.count()) > 0) await isolate.check();
+  await page.getByRole("button", { name: "Reset camera", exact: true }).click();
+  await capture("graph-3d-neighborhood", "Frame the complete three-node economic neighborhood in 3D", [1110, 875]);
   const focusSelection = page.getByRole("button", { name: "Focus selection", exact: true });
   if ((await focusSelection.count()) > 0 && (await focusSelection.isEnabled())) await focusSelection.click();
   await capture("graph-3d-focus", "Focus the 3D camera on the selected local economic subgraph", [1110, 875]);
@@ -157,7 +159,7 @@ try {
   focus = await nextStep("Explicit economic geography");
   await page.locator(".economic-globe canvas").waitFor({ timeout: 30_000 });
   await capture("journey-09-globe", "Bound declared geography and surface its ±250 km uncertainty", focus);
-  const ledgerEntry = page.locator(".geo-ledger button").first();
+  const ledgerEntry = page.locator(".globe-ledger button").first();
   if ((await ledgerEntry.count()) > 0) await ledgerEntry.click();
   await capture("globe-selected", "Inspect one geographic ledger entry without implying observed precision", [1530, 825]);
 
