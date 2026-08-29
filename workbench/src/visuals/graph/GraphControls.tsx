@@ -1,5 +1,6 @@
 import type { OntologyObjectContract } from "../../data/InvestigationDataSource";
 import type { CameraState } from "../../state/investigation";
+import { ontologyObjectLabel } from "../shared/objectLabel";
 import type { GraphDensity, GraphLayoutMode } from "./model";
 
 export type GraphDimension = "2d" | "3d";
@@ -29,11 +30,6 @@ interface GraphControlsProps {
   readonly onCameraChange: (camera: CameraState) => void;
   readonly onFocus: () => void;
   readonly onResetCamera: () => void;
-}
-
-function objectLabel(object: OntologyObjectContract): string {
-  const value = object.properties.natural_key;
-  return typeof value === "string" ? value : object.ref.id;
 }
 
 function toggled(values: ReadonlyArray<string>, value: string, checked: boolean): ReadonlyArray<string> {
@@ -88,7 +84,7 @@ export function GraphControls(props: GraphControlsProps) {
           >
             <option value="">No target</option>
             {props.objects.filter((object) => object.ref.id !== props.selectedId).map((object) => (
-              <option key={object.ref.id} value={object.ref.id}>{objectLabel(object)}</option>
+              <option key={object.ref.id} value={object.ref.id}>{ontologyObjectLabel(object)}</option>
             ))}
           </select>
         </label>

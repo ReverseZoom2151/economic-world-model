@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import type { OntologyObjectContract } from "../../data/InvestigationDataSource";
+import { ontologyObjectLabel } from "../shared/objectLabel";
 import {
   type GraphDensity,
   type GraphLayoutMode,
@@ -15,11 +15,6 @@ interface OntologyGraph2DProps {
   readonly density: GraphDensity;
   readonly selectedId: string | null;
   readonly onSelect: (id: string) => void;
-}
-
-function label(object: OntologyObjectContract): string {
-  const naturalKey = object.properties.natural_key;
-  return typeof naturalKey === "string" && naturalKey.trim() ? naturalKey : object.ref.id;
 }
 
 function visibleLabel(value: string, density: GraphDensity): string {
@@ -49,6 +44,34 @@ export function OntologyGraph2D({
     () => new Map(view.objects.map((object) => [object.ref.id, object])),
     [view.objects],
   );
+  const labelIds = useMemo(() => {
+    const degree = new Map<string, number>();
+    for (const relation of view.relations) {
+      degree.set(relation.source.id, (degree.get(relation.source.id) ?? 0) + 1);
+      degree.set(relation.target.id, (degree.get(relation.target.id) ?? 0) + 1);
+    }
+    const ordered = [...view.objects].sort(
+      (left, right) =>
+        (degree.get(right.ref.id) ?? 0) - (degree.get(left.ref.id) ?? 0)
+        || left.ref.id.localeCompare(right.ref.id),
+    );
+    const ids = new Set<string>();
+    if (density === "overview") {
+      const represented = new Set<string>();
+      for (const object of ordered) {
+        const group = `${object.layer}:${object.ref.kind}`;
+        if (represented.has(group)) continue;
+        represented.add(group);
+        ids.add(object.ref.id);
+        if (ids.size === 24) break;
+      }
+    } else {
+      for (const object of ordered.slice(0, 48)) ids.add(object.ref.id);
+    }
+    if (selectedId !== null) ids.add(selectedId);
+    for (const id of view.pathNodeIds) ids.add(id);
+    return ids;
+  }, [density, selectedId, view.objects, view.pathNodeIds, view.relations]);
   if (view.objects.length === 0) {
     return <p className="sparse-fallback">No graph objects satisfy the current evidence filters.</p>;
   }
@@ -93,7 +116,7 @@ export function OntologyGraph2D({
             const selected = selectedId === object.ref.id;
             const highlighted = view.pathNodeIds.has(object.ref.id);
             const radius = selected ? 15 : highlighted ? 12 : 9;
-            const name = label(object);
+            const name = ontologyObjectLabel(object);
             return (
               <g
                 key={object.ref.id}
@@ -118,9 +141,11 @@ export function OntologyGraph2D({
                   strokeWidth={selected ? 3 : 5}
                 />
                 <circle r={radius} fill={legend.color} stroke="#f3f3eb" strokeWidth="2" />
-                <text x={radius + 8} y="4" data-selected={selected}>
-                  {visibleLabel(name, density)}
-                </text>
+                {labelIds.has(object.ref.id) ? (
+                  <text x={radius + 8} y="4" data-selected={selected}>
+                    {visibleLabel(name, density)}
+                  </text>
+                ) : null}
                 <title>{name} · {object.ref.kind} · {object.layer}</title>
               </g>
             );
@@ -132,7 +157,7 @@ export function OntologyGraph2D({
         <span>{view.relations.length} typed relations</span>
         <span>{view.pathRelationIds.size ? `${view.pathRelationIds.size}-edge path highlighted` : "No path highlighted"}</span>
         {selectedId !== null && objectsById.has(selectedId) ? (
-          <strong>Selected: {label(objectsById.get(selectedId)!)}</strong>
+          <strong>Selected: {ontologyObjectLabel(objectsById.get(selectedId)!)}</strong>
         ) : null}
       </footer>
     </section>

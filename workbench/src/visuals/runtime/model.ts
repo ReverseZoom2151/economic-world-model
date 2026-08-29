@@ -1,4 +1,5 @@
 import type { OntologyObjectContract } from "../../data/InvestigationDataSource";
+import { ontologyObjectLabel } from "../shared/objectLabel";
 
 export function eventSequence(event: OntologyObjectContract): number | null {
   const context = event.properties.context;
@@ -10,8 +11,7 @@ export function eventSequence(event: OntologyObjectContract): number | null {
 }
 
 export function eventLabel(event: OntologyObjectContract): string {
-  const naturalKey = event.properties.natural_key;
-  return (typeof naturalKey === "string" ? naturalKey : event.ref.id).replaceAll("_", " ");
+  return ontologyObjectLabel(event).replaceAll("_", " ");
 }
 
 export function orderedRuntimeEvents(

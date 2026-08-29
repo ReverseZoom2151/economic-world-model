@@ -8,6 +8,7 @@ import {
   semanticLane,
   type SemanticLane,
 } from "../visuals/graph/visualGrammar";
+import { ontologyObjectLabel } from "../visuals/shared/objectLabel";
 
 export type DepthBasis = "event_sequence" | "version_index" | "reference_plane";
 
@@ -62,11 +63,6 @@ function boundedLimit(value: number, fallback: number): number {
   return Number.isInteger(value) && value >= 0 ? value : fallback;
 }
 
-function naturalLabel(object: OntologyObjectContract): string {
-  const naturalKey = object.properties.natural_key;
-  return typeof naturalKey === "string" && naturalKey.trim() ? naturalKey : object.ref.id;
-}
-
 function finiteCoordinate(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
@@ -96,7 +92,7 @@ function nodeBase(object: OntologyObjectContract): Omit<SceneNode, "position"> &
     id: object.ref.id,
     kind: object.ref.kind,
     layer: object.layer,
-    label: naturalLabel(object),
+    label: ontologyObjectLabel(object),
     lane,
     color: legend.color,
     shape: legend.shape,

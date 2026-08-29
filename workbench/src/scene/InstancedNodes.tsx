@@ -48,16 +48,16 @@ export function InstancedNodes({
         return (
           <Instances key={shape} limit={group.length} range={group.length}>
             <SharedGeometry shape={shape} />
-            <meshStandardMaterial roughness={0.78} metalness={0} vertexColors />
+            <meshBasicMaterial toneMapped={false} />
             {group.map((node) => (
               <Instance
                 key={node.id}
                 position={node.position}
                 color={
                   selectedId === node.id
-                    ? "#11130f"
+                    ? "#c7f24a"
                     : highlightedNodeIds.has(node.id)
-                      ? "#c7f24a"
+                      ? "#f3f3eb"
                       : node.color
                 }
                 scale={selectedId === node.id ? 1.55 : highlightedNodeIds.has(node.id) ? 1.25 : 1}

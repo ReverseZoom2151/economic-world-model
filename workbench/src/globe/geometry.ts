@@ -2,6 +2,7 @@ import type {
   OntologyObjectContract,
   RelationContract,
 } from "../data/InvestigationDataSource";
+import { ontologyObjectLabel } from "../visuals/shared/objectLabel";
 
 export const EARTH_RADIUS = 3;
 export const MAX_GLOBE_FLOWS = 500;
@@ -143,8 +144,5 @@ export function latLonToCartesian(
 }
 
 export function geoLabel(placement: GeoPlacement): string {
-  const naturalKey = placement.subject.properties.natural_key;
-  return typeof naturalKey === "string" && naturalKey.trim()
-    ? naturalKey
-    : placement.subject.ref.id;
+  return ontologyObjectLabel(placement.subject);
 }

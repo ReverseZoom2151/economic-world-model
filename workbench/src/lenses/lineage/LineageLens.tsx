@@ -6,6 +6,7 @@ import type {
   PathResultContract,
 } from "../../data/InvestigationDataSource";
 import { LineagePath } from "../../visuals/lineage/LineagePath";
+import { ontologyObjectLabel } from "../../visuals/shared/objectLabel";
 
 interface LineageLensProps {
   readonly dataSource: InvestigationDataSource;
@@ -20,11 +21,6 @@ type ObjectLoad =
 type PathLoad =
   | { readonly key: string; readonly status: "idle" | "failed" }
   | { readonly key: string; readonly status: "loaded"; readonly result: PathResultContract };
-
-function label(object: OntologyObjectContract): string {
-  const naturalKey = object.properties.natural_key;
-  return typeof naturalKey === "string" ? naturalKey : object.ref.id;
-}
 
 export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps) {
   const [objectsLoad, setObjectsLoad] = useState<ObjectLoad>({ key: "", status: "loading" });
@@ -107,7 +103,7 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
             <span>Start identity</span>
             <select aria-label="Lineage start" value={startId} onChange={(event) => setStartId(event.currentTarget.value)}>
               <option value="">Choose a starting object</option>
-              {objects.map((object) => <option key={object.ref.id} value={object.ref.id}>{label(object)}</option>)}
+              {objects.map((object) => <option key={object.ref.id} value={object.ref.id}>{ontologyObjectLabel(object)}</option>)}
             </select>
           </label>
           <span aria-hidden="true">→</span>
@@ -116,7 +112,7 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
             <select aria-label="Lineage target" value={targetId} onChange={(event) => setTargetId(event.currentTarget.value)}>
               <option value="">Choose a target object</option>
               {objects.filter((object) => object.ref.id !== startId).map((object) => (
-                <option key={object.ref.id} value={object.ref.id}>{label(object)}</option>
+                <option key={object.ref.id} value={object.ref.id}>{ontologyObjectLabel(object)}</option>
               ))}
             </select>
           </label>

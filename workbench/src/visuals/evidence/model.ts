@@ -1,8 +1,8 @@
 import type { OntologyObjectContract } from "../../data/InvestigationDataSource";
+import { ontologyObjectLabel } from "../shared/objectLabel";
 
 export function objectLabel(object: OntologyObjectContract): string {
-  const naturalKey = object.properties.natural_key;
-  return typeof naturalKey === "string" && naturalKey.trim() ? naturalKey : object.ref.id;
+  return ontologyObjectLabel(object);
 }
 
 export function classification(object: OntologyObjectContract): string {

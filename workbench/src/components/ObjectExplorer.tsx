@@ -5,14 +5,10 @@ import type {
   OntologyObjectContract,
 } from "../data/InvestigationDataSource";
 import { useInvestigation } from "../state/investigation";
+import { ontologyObjectLabel } from "../visuals/shared/objectLabel";
 
 interface ObjectExplorerProps {
   readonly dataSource: InvestigationDataSource;
-}
-
-function objectLabel(object: OntologyObjectContract): string {
-  const naturalKey = object.properties.natural_key;
-  return typeof naturalKey === "string" ? naturalKey : object.ref.id;
 }
 
 export function ObjectExplorer({ dataSource }: ObjectExplorerProps) {
@@ -70,7 +66,7 @@ export function ObjectExplorer({ dataSource }: ObjectExplorerProps) {
   const nextCursor = result.key === requestKey ? result.nextCursor : null;
 
   const visible = objects.filter((object) =>
-    objectLabel(object).toLowerCase().includes(state.filters.query.toLowerCase()),
+    ontologyObjectLabel(object).toLowerCase().includes(state.filters.query.toLowerCase()),
   );
   const groups = [...new Set(visible.map((object) => object.layer))]
     .sort()
@@ -161,7 +157,7 @@ export function ObjectExplorer({ dataSource }: ObjectExplorerProps) {
                     }
                   >
                     <span>{object.ref.kind.replaceAll("_", " ")}</span>
-                    <strong>{objectLabel(object)}</strong>
+                    <strong>{ontologyObjectLabel(object)}</strong>
                     <small title={object.ref.id}>{object.ref.id}</small>
                   </button>
                 </li>
