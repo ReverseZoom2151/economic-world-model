@@ -155,7 +155,10 @@ async function loadLens(
     events: [],
     measurements: [],
     coverage: run.coverage ?? [],
-    bounded: objects.next_cursor !== null || relations.next_cursor !== null,
+    bounded:
+      objects.next_cursor !== null
+      || relations.next_cursor !== null
+      || Boolean(run.coverage_truncated),
   };
 }
 
@@ -319,6 +322,7 @@ export function LensRouter({ dataSource, selectedRun, system }: LensRouterProps)
             objects={result.objects}
             relations={result.relations}
             coverage={result.coverage}
+            bounded={result.bounded}
           />
         </section>
       );

@@ -45,8 +45,10 @@ function shortIdentity(value: string): string {
 
 export function OverviewLens({ run, system, onOpen }: OverviewLensProps) {
   const coverage = run.coverage ?? [];
-  const projected = coverage.filter((entry) => entry.status === "projected").length;
-  const gaps = coverage.length - projected;
+  const projected = run.coverage_summary?.projected
+    ?? coverage.filter((entry) => entry.status === "projected").length;
+  const gaps = run.coverage_summary?.gap_total ?? coverage.length - projected;
+  const coverageTotal = run.coverage_summary?.total ?? coverage.length;
   return (
     <article className="overview-lens lens-surface">
       <header className="overview-hero">
@@ -75,7 +77,7 @@ export function OverviewLens({ run, system, onOpen }: OverviewLensProps) {
         </div>
         <div>
           <dt>Coverage</dt>
-          <dd>{coverage.length ? `${projected} projected · ${gaps} explicit gaps` : "No ledger entries"}</dd>
+          <dd>{coverageTotal ? `${projected} projected · ${gaps} explicit gaps` : "No ledger entries"}</dd>
         </div>
         <div>
           <dt>Delivery</dt>

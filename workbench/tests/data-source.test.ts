@@ -35,6 +35,19 @@ function envelope(data: unknown, status = 200): Response {
 }
 
 describe("ApiDataSource", () => {
+  it("binds the browser fetch receiver before issuing a live request", async () => {
+    const receiverSpy = vi.fn();
+    const fetcher = vi.fn(function (this: unknown) {
+      receiverSpy(this);
+      return Promise.resolve(envelope({ api_major: 1, api_minor: 0, run_count: 0, mode: "test" }));
+    }) as unknown as typeof fetch;
+    const source = new ApiDataSource(bootstrap, fetcher);
+
+    await source.system();
+
+    expect(receiverSpy).toHaveBeenCalledWith(globalThis);
+  });
+
   it("keeps credentials in headers while mapping versioned envelopes", async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
       envelope({

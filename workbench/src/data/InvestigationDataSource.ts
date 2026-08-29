@@ -22,6 +22,15 @@ export interface RunSummary {
   readonly projection_digest: string;
   readonly ontology_schema: string;
   readonly coverage?: ReadonlyArray<CoverageContract>;
+  readonly coverage_summary?: Readonly<{
+    readonly total: number;
+    readonly projected: number;
+    readonly omitted: number;
+    readonly rejected: number;
+    readonly unavailable: number;
+    readonly gap_total: number;
+  }>;
+  readonly coverage_truncated?: boolean;
 }
 
 export interface CoverageContract {

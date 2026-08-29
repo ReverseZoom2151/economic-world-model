@@ -35,7 +35,7 @@ from ewm.ontology.graph.identity import (
     ontology_ref_to_data,
     relation_assertion_to_data,
 )
-from ewm.ontology.graph.model import OntologyProjection
+from ewm.ontology.graph.model import CoverageEntry, OntologyProjection
 from ewm.ontology.query import (
     ClaimQuery,
     CursorError,
@@ -65,6 +65,7 @@ from .security import SecurityPolicy, WorkbenchSecurityMiddleware, token_depende
 _STATIC_DIRECTORY = Path(__file__).parents[1] / "static"
 _STATE_KINDS = ("state_observation",)
 _DDGE_KINDS = ("ddge_candidate", "ddge_evaluation", "ddge_proposal")
+_RUN_COVERAGE_GAP_LIMIT = 200
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,6 +78,8 @@ class ApprovedRun:
     profile_identity: str
     integrity_level: str
     query: OntologyQueryService = field(init=False, repr=False, compare=False)
+    coverage_summary: Mapping[str, int] = field(init=False, repr=False, compare=False)
+    coverage_gaps: tuple[CoverageEntry, ...] = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         for value, name in (
@@ -88,6 +91,19 @@ class ApprovedRun:
             if not value.strip():
                 raise ValueError(f"{name} must not be empty")
         object.__setattr__(self, "query", OntologyQueryService.from_projection(self.projection))
+        counts = {
+            status: 0
+            for status in ("projected", "omitted", "rejected", "unavailable")
+        }
+        gaps: list[CoverageEntry] = []
+        for entry in self.projection.coverage:
+            counts[entry.status] = counts.get(entry.status, 0) + 1
+            if entry.status != "projected" and len(gaps) < _RUN_COVERAGE_GAP_LIMIT:
+                gaps.append(entry)
+        counts["total"] = len(self.projection.coverage)
+        counts["gap_total"] = counts["total"] - counts.get("projected", 0)
+        object.__setattr__(self, "coverage_summary", MappingProxyType(counts))
+        object.__setattr__(self, "coverage_gaps", tuple(gaps))
 
     def summary(self) -> dict[str, Any]:
         """Return portable provenance metadata without filesystem selectors."""
@@ -99,9 +115,9 @@ class ApprovedRun:
             "integrity_level": self.integrity_level,
             "projection_digest": self.projection.projection_digest,
             "ontology_schema": self.projection.schema,
-            "coverage": [
-                coverage_entry_to_data(entry) for entry in self.projection.coverage
-            ],
+            "coverage": [coverage_entry_to_data(entry) for entry in self.coverage_gaps],
+            "coverage_summary": dict(self.coverage_summary),
+            "coverage_truncated": self.coverage_summary["gap_total"] > len(self.coverage_gaps),
         }
 
 

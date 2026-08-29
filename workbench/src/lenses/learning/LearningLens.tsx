@@ -9,9 +9,10 @@ interface LearningLensProps {
   readonly objects: ReadonlyArray<OntologyObjectContract>;
   readonly relations: ReadonlyArray<RelationContract>;
   readonly coverage: ReadonlyArray<CoverageContract>;
+  readonly bounded?: boolean;
 }
 
-export function LearningLens({ objects, relations, coverage }: LearningLensProps) {
+export function LearningLens({ objects, relations, coverage, bounded = false }: LearningLensProps) {
   return (
     <article className="lens-surface learning-lens">
       <header className="lens-heading">
@@ -21,6 +22,11 @@ export function LearningLens({ objects, relations, coverage }: LearningLensProps
         </div>
         <strong>Exact ontology stages</strong>
       </header>
+      {bounded ? (
+        <p className="bounded-notice">
+          This view shows the first bounded page of records and explicit coverage gaps.
+        </p>
+      ) : null}
       <LearningClosure objects={objects} relations={relations} coverage={coverage} />
     </article>
   );

@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 from fastapi.testclient import TestClient
 
+from ewm.ontology.graph.model import CoverageEntry
+from ewm.workbench.http.api import ApprovedRun
 from ewm.workbench.http.contracts import API_MINOR
 
 
@@ -72,6 +76,53 @@ def test_query_limits_and_unknown_records_use_standard_error_envelopes(
     assert _assert_envelope(over_limit, ok=False)["error"]["code"] == "query_cost"
     assert missing.status_code == 404
     assert _assert_envelope(missing, ok=False)["error"]["code"] == "not_found"
+
+
+def test_run_summary_reports_coverage_counts_without_returning_projected_ledger(
+    client: TestClient,
+    api_headers: dict[str, str],
+) -> None:
+    response = client.get("/api/v1/runs/left", headers=api_headers)
+    data = _assert_envelope(response)["data"]
+
+    assert data["coverage"] == []
+    assert data["coverage_summary"] == {
+        "gap_total": 0,
+        "omitted": 0,
+        "projected": 0,
+        "rejected": 0,
+        "total": 0,
+        "unavailable": 0,
+    }
+    assert data["coverage_truncated"] is False
+
+
+def test_run_summary_bounds_explicit_coverage_gaps(approved_registry) -> None:
+    base = approved_registry.get("left")
+    source = base.projection.objects[0].sources[0]
+    gaps = tuple(
+        CoverageEntry(
+            source=source,
+            field=f"missing.{index:03d}",
+            status="unavailable",
+            targets=(),
+            reason="not recorded",
+        )
+        for index in range(205)
+    )
+    projection = replace(base.projection, coverage=gaps)
+    approved = ApprovedRun(
+        run_id="bounded",
+        projection=projection,
+        source_run_hash=base.source_run_hash,
+        profile_identity=base.profile_identity,
+        integrity_level=base.integrity_level,
+    )
+    summary = approved.summary()
+
+    assert len(summary["coverage"]) == 200
+    assert summary["coverage_summary"]["gap_total"] == 205
+    assert summary["coverage_truncated"] is True
 
 
 def test_comparison_and_snapshot_commands_are_canonically_idempotent(

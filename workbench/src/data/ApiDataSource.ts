@@ -114,7 +114,9 @@ export class ApiDataSource implements InvestigationDataSource {
     this.#apiBase = bootstrap.api_base;
     this.#apiMinor = bootstrap.api_minor;
     this.#sessionToken = bootstrap.session_token;
-    this.#fetcher = fetcher;
+    // Window.fetch is receiver-sensitive in browsers. Storing it as an instance field and
+    // invoking it as a method otherwise raises "Illegal invocation" before any request is sent.
+    this.#fetcher = fetcher.bind(globalThis);
   }
 
   async #request<T>(path: string, init: RequestInit = {}): Promise<T> {
