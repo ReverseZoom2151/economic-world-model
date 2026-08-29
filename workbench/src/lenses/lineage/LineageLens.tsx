@@ -59,7 +59,7 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
         startId,
         targetId,
         direction: "outgoing",
-        maxDepth: 8,
+        maxDepth: 4,
         limit: 32,
       })
       .then((result) => {

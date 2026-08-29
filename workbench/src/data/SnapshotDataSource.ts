@@ -230,7 +230,7 @@ export class SnapshotDataSource implements InvestigationDataSource {
     this.#assertRun(query.runId);
     const maxDepth = query.maxDepth ?? 1;
     const limit = query.limit ?? 20;
-    if (maxDepth < 0 || maxDepth > 8 || limit < 1 || limit > 100) {
+    if (maxDepth < 0 || maxDepth > 4 || limit < 1 || limit > 100) {
       throw new SnapshotDataSourceError("query_cost", "snapshot path query exceeds bounds");
     }
     const direction = query.direction ?? "outgoing";

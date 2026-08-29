@@ -71,6 +71,7 @@ describe("lineage lens", () => {
     expect(source.paths).toHaveBeenCalledWith(
       expect.objectContaining({
         direction: "outgoing",
+        maxDepth: 4,
         startId: "action:1",
         targetId: "outcome:1",
       }),
