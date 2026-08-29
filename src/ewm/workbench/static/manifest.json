@@ -1,6 +1,6 @@
 {
   "index.html": {
-    "file": "assets/index-RaJ-mz_5.js",
+    "file": "assets/index-DK4x5dTt.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -8,7 +8,14 @@
       "index.html"
     ],
     "css": [
-      "assets/index-CWpuIMKY.css"
+      "assets/index-CaMbF7V0.css"
+    ],
+    "assets": [
+      "assets/ewm-renaissance-economy-Vdmm_d52.webp"
     ]
+  },
+  "src/assets/ewm-renaissance-economy.webp": {
+    "file": "assets/ewm-renaissance-economy-Vdmm_d52.webp",
+    "src": "src/assets/ewm-renaissance-economy.webp"
   }
 }
