@@ -26,10 +26,12 @@ test("supports keyboard navigation and reduced motion", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto("/e2e/fixtures/app.html");
   await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: "Skip to active analysis" })).toBeFocused();
+  await page.keyboard.press("Tab");
   await expect(page.getByLabel("Approved run")).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("button", { name: "World", exact: true })).toBeFocused();
-  const motion = await page.getByRole("button", { name: "World", exact: true }).evaluate(
+  await expect(page.getByRole("button", { name: "Overview", exact: true })).toBeFocused();
+  const motion = await page.getByRole("button", { name: "Overview", exact: true }).evaluate(
     (element) => {
       const milliseconds = (value: string) =>
         value.endsWith("ms") ? Number.parseFloat(value) : Number.parseFloat(value) * 1_000;

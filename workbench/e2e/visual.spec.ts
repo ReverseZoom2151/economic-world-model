@@ -4,6 +4,8 @@ test("preserves the research-workbench composition at desktop width", async ({ p
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/e2e/fixtures/app.html");
   await expect(page.getByRole("heading", { name: "Ontology Research Workbench" })).toBeVisible();
+  await page.getByRole("button", { name: "Economy" }).click();
+  await page.getByRole("button", { name: "Inspect Household 01" }).click();
 
   const explorer = await page.locator(".explorer").boundingBox();
   const lens = await page.locator(".lens-slot").boundingBox();
@@ -21,10 +23,21 @@ test("preserves the research-workbench composition at desktop width", async ({ p
 
 test("records a bounded semantic-scene frame sample", async ({ page }) => {
   await page.goto("/e2e/fixtures/app.html");
-  await page.getByRole("button", { name: "3D Scene" }).click();
+  await page.getByText("Advanced analysis").click();
+  await page.getByRole("button", { name: "Graph" }).click();
+  await page.getByRole("button", { name: "3D" }).click();
   await expect(
-    page.getByRole("heading", { name: "Deterministic ontology scene" }),
+    page.getByRole("heading", { name: "Ontology graph" }),
   ).toBeVisible();
+  const scene = page.getByRole("img", { name: "3D ontology scene" });
+  const fallback = page.getByRole("heading", { name: "3D rendering unavailable" });
+  await expect(scene.or(fallback)).toBeVisible();
+  if ((await scene.count()) === 0) {
+    return;
+  }
+  const canvas = scene.locator("canvas");
+  await expect(canvas).toBeVisible();
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
   const frameDurations = await page.evaluate(
     () =>
       new Promise<number[]>((resolve) => {

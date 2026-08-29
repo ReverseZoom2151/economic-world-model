@@ -20,6 +20,7 @@ htmlcov/
 /mutants/
 
 # Isolated frontend toolchain
+/node_modules/
 /workbench/node_modules/
 /workbench/coverage/
 /workbench/playwright-report/
