@@ -9,6 +9,7 @@
   "packageManager": "npm@10.9.2",
   "scripts": {
     "build": "vite build",
+    "capture:showcase": "node scripts/capture-showcase.mjs",
     "dev": "vite --host 127.0.0.1",
     "generate:contracts": "node scripts/generate-contracts.mjs",
     "lint": "eslint . --max-warnings 0",
