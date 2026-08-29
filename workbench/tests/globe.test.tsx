@@ -122,7 +122,8 @@ describe("economic globe", () => {
     expect(screen.getByText("± 2.5 km")).toBeVisible();
     expect(screen.getByText("declared anchor")).toBeVisible();
     expect(screen.getByText("observed anchor")).toBeVisible();
-    expect(screen.getAllByText(/researcher declaration: geo-overlay:1/)).toHaveLength(2);
+    expect(screen.getAllByText("researcher declaration provenance")).toHaveLength(2);
+    expect(screen.getAllByText("geo-overlay:1")).toHaveLength(2);
     expect(screen.getByText("1 bounded flow")).toBeVisible();
     expect(screen.queryByText("Abstract household")).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Select Bucharest credit market" }));
@@ -176,7 +177,7 @@ describe("economic globe", () => {
       />,
     );
 
-    expect(await screen.findByText("Comparison overlay: run-b")).toBeVisible();
+    expect(await screen.findByText("Comparison geography overlay enabled.")).toBeVisible();
     expect(screen.getByText("active run", { exact: true })).toBeVisible();
     expect(screen.getByText("comparison run", { exact: true })).toBeVisible();
     expect(screen.queryByText(/scenario v/i)).not.toBeInTheDocument();

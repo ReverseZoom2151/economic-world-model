@@ -98,9 +98,10 @@ describe("LearningLens", () => {
 
     expect(screen.getByRole("heading", { name: "Behavior-to-learning closure" })).toBeVisible();
     expect(screen.getByText("2 included records")).toBeVisible();
-    expect(screen.getByText("population_mean")).toBeVisible();
-    expect(screen.getByText("adapter_reconstructed_from_summary")).toBeVisible();
-    expect(screen.getByText("ewm:test:parameter:theta-v1")).toBeVisible();
+    expect(screen.getByText("population mean")).toBeVisible();
+    expect(screen.getByText("adapter reconstructed from summary")).toBeVisible();
+    expect(screen.getByText("Parameter Version · Theta V1")).toBeVisible();
+    expect(screen.getByText("ewm:test:parameter:theta-v1")).toBeInTheDocument();
     expect(screen.getByText("Closure linked")).toBeVisible();
   });
 

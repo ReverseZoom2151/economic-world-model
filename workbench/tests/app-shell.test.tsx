@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
@@ -10,8 +10,11 @@ describe("investigation shell", () => {
     const user = userEvent.setup();
     render(<App dataSource={createFixtureDataSource()} />);
 
-    expect(await screen.findByRole("heading", { name: "Ontology Research Workbench" })).toBeVisible();
-    expect(screen.getByRole("navigation", { name: "Primary research workflows" })).toBeVisible();
+    expect(await screen.findByRole("heading", { name: "Economic World Model" })).toBeVisible();
+    const primaryNavigation = screen.getByRole("navigation", {
+      name: "Primary research workflows",
+    });
+    expect(primaryNavigation).toBeVisible();
     expect(
       await screen.findByRole("heading", { name: "Read the economy from evidence to consequence." }),
     ).toBeVisible();
@@ -21,25 +24,27 @@ describe("investigation shell", () => {
     await user.click(screen.getByRole("button", { name: "Understand the world" }));
     expect(screen.getByRole("region", { name: "Object explorer" })).toBeVisible();
     expect(screen.queryByRole("region", { name: "Evidence inspector" })).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Inspect Household 01" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "Object explorer" }))
+        .getByRole("button", { name: "Inspect Household 01" }),
+    );
     expect(await screen.findByRole("region", { name: "Evidence inspector" })).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: "Learning" }));
+    await user.click(within(primaryNavigation).getByRole("button", { name: "Learning" }));
     expect(
       await screen.findByRole("heading", { name: "Behavior-to-learning closure" }),
     ).toBeVisible();
-    await user.click(screen.getByText("Advanced analysis"));
-    await user.click(screen.getByRole("button", { name: "DDGE" }));
+    await user.click(within(primaryNavigation).getByRole("button", { name: "DDGE" }));
     expect(await screen.findByRole("heading", { name: "DDGE diagnostics" })).toBeVisible();
-    await user.click(screen.getByRole("button", { name: "Graph" }));
+    await user.click(within(primaryNavigation).getByRole("button", { name: "Graph" }));
     expect(
       await screen.findByRole("heading", { name: "Ontology graph" }),
     ).toBeVisible();
-    await user.click(screen.getByRole("button", { name: "Evidence" }));
+    await user.click(within(primaryNavigation).getByRole("button", { name: "Evidence" }));
     expect(screen.getByRole("heading", { name: "Evidence lens" })).toBeVisible();
 
     await user.selectOptions(screen.getByRole("combobox", { name: "Approved run" }), "run-b");
-    expect(screen.getByText("run-b", { selector: "strong" })).toBeVisible();
+    expect(screen.getByText("Scalar model · v1 · run 2", { selector: "strong" })).toBeVisible();
   });
 
   it("renders loading and empty states without inventing records", async () => {

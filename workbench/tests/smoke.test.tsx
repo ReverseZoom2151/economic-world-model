@@ -8,10 +8,10 @@ describe("workbench client foundation", () => {
   it("renders its research purpose and passes an initial accessibility scan", async () => {
     const { container } = render(<App />);
 
+    expect(screen.getByRole("heading", { name: "Economic World Model" })).toBeVisible();
     expect(
-      screen.getByRole("heading", { name: "Ontology Research Workbench" }),
+      screen.getByRole("navigation", { name: "Primary research workflows" }),
     ).toBeVisible();
-    expect(screen.getByText("Local research instrument")).toBeVisible();
 
     const accessibility = await axe.run(container, {
       rules: { "color-contrast": { enabled: false } },

@@ -45,7 +45,7 @@ async function click(buttonName) {
 
 try {
   await page.goto(baseUrl, { waitUntil: "networkidle", timeout: 120_000 });
-  await page.getByRole("heading", { name: "Ontology Research Workbench" }).waitFor();
+  await page.getByRole("heading", { name: "Economic World Model" }).waitFor();
   await page.getByRole("heading", { name: "Read the economy from evidence to consequence." }).waitFor();
   await capture("overview", [960, 560]);
 
@@ -65,10 +65,6 @@ try {
   await page.getByRole("heading", { name: "Behavior-to-learning closure" }).waitFor();
   await capture("learning", focus);
 
-  const advanced = page.locator(".advanced-nav");
-  if ((await advanced.getAttribute("open")) === null) {
-    await advanced.locator("summary").click();
-  }
   focus = await click("Graph");
   await page.getByRole("heading", { name: "Ontology graph" }).waitFor();
   await page.locator(".ontology-graph-2d svg").waitFor();

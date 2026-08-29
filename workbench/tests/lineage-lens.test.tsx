@@ -65,7 +65,7 @@ describe("lineage lens", () => {
     expect(within(path).getByText("action:1")).toBeVisible();
     expect(within(path).getByText("PRODUCES →")).toBeVisible();
     expect(within(path).getByText("outcome:1")).toBeVisible();
-    expect(within(path).getByText("git:abc123")).toBeVisible();
+    expect(within(path).getByText("git:abc123")).toBeInTheDocument();
     expect(within(path).getByText("src/ewm/markets/clearing.py")).toBeVisible();
     expect(within(path).getByText("clear_market")).toBeVisible();
     expect(source.paths).toHaveBeenCalledWith(

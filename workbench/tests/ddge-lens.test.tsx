@@ -100,13 +100,13 @@ describe("DdgeLens", () => {
     );
 
     expect(screen.getByRole("heading", { name: "DDGE diagnostics" })).toBeVisible();
-    expect(screen.getByText("retain_all_independently_bracketed_roots")).toBeVisible();
+    expect(screen.getByText("retain all independently bracketed roots")).toBeVisible();
     expect(
-      screen.getAllByText(/ewm:test:candidate:/, { selector: ".candidate-basins strong" }),
+      screen.getAllByText(/Ddge Candidate/, { selector: ".candidate-basins strong" }),
     ).toHaveLength(2);
     expect(screen.getByText("[2e-10]")).toBeVisible();
     expect(screen.getByText("[0.02, −0.01]")).toBeVisible();
-    expect(screen.getAllByText("brentq_and_multistart_fixed_point_iteration")).toHaveLength(2);
+    expect(screen.getAllByText("brentq and multistart fixed point iteration")).toHaveLength(2);
     expect(screen.getByText("low initialization")).toBeVisible();
     expect(screen.getByText("Stable")).toBeVisible();
     expect(screen.getByText("5e-10 parameter distance")).toBeVisible();

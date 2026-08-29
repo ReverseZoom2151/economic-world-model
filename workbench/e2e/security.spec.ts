@@ -9,7 +9,7 @@ test("does not issue remote requests or execute URL-provided markup", async ({ p
     "/e2e/fixtures/app.html?q=%3Cimg%20src%3Dx%20onerror%3Dwindow.__ewm_xss%3D1%3E",
   );
 
-  await expect(page.getByRole("heading", { name: "Ontology Research Workbench" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Economic World Model" })).toBeVisible();
   expect(remote).toEqual([]);
   expect(await page.evaluate(() => (window as typeof window & { __ewm_xss?: number }).__ewm_xss)).toBeUndefined();
   expect(await page.locator("img[src='x']").count()).toBe(0);

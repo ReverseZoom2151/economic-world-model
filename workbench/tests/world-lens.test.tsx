@@ -79,7 +79,7 @@ describe("WorldLens", () => {
 
     expect(screen.getByRole("heading", { name: "Declared economic world" })).toBeVisible();
     expect(screen.getByRole("list", { name: "Ontology legend" })).toBeVisible();
-    expect(screen.getByText("verified run · run-a")).toBeVisible();
+    expect(screen.getByText("verified run · 12 records")).toBeVisible();
     expect(screen.getAllByRole("button", { name: /Inspect/ })).toHaveLength(12);
 
     await user.click(screen.getByRole("button", { name: "Show 2 more objects" }));

@@ -3,9 +3,12 @@ import { expect, test } from "@playwright/test";
 test("preserves the research-workbench composition at desktop width", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/e2e/fixtures/app.html");
-  await expect(page.getByRole("heading", { name: "Ontology Research Workbench" })).toBeVisible();
-  await page.getByRole("button", { name: "Economy" }).click();
-  await page.getByRole("button", { name: "Inspect Household 01" }).click();
+  await expect(page.getByRole("heading", { name: "Economic World Model" })).toBeVisible();
+  await page
+    .getByRole("navigation", { name: "Primary research workflows" })
+    .getByRole("button", { name: "Economy" })
+    .click();
+  await page.locator(".world-lens").getByRole("button", { name: "Inspect Household 01" }).click();
 
   const explorer = await page.locator(".explorer").boundingBox();
   const lens = await page.locator(".lens-slot").boundingBox();
@@ -23,8 +26,10 @@ test("preserves the research-workbench composition at desktop width", async ({ p
 
 test("records a bounded semantic-scene frame sample", async ({ page }) => {
   await page.goto("/e2e/fixtures/app.html");
-  await page.getByText("Advanced analysis").click();
-  await page.getByRole("button", { name: "Graph" }).click();
+  await page
+    .getByRole("navigation", { name: "Primary research workflows" })
+    .getByRole("button", { name: "Graph" })
+    .click();
   await page.getByRole("button", { name: "3D" }).click();
   await expect(
     page.getByRole("heading", { name: "Ontology graph" }),

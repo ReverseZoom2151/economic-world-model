@@ -46,10 +46,10 @@ test("opens a verified standalone investigation with networking disabled", async
   await page.goto(pathToFileURL(snapshot).href);
 
   await expect(
-    page.getByRole("heading", { name: "Ontology Research Workbench" }),
+    page.getByRole("heading", { name: "Economic World Model" }),
   ).toBeVisible();
   await expect(page.getByText("offline-snapshot", { exact: false })).toHaveCount(0);
-  await expect(page.getByLabel("Approved run")).toBeEnabled();
+  await expect(page.getByRole("combobox", { name: "Approved run" })).toBeEnabled();
   await expect(page.getByText("Active projection", { exact: true })).toBeVisible();
   expect(remoteRequests).toEqual([]);
 });
@@ -70,6 +70,6 @@ test("refuses to render a corrupted embedded investigation", async ({ page }, te
 
   await expect(page.getByRole("alert")).toContainText("Snapshot integrity check failed");
   await expect(
-    page.getByRole("heading", { name: "Ontology Research Workbench" }),
+    page.getByRole("heading", { name: "Economic World Model" }),
   ).toHaveCount(0);
 });
