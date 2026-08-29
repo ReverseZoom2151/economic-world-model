@@ -21,7 +21,7 @@ describe("investigation shell", () => {
     expect(screen.queryByRole("region", { name: "Object explorer" })).not.toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Event timeline" })).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Understand the world" }));
+    await user.click(screen.getByRole("button", { name: "Map the economic world" }));
     expect(screen.getByRole("region", { name: "Object explorer" })).toBeVisible();
     expect(screen.queryByRole("region", { name: "Evidence inspector" })).not.toBeInTheDocument();
     await user.click(

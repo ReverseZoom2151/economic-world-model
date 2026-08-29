@@ -21,7 +21,7 @@ export function LineagePath({ result, objects }: LineagePathProps) {
         <p>
           {result.truncated
             ? "Search stopped at the configured record limit."
-            : "No relation sequence connects the selected identities in this direction."}
+            : "No relation sequence connects the selected records in this direction."}
         </p>
         <small>{result.visited_records} records visited</small>
       </section>

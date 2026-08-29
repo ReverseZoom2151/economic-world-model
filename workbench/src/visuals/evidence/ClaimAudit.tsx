@@ -65,7 +65,10 @@ export function ClaimAudit({ claims, evidence, relations }: ClaimAuditProps) {
                   {claimLimitations.map((item) => <li key={item}>{item}</li>)}
                 </ul>
               ) : (
-                <p className="evidence-absence">No limitations were recorded.</p>
+                <p className="evidence-absence">
+                  No claim-local limitations were recorded. Coverage and model-closure boundaries
+                  remain visible in their dedicated lenses.
+                </p>
               )}
             </div>
             <div className="claim-card__section">

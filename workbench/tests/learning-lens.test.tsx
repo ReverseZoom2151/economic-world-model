@@ -100,7 +100,7 @@ describe("LearningLens", () => {
     expect(screen.getByText("2 included records")).toBeVisible();
     expect(screen.getByText("population mean")).toBeVisible();
     expect(screen.getByText("adapter reconstructed from summary")).toBeVisible();
-    expect(screen.getByText("Parameter Version · Theta V1")).toBeVisible();
+    expect(screen.getByText("Parameter Version")).toBeVisible();
     expect(screen.getByText("ewm:test:parameter:theta-v1")).toBeInTheDocument();
     expect(screen.getByText("Closure linked")).toBeVisible();
   });

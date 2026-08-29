@@ -62,9 +62,11 @@ describe("lineage lens", () => {
     await user.selectOptions(await screen.findByLabelText("Lineage target"), "outcome:1");
 
     const path = await screen.findByRole("region", { name: "Lineage path" });
-    expect(within(path).getByText("action:1")).toBeVisible();
+    expect(within(path).getByText("Submitted bid")).toBeVisible();
+    expect(within(path).getAllByText("action:1")).toHaveLength(2);
     expect(within(path).getByText("PRODUCES →")).toBeVisible();
-    expect(within(path).getByText("outcome:1")).toBeVisible();
+    expect(within(path).getByText("Cleared allocation")).toBeVisible();
+    expect(within(path).getAllByText("outcome:1")).toHaveLength(2);
     expect(within(path).getByText("git:abc123")).toBeInTheDocument();
     expect(within(path).getByText("src/ewm/markets/clearing.py")).toBeVisible();
     expect(within(path).getByText("clear_market")).toBeVisible();

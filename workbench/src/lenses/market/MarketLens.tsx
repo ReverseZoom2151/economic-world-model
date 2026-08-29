@@ -116,8 +116,14 @@ export function MarketLens({ measurements, rejections, bounded = false }: Market
         <MarketCharts measurements={chartable} />
       )}
       {withheld.length > 0 ? (
-        <aside className="withheld-records" aria-label="Withheld market measurements">
-          <strong>{withheld.length} measurement records withheld</strong>
+        <aside className="withheld-records" aria-label="Market chart boundary">
+          <strong>Time-series chart unavailable</strong>
+          <p>
+            The run-level values above remain valid. They are shown as scalars because they do not
+            include the repeated observations or uncertainty metadata required for a scientific chart.
+          </p>
+          <details>
+            <summary>Review {withheld.length} chart boundary note{withheld.length === 1 ? "" : "s"}</summary>
           <ul>
             {withheld.map(({ measurement, issue }) => (
               <li key={measurement.ref.id}>
@@ -125,6 +131,7 @@ export function MarketLens({ measurements, rejections, bounded = false }: Market
               </li>
             ))}
           </ul>
+          </details>
         </aside>
       ) : null}
       <details className="rejection-ledger" open={actualRejections.length > 0 && actualRejections.length <= 8}>

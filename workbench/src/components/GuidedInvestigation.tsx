@@ -7,7 +7,7 @@ const STEPS = [
   { label: "Test model closure", finding: "Behavior-to-training evidence boundary" },
   { label: "Check equilibrium", finding: "Inner equilibrium versus DDGE evidence" },
   { label: "Audit claim", finding: "Classification, sources, and limitations" },
-  { label: "Trace provenance", finding: "Directed evidence lineage" },
+  { label: "Trace provenance", finding: "Directed declaration and provenance lineage" },
   { label: "Inspect ontology", finding: "Semantic structure and local context" },
   { label: "Bound geography", finding: "Declared anchors and uncertainty" },
   { label: "State conclusion", finding: "Supported result and explicit limits" },

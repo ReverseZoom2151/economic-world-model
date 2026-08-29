@@ -85,16 +85,16 @@ export function LineageLens({ dataSource, runId, selectedId }: LineageLensProps)
           <p>08 / LINEAGE</p>
           <h2>Lineage lens</h2>
         </div>
-        <p>Directed relation paths retain ontology identities and source locators.</p>
+        <p>Trace how economic records, evidence, and claims connect through directed relations.</p>
       </header>
-      {objectsLoad.key !== runId ? <p className="lens-loading">Reading lineage identities…</p> : null}
+      {objectsLoad.key !== runId ? <p className="lens-loading">Reading lineage records…</p> : null}
       {objectsLoad.key === runId && objectsLoad.status === "failed" ? (
-        <p className="sparse-fallback" role="alert">Lineage identities are unavailable.</p>
+        <p className="sparse-fallback" role="alert">Lineage records are unavailable.</p>
       ) : null}
       {objectsLoad.key === runId && objectsLoad.status === "loaded" && objects.length < 2 ? (
         <div className="sparse-fallback">
           <strong>Lineage unavailable</strong>
-          <p>At least two explicit ontology identities are required.</p>
+          <p>At least two explicit ontology records are required.</p>
         </div>
       ) : null}
       {objects.length >= 2 ? (

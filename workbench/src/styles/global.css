@@ -966,10 +966,32 @@ select:focus-visible {
 }
 
 .withheld-records {
-  padding: 0.8rem;
-  border: 1px solid var(--error);
-  color: var(--error);
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--paper) 82%, var(--surface-subtle));
+  color: var(--quiet);
   font-size: 0.68rem;
+}
+
+.withheld-records strong {
+  color: var(--ink);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.withheld-records p {
+  max-width: 68ch;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.withheld-records summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 750;
 }
 
 .withheld-records ul {
@@ -3781,7 +3803,7 @@ select:focus-visible {
     url("../assets/ewm-civic-market-v1.webp");
 }
 
-.workflow-entry__art i {
+.workflow-entry__grid .workflow-entry__art i {
   color: #fff;
   font-family: var(--font-interface);
   font-size: clamp(2.7rem, 5vw, 5.2rem);
