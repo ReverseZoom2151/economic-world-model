@@ -103,7 +103,7 @@ an existing painting.
 The editable image fills and overlaid type compositions are in the Figma Renaissance Series frame.
 The primary project cover remains editable in the Figma README Hero frame, where a directional
 legibility wash preserves the title while revealing the full economic panorama. The committed
-[series export](../assets/workbench/figma-renaissance-series.png) and [README cover](../assets/workbench/figma-hero.png)
+[series export](../assets/workbench/figma-renaissance-series.png) and [README cover](../assets/workbench/ewm-project-cover-renaissance-v1.png)
 provide durable repository previews.
 
 ## Release workflow
