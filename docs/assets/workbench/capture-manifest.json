@@ -1,0 +1,65 @@
+{
+  "baseUrl": "http://127.0.0.1:8765",
+  "sourceSize": [
+    1920,
+    1440
+  ],
+  "captures": [
+    {
+      "name": "overview",
+      "focus": [
+        960,
+        560
+      ]
+    },
+    {
+      "name": "economy",
+      "focus": [
+        480,
+        150.984375
+      ]
+    },
+    {
+      "name": "simulation",
+      "focus": [
+        800,
+        150.984375
+      ]
+    },
+    {
+      "name": "market-diagnostics",
+      "focus": [
+        1120,
+        150.984375
+      ]
+    },
+    {
+      "name": "learning",
+      "focus": [
+        1440,
+        150.984375
+      ]
+    },
+    {
+      "name": "graph-2d",
+      "focus": [
+        259.1796875,
+        244.578125
+      ]
+    },
+    {
+      "name": "graph-3d",
+      "focus": [
+        470.8671875,
+        505.546875
+      ]
+    },
+    {
+      "name": "globe",
+      "focus": [
+        325.4609375,
+        244.578125
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "duration": 23,
+  "fps": 60,
+  "output_size": [1920, 1440],
+  "source_size": [1920, 1440],
+  "cursor_asset": "workbench/scripts/assets/demo-cursor.png",
+  "cursor_hotspot": [3, 3],
+  "cursor_scale": 1.35,
+  "click_strength": 16,
+  "rotation_strength_degrees": 7,
+  "preset": "veryfast",
+  "crf": 19,
+  "shots": {
+    "overview": "docs/assets/workbench/overview.png",
+    "economy": "docs/assets/workbench/economy.png",
+    "simulation": "docs/assets/workbench/simulation.png",
+    "learning": "docs/assets/workbench/learning.png",
+    "graph2d": "docs/assets/workbench/graph-2d.png",
+    "graph3d": "docs/assets/workbench/graph-3d.png",
+    "globe": "docs/assets/workbench/globe.png"
+  },
+  "scene_starts": [
+    [0.0, "overview", "fade"],
+    [3.4, "economy", "scroll"],
+    [6.2, "simulation", "fade"],
+    [9.1, "learning", "fade"],
+    [12.2, "graph2d", "scroll"],
+    [15.5, "graph3d", "fade"],
+    [19.0, "globe", "scroll"]
+  ],
+  "cursor_keys": [
+    [0.0, 960, 560],
+    [2.9, 480, 151],
+    [3.4, 480, 151],
+    [5.7, 800, 151],
+    [6.2, 800, 151],
+    [8.6, 1440, 151],
+    [9.1, 1440, 151],
+    [11.7, 259, 245],
+    [12.2, 259, 245],
+    [15.0, 471, 506],
+    [15.5, 471, 506],
+    [18.5, 325, 245],
+    [19.0, 325, 245],
+    [22.8, 995, 805]
+  ],
+  "camera_keys": [
+    [0.0, 960, 720, 1.0],
+    [3.4, 960, 706, 1.02],
+    [6.2, 960, 699, 1.03],
+    [9.1, 960, 692, 1.04],
+    [12.2, 960, 673, 1.07],
+    [15.5, 960, 673, 1.07],
+    [19.0, 960, 667, 1.08],
+    [23.0, 960, 667, 1.08]
+  ],
+  "click_times": [3.2, 6.0, 8.9, 12.0, 15.3, 18.8],
+  "output": "docs/assets/workbench/ewm-workbench-demo.mp4"
+}

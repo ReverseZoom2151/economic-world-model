@@ -1,0 +1,33 @@
+{
+  "artifact_schema": "ewm.showcase.v1",
+  "captured_on": "2026-08-29",
+  "experiment": "fx.rollout",
+  "preset": "research",
+  "seed": 42,
+  "periods": 500,
+  "run_hash": "85814cfc1134cb6fc355",
+  "run_identity_sha256": "85814cfc1134cb6fc35596af0567fc80525d5729b7c104d99470ee846e59a620",
+  "run_bundle_sha256": "8856e4ed0951e3d9b72608ef37b25f52383993dc8c3009db194b4c1ce7ab3828",
+  "projection_digest": "91a00ddafe8e2a309afd520bd49192a95bdf3edfd03c0cbbb8c36c3b88560a32",
+  "verification": {
+    "integrity_level": "checksummed",
+    "replay_matched": true,
+    "replayed_event_count": 1001,
+    "replayed_step_count": 500,
+    "event_chain_hash": "ed93049265a23af83a0965368a138b73121fbf3813b2a2a7e450045765832748",
+    "final_state_digest": "d8dcf92f695a81ef9667e126074496f6736715b6576180a0464acf9682a5a6e4"
+  },
+  "metrics": {
+    "max_cash_residual": 2.473825588822365e-10,
+    "max_foreign_residual": 1.4551915228366852e-11,
+    "mean_price": 1.000339747592091,
+    "rejected_orders": 0,
+    "total_volume": 14484,
+    "volatility": 0.0020000000000000026
+  },
+  "geography": {
+    "basis": "researcher_declaration",
+    "purpose": "illustrative presentation anchors only",
+    "source": "showcase-geography.md"
+  }
+}
