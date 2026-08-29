@@ -24,7 +24,7 @@ def test_public_documentation_matches_the_current_release_contract() -> None:
     readme = _text(README)
     assert '<h1 align="center">Economic World Model</h1>' in readme
     assert (
-        "Build and solve economic worlds where agents, markets, data, and learned models "
+        "Build and solve economies where agents, markets, data, and learned models "
         "co-evolve."
     ) in readme
     assert "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6559940" in readme
