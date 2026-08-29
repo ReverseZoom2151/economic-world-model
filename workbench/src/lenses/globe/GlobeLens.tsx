@@ -45,11 +45,24 @@ interface GlobeRecords {
 const EMPTY_RUN: RunRecords = { objects: [], relations: [] };
 
 async function loadRun(dataSource: InvestigationDataSource, runId: string): Promise<RunRecords> {
-  const [objects, relations] = await Promise.all([
+  const [objects, anchorRelations] = await Promise.all([
     dataSource.objects({ runId, limit: 200 }),
-    dataSource.relations({ runId, limit: 200 }),
+    dataSource.relations({ runId, relationTypes: ["GEO_ANCHORED_AT"], limit: 200 }),
   ]);
-  return { objects: objects.items, relations: relations.items };
+  const anchoredIds = anchorRelations.items.map((relation) => relation.source.id);
+  const incidentRelations = anchoredIds.length === 0
+    ? null
+    : await dataSource.relations({
+        runId,
+        incidentIds: anchoredIds,
+        direction: "both",
+        limit: 200,
+      });
+  const relations = new Map(
+    [...anchorRelations.items, ...(incidentRelations?.items ?? [])]
+      .map((relation) => [relation.ref.id, relation]),
+  );
+  return { objects: objects.items, relations: [...relations.values()] };
 }
 
 function tag(

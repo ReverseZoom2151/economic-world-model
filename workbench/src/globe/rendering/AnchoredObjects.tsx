@@ -18,11 +18,11 @@ function MarkerGroup({ placements, role, selectedId, onSelect }: MarkerGroupProp
   return (
     <Instances limit={group.length} range={group.length}>
       {role === "active" ? (
-        <sphereGeometry args={[0.075, 12, 8]} />
+        <sphereGeometry args={[0.095, 14, 10]} />
       ) : (
         <octahedronGeometry args={[0.095, 0]} />
       )}
-      <meshStandardMaterial roughness={0.72} metalness={0} vertexColors />
+      <meshBasicMaterial toneMapped={false} />
       {group.map((placement) => {
         const selected = placement.subject.ref.id === selectedId;
         return (

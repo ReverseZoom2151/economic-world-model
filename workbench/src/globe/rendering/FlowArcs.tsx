@@ -35,7 +35,7 @@ export function FlowArcs({ flows }: FlowArcsProps) {
   }, [flows]);
   return (
     <lineSegments geometry={geometry} raycast={() => null}>
-      <lineBasicMaterial color="#151813" transparent opacity={0.56} />
+      <lineBasicMaterial color="#c7f24a" transparent opacity={0.82} />
     </lineSegments>
   );
 }
