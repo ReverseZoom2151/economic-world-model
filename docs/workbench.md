@@ -240,10 +240,11 @@ npm run capture:showcase -- http://127.0.0.1:8765 ../docs/assets/workbench
 
 The script uses Playwright and writes eight stills plus `capture-manifest.json`. The committed
 `demo-config.json` records the 60 fps scene sequence, cursor path, camera motion, and source images
-used for the MP4. FFmpeg encodes the final H.264 asset. The [showcase record](assets/workbench/showcase-run.json)
-preserves the run identity, replay result, projection digest, and displayed metrics. The separate
-[geography declaration](assets/workbench/showcase-geography.md) states the limits of the illustrative
-coordinate overlay.
+used for the MP4. FFmpeg encodes the final H.264 asset and a smaller GIF plays directly in GitHub's
+README renderer. The [showcase record](assets/workbench/showcase-run.json) preserves the run
+identity, replay result, projection digest, and displayed metrics. The separate [geography
+declaration](assets/workbench/showcase-geography.md) states the limits of the illustrative coordinate
+overlay.
 
 ## Troubleshooting
 

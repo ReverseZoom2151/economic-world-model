@@ -28,11 +28,11 @@ deployment system.
 
 <p align="center">
   <a href="docs/assets/workbench/ewm-workbench-demo.mp4">
-    <img src="docs/assets/workbench/overview.png" alt="Economic World Model ontology research workbench overview" width="100%">
+    <img src="docs/assets/workbench/ewm-workbench-demo.gif" alt="Animated demonstration of the Economic World Model ontology research workbench" width="100%">
   </a>
 </p>
 
-<p align="center"><em>Open the image to watch the 23-second workbench demonstration.</em></p>
+<p align="center"><em>The preview plays inline. Open it for the 1,440p, 60 fps MP4.</em></p>
 
 | Synchronized 2D ontology graph | Synchronized 3D ontology graph |
 |---|---|
