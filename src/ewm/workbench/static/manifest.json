@@ -1,6 +1,6 @@
 {
   "index.html": {
-    "file": "assets/index-C4a_4NBd.js",
+    "file": "assets/index-CaqlavWt.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -8,11 +8,31 @@
       "index.html"
     ],
     "css": [
-      "assets/index-CaMbF7V0.css"
+      "assets/index-Chc-tqIM.css"
     ],
     "assets": [
-      "assets/ewm-renaissance-economy-Vdmm_d52.webp"
+      "assets/ewm-renaissance-economy-Vdmm_d52.webp",
+      "assets/ewm-ledger-florence-v1-lkyZaRA9.webp",
+      "assets/ewm-exchange-venice-v1-DW6F_g-M.webp",
+      "assets/ewm-learning-workshop-v1-LPqrox8R.webp",
+      "assets/ewm-civic-market-v1-gPaLsPO6.webp"
     ]
+  },
+  "src/assets/ewm-civic-market-v1.webp": {
+    "file": "assets/ewm-civic-market-v1-gPaLsPO6.webp",
+    "src": "src/assets/ewm-civic-market-v1.webp"
+  },
+  "src/assets/ewm-exchange-venice-v1.webp": {
+    "file": "assets/ewm-exchange-venice-v1-DW6F_g-M.webp",
+    "src": "src/assets/ewm-exchange-venice-v1.webp"
+  },
+  "src/assets/ewm-learning-workshop-v1.webp": {
+    "file": "assets/ewm-learning-workshop-v1-LPqrox8R.webp",
+    "src": "src/assets/ewm-learning-workshop-v1.webp"
+  },
+  "src/assets/ewm-ledger-florence-v1.webp": {
+    "file": "assets/ewm-ledger-florence-v1-lkyZaRA9.webp",
+    "src": "src/assets/ewm-ledger-florence-v1.webp"
   },
   "src/assets/ewm-renaissance-economy.webp": {
     "file": "assets/ewm-renaissance-economy-Vdmm_d52.webp",
