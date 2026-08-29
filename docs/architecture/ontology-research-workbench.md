@@ -430,7 +430,7 @@ The object explorer and inspector remain stable while the center switches lenses
 - **Compare:** aligned and rejected comparisons with explicit comparability diagnostics.
 - **Evidence:** claims, measurements, evidence status, protocols, sources, and limitations.
 - **Lineage:** derivation and source paths across artifacts and code.
-- **3D Scene:** deterministic semantic layers and time in a bounded WebGL scene.
+- **Graph:** synchronized 2D and 3D typed relations with deterministic semantic layers and time.
 - **Globe:** explicitly geocoded economic objects, flows, interventions, and outcomes.
 
 ### 7.3 Visual grammar
@@ -447,11 +447,12 @@ uses a textual fallback rather than an interpolated picture.
 
 The default graph uses stable semantic lanes and profile-specific layouts. It is not initialized by
 a random force simulation. Expansion is progressive and bounded. Object selection synchronizes the
-inspector, timeline, charts, 3D scene, and globe.
+inspector, timeline, charts, 2D and 3D graph, and globe.
 
-### 7.5 Three-dimensional ontology scene
+### 7.5 Synchronized ontology graph
 
-The 3D scene assigns meaning to every coordinate:
+The graph shares selection, typed filters, clustering, neighborhood isolation, path tracing, and
+semantic zoom across 2D and 3D. The 3D view assigns meaning to every coordinate:
 
 - X: semantic lane such as agents, institutions, markets, data, or learned models;
 - Y: ontology layer;
@@ -595,7 +596,7 @@ The frontend uses:
 - Vite for deterministic production assets;
 - Cytoscape.js for bounded 2D typed graphs;
 - Vega-Lite for analytical charts;
-- Three.js, React Three Fiber, and Drei for the 3D scene and globe;
+- Three.js, React Three Fiber, and Drei for the 3D graph and globe;
 - Vitest, Testing Library, axe, and Playwright for tests.
 
 Built, reproducibly checked static assets ship inside the wheel. Runtime use does not require Node.
@@ -802,7 +803,7 @@ Medium-tier release budgets on a recorded reference machine are:
 - initial analytical view below 2 seconds after API readiness;
 - no endpoint returns an unbounded collection.
 
-The 2D graph initially renders at most 2,000 nodes and 5,000 edges. The 3D scene initially renders at
+The 2D graph initially renders at most 2,000 nodes and 5,000 edges. The 3D graph initially renders at
 most 5,000 instanced nodes and 10,000 relations, with progressive expansion and a measured frame
 budget. During camera or timeline interaction its p95 frame time must remain below 33 ms on the
 recorded reference browser and machine. Pointer targets are further bounded. The globe uses geometry
@@ -882,7 +883,7 @@ live local observation, and optional large-corpus persistence are deferred.
 5. Add the secure loopback service and versioned contracts.
 6. Build the investigation shell and primary 2D lenses.
 7. Add learning, DDGE, comparison, evidence, and lineage workflows.
-8. Add the deterministic 3D scene and evidence-aware globe.
+8. Add the deterministic 3D ontology graph and evidence-aware globe.
 9. Compile and verify portable offline snapshots.
 10. Complete hardening, performance, accessibility, documentation, and release audit.
 
@@ -945,7 +946,7 @@ The architecture is implemented only when:
 - all fourteen invariants execute and fail closed;
 - all registered profiles pass paper-semantic conformance tests;
 - the eight researcher workflows work through both API and snapshot data sources;
-- the 3D scene is deterministic and the globe never renders unanchored objects;
+- the synchronized 2D and 3D graph is deterministic and the globe never renders unanchored objects;
 - every visible claim reaches evidence and preserves its authorization status;
 - portable snapshots are byte-reproducible, offline, CSP-constrained, and tamper-evident;
 - security, accessibility, performance, packaging, and reproducibility gates pass;

@@ -156,7 +156,7 @@ The API caps collection reads and graph traversal. Portable snapshots default to
 count, source payload size, event lines, NPZ members, and request bodies also have hard limits. Large
 runs require smaller selections or offline analysis outside the workbench.
 
-The 3D scene encodes semantic lane, ontology layer, and time. Position is an investigation aid, not
+The 3D ontology graph encodes semantic lane, ontology layer, and time. Position is an investigation aid, not
 an estimated economic distance, causal effect, or embedding. WebGL availability and device limits
 can reduce the rendered subset; the 2D fallback remains authoritative for the selected records.
 

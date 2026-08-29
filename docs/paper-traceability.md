@@ -143,7 +143,7 @@ The coverage ledger leaves source gaps visible. A projection cannot promote a nu
 a certificate, a qualitative reconstruction to exact replication, or local substrate to a higher
 Han capability.
 
-The 3D scene uses semantic lane, ontology layer, and time as declared axes. These coordinates are
+The 3D ontology graph uses semantic lane, ontology layer, and time as declared axes. These coordinates are
 interface semantics rather than paper-derived economic geometry. The globe accepts only explicit
 sourced `GeoAnchor` records and performs no place inference. Portable snapshots preserve source,
 profile, projection, and selected-subset identities; their checksum and offline contracts are

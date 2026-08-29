@@ -87,13 +87,13 @@ any chart.
 
 ### Understand the world
 
-Use the World lens to inspect declared agents, institutions, markets, mechanisms, constraints,
+Use the Economy lens to inspect declared agents, institutions, markets, mechanisms, constraints,
 kernels, learners, and interventions. Selection stays synchronized with the explorer and evidence
 inspector. Adapter-derived declarations show their profile and source digest.
 
 ### Trace an episode
 
-Use the Runtime lens and timeline to follow observed states, action occurrences, mechanism
+Use the Simulation lens and timeline to follow observed states, action occurrences, mechanism
 invocations, transitions, market outcomes, generated data, and event order. Runtime records remain
 separate from economic declarations.
 
@@ -136,15 +136,16 @@ evidence for every lens.
 
 | Lens | Reads |
 |---|---|
-| World | Economic declarations and their typed relations |
-| Runtime | Events, state-action-transition paths, outcomes, and ordering |
-| Market | Prices, volumes, clearing, constraints, transactions, and rejections |
+| Overview | Task-first run integrity, coverage, and investigation entry points |
+| Economy | Economic declarations and their typed relations |
+| Simulation | Events, state-action-transition paths, outcomes, and ordering |
+| Markets | Prices, volumes, clearing, constraints, transactions, and rejections |
 | Learning | Generated data, datasets, training, model versions, and deployment |
 | DDGE | Candidates, residuals, basins, stability diagnostics, and certificates |
 | Compare | Compatible aligned measurements and rejected alignments |
 | Evidence | Claims, classifications, protocols, measurements, sources, and limitations |
 | Lineage | Bounded derivation paths across run records, adapters, code, and papers |
-| 3D Scene | Deterministic semantic position across lane, layer, and time |
+| Graph | Synchronized 2D and 3D typed relations, clusters, paths, and neighborhoods |
 | Globe | Explicit sourced geography, validity, uncertainty, and flows |
 
 Sparse evidence produces a textual unavailable state. The interface does not fabricate a chart from
@@ -179,9 +180,16 @@ python -c 'import json; from ewm.workbench.http.contracts import openapi_documen
   > workbench-openapi.json
 ```
 
-## 3D semantic scene
+## Synchronized ontology graph
 
-Every coordinate has a declared meaning:
+The Graph lens renders one typed, evidence-linked graph model in either 2D or 3D. Selection,
+visible ontology layers, relation-type filters, neighborhood depth, isolated focus, path targets,
+and evidence inspection carry across both dimensions. The 2D mode offers semantic, force, and
+hierarchy layouts. Semantic zoom keeps overview labels representative and exposes the fuller bounded
+subset in detail mode.
+
+The 3D mode is a graph view, not a second copy of the Economy lens. Nodes and typed edges are the
+same bounded records shown in 2D. Its coordinates have declared meanings:
 
 | Coordinate | Meaning |
 |---|---|
@@ -192,10 +200,10 @@ Every coordinate has a declared meaning:
 Placement is a pure function of ontology semantics and identity. It does not depend on a random
 force simulation, frame rate, GPU, or browser. Node and relation budgets bound the rendered subset.
 
-The controls support orbit, pan, zoom, selection, focus, layer isolation, perspective or
-orthographic projection, and reset to the canonical camera. Camera state can be included in a
-snapshot. The renderer uses demand-driven frames and capped pixel density. Reduced-motion mode
-removes transitions, and WebGL failure returns the equivalent 2D investigation.
+The controls support orbit, pan, zoom, selection, focus, perspective or orthographic projection,
+and camera reset. Camera state can be included in a snapshot. The renderer uses demand-driven frames
+and capped pixel density. Reduced-motion mode removes transitions, and WebGL failure returns the
+equivalent bounded table while the synchronized 2D graph remains available.
 
 ## Globe eligibility
 
@@ -220,6 +228,23 @@ Portable snapshots set `connect-src 'none'` and embed the selected data, client 
 optional globe geometry. Browser tests disable networking in Chromium and Firefox and require the
 investigation to remain usable. No interface path writes to the sealed run.
 
+## Reproduce the showcase captures
+
+The repository showcase uses a 1,920 by 1,440 browser viewport and a verified research-preset FX
+projection. With an approved workbench server already running, capture the same interface states:
+
+```bash
+cd workbench
+npm run capture:showcase -- http://127.0.0.1:8765 ../docs/assets/workbench
+```
+
+The script uses Playwright and writes eight stills plus `capture-manifest.json`. The committed
+`demo-config.json` records the 60 fps scene sequence, cursor path, camera motion, and source images
+used for the MP4. FFmpeg encodes the final H.264 asset. The [showcase record](assets/workbench/showcase-run.json)
+preserves the run identity, replay result, projection digest, and displayed metrics. The separate
+[geography declaration](assets/workbench/showcase-geography.md) states the limits of the illustrative
+coordinate overlay.
+
 ## Troubleshooting
 
 | Symptom | Resolution |
@@ -230,7 +255,7 @@ investigation to remain usable. No interface path writes to the sealed run.
 | API returns 403 | Use the exact loopback origin and same-origin browser request. |
 | A lens is empty | Inspect the coverage ledger; the profile may record the field as unavailable. |
 | Comparison is rejected | Read the preflight mismatch instead of coercing the records. |
-| 3D scene is unavailable | Use the synchronized 2D graph or table fallback. |
+| 3D graph is unavailable | Use the synchronized 2D graph or table fallback. |
 | Globe is unavailable | Supply a valid explicit geo overlay for existing ontology identities. |
 | Snapshot refuses export | Reduce selected objects, relations, events, geometry, or comparisons. |
 

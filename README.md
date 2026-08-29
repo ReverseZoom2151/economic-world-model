@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-Build and solve economic worlds where agents, markets, data, and learned models co-evolve.
+Build and solve economies where agents, markets, data, and learned models co-evolve.
 </p>
 
 <p align="center">
@@ -25,6 +25,26 @@ interfaces, capability ladder, and evaluation layers.
 Release 0.2.0 is a synthetic research alpha. It is suitable for studying declared mechanisms and
 testing implementation contracts. It is not an empirically calibrated economy, a policy model, or a
 deployment system.
+
+<p align="center">
+  <a href="docs/assets/workbench/ewm-workbench-demo.mp4">
+    <img src="docs/assets/workbench/overview.png" alt="Economic World Model ontology research workbench overview" width="100%">
+  </a>
+</p>
+
+<p align="center"><em>Open the image to watch the 23-second workbench demonstration.</em></p>
+
+| Synchronized 2D ontology graph | Synchronized 3D ontology graph |
+|---|---|
+| [![Typed 2D ontology neighborhood](docs/assets/workbench/graph-2d.png)](docs/assets/workbench/graph-2d.png) | [![Semantic 3D ontology neighborhood](docs/assets/workbench/graph-3d.png)](docs/assets/workbench/graph-3d.png) |
+| **Explicit economic geography** | **Behavior-to-learning closure** |
+| [![Evidence-backed economic globe](docs/assets/workbench/globe.png)](docs/assets/workbench/globe.png) | [![Learning closure investigation](docs/assets/workbench/learning.png)](docs/assets/workbench/learning.png) |
+
+The showcase comes from a checksummed, replay-matched `fx.rollout` research run with seed 42: 500
+steps, 1,001 events, zero rejected orders, and maximum accounting residuals below
+$2.5\times10^{-10}$. The run is synthetic. Globe coordinates are separately disclosed,
+researcher-declared presentation anchors, not observed geography or calibration evidence. See the
+[showcase record](docs/assets/workbench/showcase-run.json) and [geography declaration](docs/assets/workbench/showcase-geography.md).
 
 [Quick start](#quick-start) | [Mathematical core](#mathematical-core) |
 [Evidence](#evidence) | [Ontology and workbench](#ontology-and-workbench) |
@@ -201,11 +221,13 @@ declarations, runtime occurrences, learning and equilibrium, research and eviden
 Fourteen fail-closed invariants preserve identity, sourcing, relation direction, DDGE roles,
 certification, intervention semantics, and claim authorization.
 
-The local research workbench reads immutable projections through a loopback-only API. Its World,
-Runtime, Market, Learning, DDGE, Compare, Evidence, Lineage, 3D Scene, and Globe lenses share one
-selection and evidence model. Three-dimensional coordinates use semantic lane, ontology layer, and
-time. The globe renders an object only through an explicit sourced `GeoAnchor`; built-in scenarios
-show an unavailable state unless a researcher supplies a validated overlay.
+The local research workbench reads immutable projections through a loopback-only API. Its Overview,
+Economy, Simulation, Markets, Learning, Evidence, DDGE, Compare, Lineage, Graph, and Globe lenses
+share one selection and evidence model. The ontology graph has synchronized 2D and 3D modes with
+typed filters, clustering, bounded neighborhood isolation, path tracing, and semantic zoom.
+Three-dimensional coordinates use semantic lane, ontology layer, and time. The globe renders an
+object only through an explicit sourced `GeoAnchor`; built-in scenarios show an unavailable state
+unless a researcher supplies a validated overlay.
 
 Portable `ewm.investigation.v1` snapshots embed the selected evidence and the same client in one
 offline HTML file. Their digests detect corruption. Authenticity requires a full-file digest obtained

@@ -12,8 +12,9 @@ and versions follow Semantic Versioning where practical during the alpha phase.
   scenarios.
 - Bounded immutable queries, scientific comparison preflight, explicit geography overlays, and a
   secured loopback API over approved projections.
-- A local React investigation workbench with coordinated World, Runtime, Market, Learning, DDGE,
-  Compare, Evidence, Lineage, deterministic 3D Scene, and explicit-anchor Globe lenses.
+- A local React investigation workbench with task-first Overview, Economy, Simulation, Markets,
+  Learning, and Evidence lenses plus DDGE, Compare, Lineage, synchronized 2D and 3D ontology graph,
+  and explicit-anchor Globe analysis.
 - Deterministic `ewm.investigation.v1` offline HTML snapshots with canonical subset identities,
   embedded integrity verification, Content Security Policy hashes, and detached full-file digests.
 - Researcher guides for the ontology, workbench, snapshots, profile extension, and requirement-level
