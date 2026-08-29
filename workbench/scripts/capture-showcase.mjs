@@ -204,6 +204,7 @@ try {
         foundationsFrame: "5:19",
         renaissanceSeriesFrame: "5:41",
         workflowStoryboardFrame: "6:45",
+        productScreensPage: "7:2",
         readmeHeroFrame: "6:113",
         openGraphFrame: "6:120",
       },
