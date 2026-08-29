@@ -3,6 +3,7 @@ import type {
   RelationContract,
 } from "../../data/InvestigationDataSource";
 import { formattedNumber, propertyNumber, propertyText } from "./model";
+import { ontologyObjectLabel } from "../shared/objectLabel";
 
 interface CertificatePanelProps {
   readonly candidates: ReadonlyArray<OntologyObjectContract>;
@@ -39,7 +40,7 @@ export function CertificatePanel({
           const linked = certificates.filter((certificate) => linkedIds.has(certificate.ref.id));
           return (
             <article key={candidate.ref.id}>
-              <h4>{candidate.ref.id}</h4>
+              <h4>{ontologyObjectLabel(candidate)}</h4>
               {linked.length === 0 ? (
                 <p>No linked theorem certificate authorizes a bound.</p>
               ) : (
@@ -50,7 +51,8 @@ export function CertificatePanel({
                   return (
                     <div key={certificate.ref.id}>
                       <strong>
-                        {propertyText(certificate, "certificate_kind") ?? "theorem certificate"}
+                        {propertyText(certificate, "certificate_kind")?.replaceAll("_", " ")
+                          ?? "theorem certificate"}
                       </strong>
                       {authorized ? (
                         <p>

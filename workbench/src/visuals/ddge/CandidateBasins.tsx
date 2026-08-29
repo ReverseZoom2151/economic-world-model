@@ -1,5 +1,7 @@
 import type { OntologyObjectContract } from "../../data/InvestigationDataSource";
 import { formattedNumber, propertyNumber, propertyText } from "./model";
+import { TechnicalDetails } from "../provenance/TechnicalDetails";
+import { ontologyObjectLabel } from "../shared/objectLabel";
 
 interface CandidateBasinsProps {
   readonly candidates: ReadonlyArray<OntologyObjectContract>;
@@ -14,7 +16,7 @@ export function CandidateBasins({ candidates, correspondence }: CandidateBasinsP
         <h3 id="candidate-basins-title">Candidates and basins</h3>
         <div>
           <span>Selector</span>
-          <strong>{selector ?? "No preferred candidate selected"}</strong>
+          <strong>{selector?.replaceAll("_", " ") ?? "No preferred candidate selected"}</strong>
         </div>
       </header>
       {candidates.length === 0 ? (
@@ -28,7 +30,7 @@ export function CandidateBasins({ candidates, correspondence }: CandidateBasinsP
               <li key={candidate.ref.id}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div>
-                  <strong>{candidate.ref.id}</strong>
+                  <strong>{ontologyObjectLabel(candidate)}</strong>
                   <small>{propertyText(candidate, "status")?.replaceAll("_", " ") ?? "observed"}</small>
                 </div>
                 <dl>
@@ -53,6 +55,9 @@ export function CandidateBasins({ candidates, correspondence }: CandidateBasinsP
                     <dd>{stable === true ? "Stable" : stable === false ? "Unstable" : "Unavailable"}</dd>
                   </div>
                 </dl>
+                <TechnicalDetails
+                  details={[{ label: "Candidate identity", value: candidate.ref.id }]}
+                />
               </li>
             );
           })}

@@ -1,5 +1,7 @@
 import type { RunSummary, SystemContract } from "../../data/InvestigationDataSource";
 import type { InvestigationLens } from "../../state/investigation";
+import { TechnicalDetails } from "../../visuals/provenance/TechnicalDetails";
+import { profileLabel } from "../../visuals/shared/runLabel";
 
 interface OverviewLensProps {
   readonly run: RunSummary;
@@ -39,10 +41,6 @@ const WORKFLOWS: ReadonlyArray<{
   },
 ];
 
-function shortIdentity(value: string): string {
-  return value.length <= 20 ? value : `${value.slice(0, 12)}…${value.slice(-6)}`;
-}
-
 export function OverviewLens({ run, system, onOpen }: OverviewLensProps) {
   const coverage = run.coverage ?? [];
   const projected = run.coverage_summary?.projected
@@ -68,12 +66,8 @@ export function OverviewLens({ run, system, onOpen }: OverviewLensProps) {
 
       <dl className="run-facts" aria-label="Selected run facts">
         <div>
-          <dt>Profile</dt>
-          <dd>{run.profile_identity}</dd>
-        </div>
-        <div>
-          <dt>Schema</dt>
-          <dd>{run.ontology_schema}</dd>
+          <dt>Model</dt>
+          <dd>{profileLabel(run.profile_identity)}</dd>
         </div>
         <div>
           <dt>Coverage</dt>
@@ -83,15 +77,18 @@ export function OverviewLens({ run, system, onOpen }: OverviewLensProps) {
           <dt>Delivery</dt>
           <dd>{system.mode.replaceAll("_", " ")}</dd>
         </div>
-        <div>
-          <dt>Source run</dt>
-          <dd title={run.source_run_hash}>{shortIdentity(run.source_run_hash)}</dd>
-        </div>
-        <div>
-          <dt>Projection</dt>
-          <dd title={run.projection_digest}>{shortIdentity(run.projection_digest)}</dd>
-        </div>
       </dl>
+
+      <TechnicalDetails
+        className="overview-technical-details"
+        details={[
+          { label: "Run identity", value: run.run_id },
+          { label: "Source run", value: run.source_run_hash },
+          { label: "Profile", value: run.profile_identity },
+          { label: "Ontology schema", value: run.ontology_schema },
+          { label: "Projection digest", value: run.projection_digest },
+        ]}
+      />
 
       <section className="workflow-entry" aria-labelledby="workflow-entry-title">
         <header>

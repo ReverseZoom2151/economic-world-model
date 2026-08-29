@@ -3,6 +3,7 @@ import type {
   RelationContract,
 } from "../../data/InvestigationDataSource";
 import { SourceLocatorList } from "../provenance/SourceLocatorList";
+import { TechnicalDetails } from "../provenance/TechnicalDetails";
 import { classification, limitations, objectLabel, statusShape } from "./model";
 
 interface ClaimAuditProps {
@@ -49,10 +50,10 @@ export function ClaimAudit({ claims, evidence, relations }: ClaimAuditProps) {
               <div>
                 <p>Claim</p>
                 <h3>{objectLabel(claim)}</h3>
-                <code>{claim.ref.id}</code>
               </div>
               <Classification value={classification(claim)} />
             </header>
+            <TechnicalDetails details={[{ label: "Claim identity", value: claim.ref.id }]} />
             <div className="claim-card__section">
               <h4>Claim sources</h4>
               <SourceLocatorList sources={claim.sources} />
@@ -79,10 +80,12 @@ export function ClaimAudit({ claims, evidence, relations }: ClaimAuditProps) {
                         <div>
                           <p>SUPPORTS →</p>
                           <h5>{objectLabel(item)}</h5>
-                          <code>{item.ref.id}</code>
                         </div>
                         <Classification value={classification(item)} />
                       </header>
+                      <TechnicalDetails
+                        details={[{ label: "Evidence identity", value: item.ref.id }]}
+                      />
                       {item.properties.source_file_status === "missing" ? (
                         <p className="missing-source" role="status">Source file reported missing.</p>
                       ) : null}

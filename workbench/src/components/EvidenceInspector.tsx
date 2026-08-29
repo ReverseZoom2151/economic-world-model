@@ -5,6 +5,9 @@ import type {
   OntologyObjectContract,
 } from "../data/InvestigationDataSource";
 import { useInvestigation } from "../state/investigation";
+import { SourceLocatorList } from "../visuals/provenance/SourceLocatorList";
+import { TechnicalDetails } from "../visuals/provenance/TechnicalDetails";
+import { ontologyObjectLabel } from "../visuals/shared/objectLabel";
 
 interface EvidenceInspectorProps {
   readonly dataSource: InvestigationDataSource;
@@ -60,7 +63,7 @@ export function EvidenceInspector({ dataSource }: EvidenceInspectorProps) {
       {object !== null ? (
         <article className="object-detail">
           <p className="object-detail__kind">{object.ref.kind.replaceAll("_", " ")}</p>
-          <h3>{object.ref.id}</h3>
+          <h3>{ontologyObjectLabel(object)}</h3>
           <dl>
             <div>
               <dt>Layer</dt>
@@ -71,14 +74,14 @@ export function EvidenceInspector({ dataSource }: EvidenceInspectorProps) {
               <dd>{object.sources.length}</dd>
             </div>
           </dl>
-          <ul className="source-list">
-            {object.sources.map((source) => (
-              <li key={`${source.source_kind}:${source.source_id}`}>
-                <span>{source.source_kind.replaceAll("_", " ")}</span>
-                <strong>{source.source_id}</strong>
-              </li>
-            ))}
-          </ul>
+          <SourceLocatorList sources={object.sources} />
+          <TechnicalDetails
+            details={[
+              { label: "Object identity", value: object.ref.id },
+              { label: "Object kind", value: object.ref.kind },
+              { label: "Ontology layer", value: object.layer },
+            ]}
+          />
         </article>
       ) : null}
     </section>

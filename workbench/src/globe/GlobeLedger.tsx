@@ -1,4 +1,5 @@
 import { geoLabel, type GeoFlow, type TaggedGeoPlacement } from "./geometry";
+import { TechnicalDetails } from "../visuals/provenance/TechnicalDetails";
 
 interface GlobeLedgerProps {
   readonly placements: ReadonlyArray<TaggedGeoPlacement>;
@@ -44,9 +45,17 @@ export function GlobeLedger({
                 <small>{placement.evidenceClassification.replaceAll("_", " ")}</small>
                 <small>± {placement.uncertaintyKm} km</small>
                 {source === undefined ? null : (
-                  <small>{source.source_kind.replaceAll("_", " ")}: {source.source_id}</small>
+                  <small>{source.source_kind.replaceAll("_", " ")} provenance</small>
                 )}
               </button>
+              <TechnicalDetails
+                summary="Anchor details"
+                details={[
+                  { label: "Subject identity", value: placement.subject.ref.id },
+                  { label: "Anchor identity", value: placement.anchor.ref.id },
+                  { label: "Source identity", value: source?.source_id },
+                ]}
+              />
             </li>
           );
         })}

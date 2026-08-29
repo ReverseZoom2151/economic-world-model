@@ -21,12 +21,12 @@ export function WebGLFallback({ nodes, selectedId, onSelect }: WebGLFallbackProp
       ) : (
         <table>
           <thead>
-            <tr><th>Identity</th><th>Lane</th><th>Layer</th><th>Depth</th><th /></tr>
+            <tr><th>Object</th><th>Lane</th><th>Layer</th><th>Depth</th><th /></tr>
           </thead>
           <tbody>
             {nodes.map((node) => (
               <tr key={node.id} data-selected={selectedId === node.id}>
-                <td><strong>{node.label}</strong><code>{node.id}</code></td>
+                <td><strong>{node.label}</strong></td>
                 <td>{node.lane}</td>
                 <td>{node.layer.replaceAll("_", " ")}</td>
                 <td>{node.position[2]} · {node.depthBasis.replaceAll("_", " ")}</td>

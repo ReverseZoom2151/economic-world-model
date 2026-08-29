@@ -3,6 +3,7 @@ import type {
   RelationContract,
 } from "../../data/InvestigationDataSource";
 import { formattedNumber, propertyNumber, propertyText } from "./model";
+import { TechnicalDetails } from "../provenance/TechnicalDetails";
 
 interface ResidualHistoryProps {
   readonly residuals: ReadonlyArray<OntologyObjectContract>;
@@ -17,7 +18,7 @@ function residualValue(residual: OntologyObjectContract): string {
   return `[${value.map((item) => formattedNumber(item as number)).join(", ")}]`;
 }
 
-function candidateId(
+function candidateIdentity(
   residual: OntologyObjectContract,
   relations: ReadonlyArray<RelationContract>,
 ): string {
@@ -29,6 +30,12 @@ function candidateId(
   );
 }
 
+function candidateLabel(identity: string): string {
+  if (identity === "unlinked residual") return "Unlinked residual";
+  const tail = identity.split(":").filter(Boolean).at(-1) ?? "candidate";
+  return `Candidate ${tail.replace(/[_-]+/g, " ")}`;
+}
+
 export function ResidualHistory({ residuals, relations }: ResidualHistoryProps) {
   if (residuals.length === 0) {
     return <p className="sparse-fallback">No residual diagnostics were projected.</p>;
@@ -37,12 +44,17 @@ export function ResidualHistory({ residuals, relations }: ResidualHistoryProps) 
     <section className="residual-history" aria-labelledby="residual-history-title">
       <h3 id="residual-history-title">Residual diagnostics</h3>
       <ol className="residual-table" aria-label="Scalar and vector residuals">
-        {residuals.map((residual) => (
-          <li key={residual.ref.id}>
-            <article>
+        {residuals.map((residual) => {
+          const candidate = candidateIdentity(residual, relations);
+          return (
+            <li key={residual.ref.id}>
+              <article>
               <header>
-                <span>{candidateId(residual, relations)}</span>
-                <strong>{propertyText(residual, "status") ?? "status unavailable"}</strong>
+                <span>{candidateLabel(candidate)}</span>
+                <strong>
+                  {propertyText(residual, "status")?.replaceAll("_", " ")
+                    ?? "status unavailable"}
+                </strong>
               </header>
               <code>{residualValue(residual)}</code>
               <dl>
@@ -64,16 +76,23 @@ export function ResidualHistory({ residuals, relations }: ResidualHistoryProps) 
                 </div>
                 <div>
                   <dt>Solver</dt>
-                  <dd>{propertyText(residual, "solver") ?? "unavailable"}</dd>
+                  <dd>{propertyText(residual, "solver")?.replaceAll("_", " ") ?? "unavailable"}</dd>
                 </div>
                 <div>
                   <dt>Stopping rule</dt>
                   <dd>{propertyText(residual, "stopping_rule") ?? "unavailable"}</dd>
                 </div>
               </dl>
-            </article>
-          </li>
-        ))}
+              <TechnicalDetails
+                details={[
+                  { label: "Residual identity", value: residual.ref.id },
+                  { label: "Candidate identity", value: candidate },
+                ]}
+              />
+              </article>
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

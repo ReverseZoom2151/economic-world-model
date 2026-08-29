@@ -4,6 +4,7 @@ import type {
 } from "../../data/InvestigationDataSource";
 import { MarketCharts } from "../../visuals/market/MarketCharts";
 import { marketMeasurementIssue } from "../../visuals/market/spec";
+import { ontologyObjectLabel } from "../../visuals/shared/objectLabel";
 
 interface MarketLensProps {
   readonly measurements: ReadonlyArray<MeasurementContract>;
@@ -71,9 +72,7 @@ export function MarketLens({ measurements, rejections, bounded = false }: Market
             {rejections.map((rejection) => (
               <li key={rejection.ref.id}>
                 <strong>
-                  {typeof rejection.properties.natural_key === "string"
-                    ? rejection.properties.natural_key
-                    : rejection.ref.id}
+                  {ontologyObjectLabel(rejection)}
                 </strong>
                 <span>
                   {typeof rejection.properties.reason === "string"

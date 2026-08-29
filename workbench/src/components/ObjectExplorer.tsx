@@ -117,7 +117,7 @@ export function ObjectExplorer({ dataSource }: ObjectExplorerProps) {
       <input
         id="object-search"
         type="search"
-        placeholder="Identity or natural key"
+        placeholder="Name, role, or natural key"
         value={state.filters.query}
         onChange={(event) =>
           dispatch({
@@ -148,6 +148,7 @@ export function ObjectExplorer({ dataSource }: ObjectExplorerProps) {
                 <li key={object.ref.id}>
                   <button
                     type="button"
+                    aria-label={`Inspect ${ontologyObjectLabel(object)}`}
                     aria-pressed={state.objectId === object.ref.id}
                     onClick={() =>
                       dispatch({
@@ -158,7 +159,6 @@ export function ObjectExplorer({ dataSource }: ObjectExplorerProps) {
                   >
                     <span>{object.ref.kind.replaceAll("_", " ")}</span>
                     <strong>{ontologyObjectLabel(object)}</strong>
-                    <small title={object.ref.id}>{object.ref.id}</small>
                   </button>
                 </li>
               ))}

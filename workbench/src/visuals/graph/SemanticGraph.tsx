@@ -7,6 +7,7 @@ import type {
 } from "../../data/InvestigationDataSource";
 import { LEGEND, stableSemanticLayout } from "./visualGrammar";
 import type { SemanticCoordinate } from "./visualGrammar";
+import { ontologyObjectLabel } from "../shared/objectLabel";
 
 interface SemanticGraphProps {
   readonly objects: ReadonlyArray<OntologyObjectContract>;
@@ -16,8 +17,7 @@ interface SemanticGraphProps {
 }
 
 function label(object: OntologyObjectContract): string {
-  const naturalKey = object.properties.natural_key;
-  return typeof naturalKey === "string" ? naturalKey : object.ref.id;
+  return ontologyObjectLabel(object);
 }
 
 function NodeGlyph({ coordinate }: { readonly coordinate: SemanticCoordinate }) {
@@ -90,15 +90,16 @@ export function SemanticGraph({
 
   const width = Math.max(720, ...Object.values(layout).map((coordinate) => coordinate.x + 100));
   const height = Math.max(360, ...Object.values(layout).map((coordinate) => coordinate.y + 80));
-  const sourceBoundary = [
-    ...new Set(
-      objects.flatMap((object) =>
-        object.sources.map(
-          (source) => `${source.source_kind.replaceAll("_", " ")} · ${source.source_id}`,
-        ),
-      ),
-    ),
-  ].sort();
+  const sourceCounts = new Map<string, number>();
+  for (const object of objects) {
+    for (const source of object.sources) {
+      const kind = source.source_kind.replaceAll("_", " ");
+      sourceCounts.set(kind, (sourceCounts.get(kind) ?? 0) + 1);
+    }
+  }
+  const sourceBoundary = [...sourceCounts.entries()].sort(([left], [right]) =>
+    left.localeCompare(right),
+  );
 
   return (
     <div className="semantic-graph">
@@ -115,8 +116,8 @@ export function SemanticGraph({
         ))}
       </ul>
       <div className="source-boundary" aria-label="Displayed source boundary">
-        {sourceBoundary.map((source) => (
-          <span key={source}>{source}</span>
+        {sourceBoundary.map(([source, count]) => (
+          <span key={source}>{source} · {count} {count === 1 ? "record" : "records"}</span>
         ))}
       </div>
       <svg

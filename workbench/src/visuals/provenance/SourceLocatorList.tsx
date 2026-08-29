@@ -1,5 +1,6 @@
 import type { SourceLocatorContract } from "../../data/InvestigationDataSource";
 import { portableArtifactPath } from "./path";
+import { TechnicalDetails } from "./TechnicalDetails";
 
 interface SourceLocatorListProps {
   readonly sources: ReadonlyArray<SourceLocatorContract>;
@@ -17,15 +18,18 @@ export function SourceLocatorList({ sources }: SourceLocatorListProps) {
         >
           <div>
             <span>{source.source_kind.replaceAll("_", " ")}</span>
-            <strong>{source.source_id}</strong>
+            <strong>{portableArtifactPath(source.artifact_path)}</strong>
           </div>
-          <code>{portableArtifactPath(source.artifact_path)}</code>
-          {source.record_selector === null ? null : <small>{source.record_selector}</small>}
-          {source.code_symbol === null ? null : <small>{source.code_symbol}</small>}
           {source.paper_anchor === null ? null : <small>{source.paper_anchor}</small>}
-          {source.payload_digest === null ? null : (
-            <small title={source.payload_digest}>digest {source.payload_digest.slice(0, 12)}</small>
-          )}
+          {source.code_symbol === null ? null : <small>{source.code_symbol}</small>}
+          <TechnicalDetails
+            summary="Source details"
+            details={[
+              { label: "Source identity", value: source.source_id },
+              { label: "Record selector", value: source.record_selector },
+              { label: "Payload digest", value: source.payload_digest },
+            ]}
+          />
         </li>
       ))}
     </ul>

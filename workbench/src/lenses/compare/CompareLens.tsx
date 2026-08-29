@@ -6,6 +6,7 @@ import type {
   RunSummary,
 } from "../../data/InvestigationDataSource";
 import { ComparisonPreflight } from "../../visuals/compare/ComparisonPreflight";
+import { runLabel } from "../../visuals/shared/runLabel";
 
 interface CompareLensProps {
   readonly dataSource: InvestigationDataSource;
@@ -80,6 +81,12 @@ export function CompareLens({ dataSource, activeRunId }: CompareLensProps) {
         : [],
     [activeRunId, runLoad],
   );
+  const activeRun = runLoad.status === "loaded"
+    ? runLoad.runs.find((run) => run.run_id === activeRunId) ?? null
+    : null;
+  const activeRunIndex = runLoad.status === "loaded"
+    ? Math.max(0, runLoad.runs.findIndex((run) => run.run_id === activeRunId))
+    : 0;
 
   return (
     <section className="analytical-lens comparison-lens">
@@ -104,7 +111,7 @@ export function CompareLens({ dataSource, activeRunId }: CompareLensProps) {
         <div className="comparison-selector">
           <div>
             <span>Left / active</span>
-            <strong>{activeRunId}</strong>
+            <strong>{activeRun === null ? "Active run" : runLabel(activeRun, activeRunIndex)}</strong>
           </div>
           <span aria-hidden="true">↔</span>
           <label>
@@ -115,7 +122,9 @@ export function CompareLens({ dataSource, activeRunId }: CompareLensProps) {
               onChange={(event) => setRightRunId(event.currentTarget.value)}
             >
               {otherRuns.map((run) => (
-                <option key={run.run_id} value={run.run_id}>{run.run_id}</option>
+                <option key={run.run_id} value={run.run_id}>
+                  {runLabel(run, runLoad.status === "loaded" ? runLoad.runs.indexOf(run) : 0)}
+                </option>
               ))}
             </select>
           </label>

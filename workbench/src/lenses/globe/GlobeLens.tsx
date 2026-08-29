@@ -168,12 +168,12 @@ export function GlobeLens({
     <section className="analytical-lens globe-lens">
       <header className="analytical-lens__heading">
         <div>
-          <p>10 / ECONOMIC GLOBE</p>
+          <p>Ontology / geography</p>
           <h2>Explicit economic geography</h2>
         </div>
-        <p>Only sourced GEO_ANCHORED_AT relations become positions. No jurisdiction is inferred.</p>
+        <p>Only sourced geographic-anchor relations become positions. No jurisdiction is inferred.</p>
       </header>
-      {comparisonRunId !== null ? <p className="comparison-note">Comparison overlay: {comparisonRunId}</p> : null}
+      {comparisonRunId !== null ? <p className="comparison-note">Comparison geography overlay enabled.</p> : null}
       {records.key !== requestKey ? <p className="lens-loading">Loading explicit coordinate evidence…</p> : null}
       {records.key === requestKey && records.failed ? (
         <p className="sparse-fallback" role="alert">The geographic projection is unavailable.</p>

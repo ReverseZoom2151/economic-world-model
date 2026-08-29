@@ -18,7 +18,7 @@ const LABEL_FIELDS = [
 
 function words(value: string): string {
   return value
-    .replaceAll("_", " ")
+    .replace(/[_-]+/g, " ")
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
@@ -34,5 +34,6 @@ export function ontologyObjectLabel(object: OntologyObjectContract): string {
       ? `${label}s (${count})`
       : label;
   }
-  return `${words(object.ref.kind)} · ${object.ref.id.slice(-8)}`;
+  const identityTail = object.ref.id.split(":").filter(Boolean).at(-1) ?? "record";
+  return `${words(object.ref.kind)} · ${words(identityTail)}`;
 }

@@ -191,7 +191,7 @@ export function SceneLens({
     <section className="analytical-lens graph-lens scene-lens">
       <header className="analytical-lens__heading graph-lens__heading">
         <div>
-          <p>Advanced / ontology graph</p>
+          <p>Ontology / relationships</p>
           <h2>Ontology graph</h2>
         </div>
         <p>

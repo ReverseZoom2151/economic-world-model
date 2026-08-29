@@ -3,6 +3,8 @@ import type {
   OntologyObjectContract,
   RelationContract,
 } from "../../data/InvestigationDataSource";
+import { TechnicalDetails } from "../provenance/TechnicalDetails";
+import { ontologyObjectLabel } from "../shared/objectLabel";
 
 interface LearningClosureProps {
   readonly objects: ReadonlyArray<OntologyObjectContract>;
@@ -46,6 +48,11 @@ function propertyText(object: OntologyObjectContract | undefined, key: string): 
   return typeof value === "string" ? value : "unavailable";
 }
 
+function readableProperty(object: OntologyObjectContract | undefined, key: string): string {
+  const value = propertyText(object, key);
+  return value === "unavailable" ? value : value.replaceAll("_", " ");
+}
+
 export function LearningClosure({ objects, relations, coverage }: LearningClosureProps) {
   const records = new Map(objects.map((object) => [object.ref.id, object]));
   const dataset = objectsOfKind(objects, "dataset")[0];
@@ -71,6 +78,7 @@ export function LearningClosure({ objects, relations, coverage }: LearningClosur
 
   return (
     <div className="learning-closure">
+      <p className="stage-scroll-hint">Six-stage closure · scroll horizontally to inspect</p>
       <ol aria-label="Learning closure stages">
         {STAGES.map((stage, index) => {
           const stageObjects = objectsOfKind(objects, stage.kind);
@@ -95,17 +103,24 @@ export function LearningClosure({ objects, relations, coverage }: LearningClosur
           </div>
           <div>
             <dt>Learner</dt>
-            <dd>{propertyText(training, "learner")}</dd>
+            <dd>{readableProperty(training, "learner")}</dd>
           </div>
           <div>
             <dt>Training status</dt>
-            <dd>{propertyText(training, "status")}</dd>
+            <dd>{readableProperty(training, "status")}</dd>
           </div>
           <div>
-            <dt>Deployment identity</dt>
-            <dd>{parameter?.ref.id ?? "unavailable"}</dd>
+            <dt>Deployed parameter</dt>
+            <dd>{parameter === undefined ? "unavailable" : ontologyObjectLabel(parameter)}</dd>
           </div>
         </dl>
+        <TechnicalDetails
+          details={[
+            { label: "Dataset identity", value: dataset?.ref.id },
+            { label: "Training identity", value: training?.ref.id },
+            { label: "Deployment identity", value: parameter?.ref.id },
+          ]}
+        />
       </section>
       <aside className="closure-gaps" aria-label="Learning closure gaps">
         <strong>{linked ? "Closure linked" : "Closure incomplete"}</strong>
@@ -113,7 +128,7 @@ export function LearningClosure({ objects, relations, coverage }: LearningClosur
           <ul>
             {gaps.map((gap) => (
               <li key={`${gap.field}:${gap.status}`}>
-                <span>{gap.field}</span>
+                <span>{gap.field.split(".").at(-1)?.replaceAll("_", " ") ?? gap.field}</span>
                 <p>{gap.reason ?? gap.status}</p>
               </li>
             ))}
