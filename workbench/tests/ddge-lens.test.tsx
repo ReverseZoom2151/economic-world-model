@@ -100,7 +100,8 @@ describe("DdgeLens", () => {
     );
 
     expect(screen.getByRole("heading", { name: "DDGE diagnostics" })).toBeVisible();
-    expect(screen.getByText("retain all independently bracketed roots")).toBeVisible();
+    expect(screen.getByText("Retain all independently bracketed roots")).toBeVisible();
+    expect(screen.getByText("retain_all_independently_bracketed_roots")).toBeInTheDocument();
     expect(
       screen.getAllByText(/Ddge Candidate/, { selector: ".candidate-basins strong" }),
     ).toHaveLength(2);

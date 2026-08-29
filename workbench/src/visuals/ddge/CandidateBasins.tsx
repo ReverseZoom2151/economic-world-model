@@ -8,6 +8,14 @@ interface CandidateBasinsProps {
   readonly correspondence: OntologyObjectContract | null;
 }
 
+function selectorLabel(selector: string): string {
+  if (selector === "uniform_price_max_volume_then_imbalance_then_price") {
+    return "Uniform price → maximize volume → minimize imbalance → settle price";
+  }
+  const words = selector.replaceAll("_", " ");
+  return `${words.slice(0, 1).toUpperCase()}${words.slice(1)}`;
+}
+
 export function CandidateBasins({ candidates, correspondence }: CandidateBasinsProps) {
   const selector = correspondence === null ? null : propertyText(correspondence, "selector");
   return (
@@ -15,8 +23,11 @@ export function CandidateBasins({ candidates, correspondence }: CandidateBasinsP
       <header>
         <h3 id="candidate-basins-title">Candidates and basins</h3>
         <div>
-          <span>Selector</span>
-          <strong>{selector?.replaceAll("_", " ") ?? "No preferred candidate selected"}</strong>
+          <span>Selection rule</span>
+          <strong>{selector === null ? "No preferred candidate selected" : selectorLabel(selector)}</strong>
+          {selector === null ? null : (
+            <TechnicalDetails details={[{ label: "Raw selector", value: selector }]} />
+          )}
         </div>
       </header>
       {candidates.length === 0 ? (

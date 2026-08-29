@@ -106,15 +106,13 @@ export function MarketLens({ measurements, rejections, bounded = false }: Market
       {bounded ? (
         <p className="bounded-notice" role="status">Summary covers the loaded bounded page.</p>
       ) : null}
-      {chartable.length === 0 ? (
+      {chartable.length === 0 && measurements.length === 0 ? (
         <p className="sparse-fallback">
-          {measurements.length === 0
-            ? "No market measurements were projected for this run."
-            : "No market measurements include the metadata required for a scientific chart."}
+          No market measurements were projected for this run.
         </p>
-      ) : (
+      ) : chartable.length > 0 ? (
         <MarketCharts measurements={chartable} />
-      )}
+      ) : null}
       {withheld.length > 0 ? (
         <aside className="withheld-records" aria-label="Market chart boundary">
           <strong>Time-series chart unavailable</strong>
