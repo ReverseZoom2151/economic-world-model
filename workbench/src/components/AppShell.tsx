@@ -11,6 +11,7 @@ import { useInvestigation, type InvestigationLens } from "../state/investigation
 import { TechnicalDetails } from "../visuals/provenance/TechnicalDetails";
 import { runLabel } from "../visuals/shared/runLabel";
 import { EvidenceInspector } from "./EvidenceInspector";
+import { GuidedInvestigation } from "./GuidedInvestigation";
 import { LensRouter } from "./LensRouter";
 import { ObjectExplorer } from "./ObjectExplorer";
 import { Timeline } from "./Timeline";
@@ -330,6 +331,8 @@ export function AppShell({ dataSource }: AppShellProps) {
             </span>
           </div>
         </section>
+
+        <GuidedInvestigation />
 
         {load.status === "loading" ? (
           <section className="system-state" aria-live="polite">

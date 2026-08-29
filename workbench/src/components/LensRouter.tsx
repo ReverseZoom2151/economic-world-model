@@ -194,7 +194,10 @@ export function LensRouter({ dataSource, selectedRun, system }: LensRouterProps)
         <OverviewLens
           run={selectedRun}
           system={system}
+          dataSource={dataSource}
+          auditComplete={state.journey?.id === "fx-execution-audit" && state.journey.step === 9}
           onOpen={(lens) => dispatch({ type: "set-lens", lens })}
+          onStartAudit={() => dispatch({ type: "start-fx-audit" })}
         />
       </section>
     );

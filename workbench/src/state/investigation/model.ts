@@ -36,6 +36,24 @@ export interface InvestigationFilters {
   readonly query: string;
 }
 
+export const FX_AUDIT_JOURNEY_LENSES = [
+  "world",
+  "runtime",
+  "market",
+  "learning",
+  "ddge",
+  "evidence",
+  "lineage",
+  "scene",
+  "globe",
+  "overview",
+] as const satisfies ReadonlyArray<InvestigationLens>;
+
+export interface ResearchJourney {
+  readonly id: "fx-execution-audit";
+  readonly step: number;
+}
+
 export interface InvestigationState {
   readonly runId: string | null;
   readonly objectId: string | null;
@@ -45,6 +63,7 @@ export interface InvestigationState {
   readonly lens: InvestigationLens;
   readonly camera: CameraState | null;
   readonly filters: InvestigationFilters;
+  readonly journey: ResearchJourney | null;
 }
 
 export const initialInvestigationState: InvestigationState = Object.freeze({
@@ -56,6 +75,7 @@ export const initialInvestigationState: InvestigationState = Object.freeze({
   lens: "overview",
   camera: null,
   filters: Object.freeze({ kinds: [], layers: [], query: "" }),
+  journey: null,
 });
 
 type HydratedState = Partial<InvestigationState>;
@@ -69,6 +89,9 @@ export type InvestigationAction =
   | { readonly type: "set-lens"; readonly lens: InvestigationLens }
   | { readonly type: "set-camera"; readonly camera: CameraState | null }
   | { readonly type: "set-filters"; readonly filters: InvestigationFilters }
+  | { readonly type: "start-fx-audit" }
+  | { readonly type: "move-fx-audit"; readonly direction: "back" | "next" }
+  | { readonly type: "stop-research-journey" }
   | { readonly type: "hydrate"; readonly state: HydratedState };
 
 function normalizedWindow(window: TimeWindow | null): TimeWindow | null {
@@ -116,6 +139,29 @@ export function investigationReducer(
           query: action.filters.query,
         },
       };
+    case "start-fx-audit":
+      return {
+        ...state,
+        lens: FX_AUDIT_JOURNEY_LENSES[0],
+        journey: { id: "fx-execution-audit", step: 0 },
+      };
+    case "move-fx-audit": {
+      if (state.journey?.id !== "fx-execution-audit") return state;
+      const offset = action.direction === "next" ? 1 : -1;
+      const step = Math.max(
+        0,
+        Math.min(FX_AUDIT_JOURNEY_LENSES.length - 1, state.journey.step + offset),
+      );
+      return {
+        ...state,
+        lens: FX_AUDIT_JOURNEY_LENSES[step]!,
+        objectId: null,
+        relationId: null,
+        journey: { ...state.journey, step },
+      };
+    }
+    case "stop-research-journey":
+      return { ...state, journey: null };
     case "hydrate":
       return {
         ...state,
@@ -136,6 +182,16 @@ function finiteNumber(value: string | null): number | null {
 
 function isLens(value: string | null): value is InvestigationLens {
   return value !== null && (INVESTIGATION_LENSES as readonly string[]).includes(value);
+}
+
+function parseJourney(id: string | null, step: string | null): ResearchJourney | null {
+  if (id !== "fx-execution-audit") return null;
+  const parsed = finiteNumber(step);
+  if (parsed === null || !Number.isInteger(parsed)) return null;
+  return {
+    id,
+    step: Math.max(0, Math.min(FX_AUDIT_JOURNEY_LENSES.length - 1, parsed)),
+  };
 }
 
 function textList(value: string | null): ReadonlyArray<string> {
@@ -186,6 +242,7 @@ export function parseInvestigationUrl(search: string): HydratedState {
   const leftRunId = parameters.get("left");
   const rightRunId = parameters.get("right");
   const camera = parseCamera(parameters.get("camera"));
+  const journey = parseJourney(parameters.get("journey"), parameters.get("journey_step"));
   return {
     runId: parameters.get("run"),
     objectId: parameters.get("object"),
@@ -198,6 +255,7 @@ export function parseInvestigationUrl(search: string): HydratedState {
       ? { comparison: { leftRunId, rightRunId } }
       : {}),
     ...(camera === null ? {} : { camera }),
+    ...(journey === null ? {} : { journey }),
     filters: {
       kinds: textList(parameters.get("kinds")),
       layers: textList(parameters.get("layers")),
@@ -221,6 +279,8 @@ export function serializeInvestigationUrl(state: InvestigationState): string {
     ["kinds", state.filters.kinds.length ? state.filters.kinds.join(",") : null],
     ["layers", state.filters.layers.length ? state.filters.layers.join(",") : null],
     ["q", state.filters.query || null],
+    ["journey", state.journey?.id ?? null],
+    ["journey_step", state.journey === null ? null : String(state.journey.step)],
   ];
   for (const [key, value] of values) {
     if (value !== null) {

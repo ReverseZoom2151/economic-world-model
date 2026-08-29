@@ -85,4 +85,14 @@ describe("investigation state", () => {
 
     expect(result.current.state.lens).toBe("market");
   });
+
+  it("moves the FX audit through a shareable, bounded research journey", () => {
+    const started = investigationReducer(initialInvestigationState, { type: "start-fx-audit" });
+    const advanced = investigationReducer(started, { type: "move-fx-audit", direction: "next" });
+    const parsed = parseInvestigationUrl(serializeInvestigationUrl(advanced));
+
+    expect(started.lens).toBe("world");
+    expect(advanced.lens).toBe("runtime");
+    expect(parsed.journey).toEqual({ id: "fx-execution-audit", step: 1 });
+  });
 });

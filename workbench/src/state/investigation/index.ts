@@ -2,6 +2,7 @@ export { InvestigationProvider } from "./context";
 export { useInvestigation } from "./store";
 export {
   INVESTIGATION_LENSES,
+  FX_AUDIT_JOURNEY_LENSES,
   initialInvestigationState,
   investigationReducer,
   parseInvestigationUrl,
@@ -13,6 +14,7 @@ export type {
   InvestigationFilters,
   InvestigationLens,
   InvestigationState,
+  ResearchJourney,
   RunComparison,
   TimeWindow,
 } from "./model";
