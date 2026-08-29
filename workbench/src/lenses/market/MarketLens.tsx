@@ -3,11 +3,7 @@ import type {
   OntologyObjectContract,
 } from "../../data/InvestigationDataSource";
 import { MarketCharts } from "../../visuals/market/MarketCharts";
-import {
-  marketMeasurementIssue,
-  sampleSize,
-  sourceLabel,
-} from "../../visuals/market/spec";
+import { marketMeasurementIssue } from "../../visuals/market/spec";
 import { TechnicalDetails } from "../../visuals/provenance/TechnicalDetails";
 import { ontologyObjectLabel } from "../../visuals/shared/objectLabel";
 
@@ -30,6 +26,16 @@ function measurementValue(value: unknown): string {
   if (magnitude > 0 && magnitude < 0.0001) return value.toExponential(2);
   if (magnitude < 0.01) return value.toFixed(4);
   return value.toLocaleString("en-US", { maximumFractionDigits: 5 });
+}
+
+function observedCount(measurement: MeasurementContract): string {
+  const value = measurement.sample.sample_size ?? measurement.sample.count;
+  return typeof value === "number" && Number.isFinite(value) ? value.toLocaleString("en-US") : "n/a";
+}
+
+function measurementSource(measurement: MeasurementContract): string {
+  const source = measurement.sources[0];
+  return source === undefined ? "Source unavailable" : source.source_kind.replaceAll("_", " ");
 }
 
 export function MarketLens({ measurements, rejections, bounded = false }: MarketLensProps) {
@@ -82,13 +88,14 @@ export function MarketLens({ measurements, rejections, bounded = false }: Market
                 <strong>{measurementValue(measurement.value)}</strong>
                 <small>
                   {measurement.unit === "1" ? "dimensionless" : measurement.unit}
-                  {` · n = ${sampleSize(measurement.sample)}`}
+                  {` · n = ${observedCount(measurement)}`}
                 </small>
                 <TechnicalDetails
                   details={[
                     { label: "Record ID", value: measurement.ref.id },
                     { label: "Status", value: measurement.status },
-                    { label: "Source", value: sourceLabel(measurement) },
+                    { label: "Source type", value: measurementSource(measurement) },
+                    { label: "Source record ID", value: measurement.sources[0]?.source_id },
                   ]}
                 />
               </article>
