@@ -86,8 +86,9 @@ no remote design-system requests.
 
 ## Artwork provenance
 
-All four scenes were generated for EWM on 2026-08-29 with OpenAI's built-in image generation tool.
-They are original Renaissance-inspired scenes, not reproductions of historical paintings. The
+The first four editorial scenes were generated for EWM on 2026-08-29, and the panoramic project
+cover was generated on 2026-08-30, using OpenAI's built-in image generation tool. They are original
+Renaissance-inspired scenes, not reproductions of historical paintings. The
 prompts prohibited text, logos, watermarks, recognizable people, named-artist imitation, and copying
 an existing painting.
 
@@ -97,10 +98,13 @@ an existing painting.
 | `workbench/src/assets/ewm-exchange-venice-v1.webp` | `exec-5c94bf53-55d1-40a8-8a2b-b14b52dd7d65` | Venetian maritime exchange, currencies, contracts, maps, shipping flows, silvery lagoon dawn | Markets and networks |
 | `workbench/src/assets/ewm-learning-workshop-v1.webp` | `exec-e9878349-f07f-42f2-85f6-eb85c1b4cb72` | Renaissance workshop, mechanical market model, instruments, feedback, collective revision | Learning and co-evolution |
 | `workbench/src/assets/ewm-civic-market-v1.webp` | `exec-df5233af-53ae-4ce4-8a4b-9847234e1232` | Tuscan civic market, households, artisans, lenders, officials, institutions and exchange | World and institutions |
+| `docs/assets/workbench/ewm-renaissance-cover-background-v1.png` | `exec-b9f6697e-23e5-46f2-b49f-2b0283e0697b` | Panoramic Italian economic world, spanning ledgers, markets, roads, workshops, fields, institutions, and maritime trade | Primary repository cover |
 
 The editable image fills and overlaid type compositions are in the Figma Renaissance Series frame.
-The committed [series export](../assets/workbench/figma-renaissance-series.png) provides a durable
-repository preview.
+The primary project cover remains editable in the Figma README Hero frame, where a directional
+legibility wash preserves the title while revealing the full economic panorama. The committed
+[series export](../assets/workbench/figma-renaissance-series.png) and [README cover](../assets/workbench/figma-hero.png)
+provide durable repository previews.
 
 ## Release workflow
 

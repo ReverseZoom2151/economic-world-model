@@ -18,7 +18,7 @@ Build and solve economies where agents, markets, data, and learned models co-evo
 </p>
 
 <p align="center">
-  <img src="docs/assets/workbench/figma-hero.png" alt="Economic World Model release artwork over a Renaissance harbor economy" width="100%">
+  <img src="docs/assets/workbench/figma-hero.png" alt="Economic World Model over a Renaissance economic world of markets, ledgers, roads, workshops, and maritime trade" width="100%">
 </p>
 
 Economic World Model is an auditable research implementation of selected definitions, protocols,
